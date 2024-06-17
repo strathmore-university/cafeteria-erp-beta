@@ -123,4 +123,11 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'strathmore' => [
+        'address' => [
+            'line1' => env('REPORT_ADDRESS_LINE1', 'Strathmore University'),
+            'line2' => env('REPORT_ADDRESS_LINE2', 'Ole Sangale Road, Madaraka'),
+            'line3' => env('REPORT_ADDRESS_LINE3', 'P.O Box Nairobi'),
+        ],
+    ],
 ];
