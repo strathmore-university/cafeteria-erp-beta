@@ -13,29 +13,26 @@ use Illuminate\Database\Eloquent\Builder;
 
 class StockLevelResource extends Resource
 {
-    protected static ?string $model = StockLevel::class;
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static ?string $cluster = Inventory::class;
 
-    protected static ?int $navigationSort = 3;
+    protected static ?string $model = StockLevel::class;
 
     protected static ?string $slug = 'stock-levels';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 3;
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('store.name')->searchable()->sortable(),
-                TextColumn::make('article.name')->searchable()->sortable(),
-                TextColumn::make('previous_units')->sortable(),
-                TextColumn::make('current_units')->sortable(),
-                IconColumn::make('is_sold_stock')->boolean()->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([])
-            ->actions([])
-            ->bulkActions([]);
+        return $table->columns([
+            TextColumn::make('store.name')->searchable()->sortable(),
+            TextColumn::make('article.name')->searchable()->sortable(),
+            TextColumn::make('current_units')->numeric(),
+            TextColumn::make('previous_units')->numeric(),
+            IconColumn::make('is_sold_stock')->boolean()
+                ->toggleable(isToggledHiddenByDefault: true),
+        ]);
     }
 
     public static function getPages(): array
@@ -52,10 +49,5 @@ class StockLevelResource extends Resource
                 'id', 'team_id', 'store_id', 'article_id',
                 'current_units', 'previous_units', 'is_sold_stock',
             ]);
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [];
     }
 }

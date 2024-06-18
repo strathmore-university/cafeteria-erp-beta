@@ -19,7 +19,7 @@ use Kalnoy\Nestedset\NodeTrait;
 class Article extends Model
 {
     use BelongsToTeam, NodeTrait, UsesNestedSets;
-    use HasCategory, SoftDeletes, HasStock;
+    use HasCategory, HasStock, SoftDeletes;
 
     protected $guarded = [];
 
@@ -116,11 +116,11 @@ class Article extends Model
     protected static function booted(): void
     {
         parent::creating(function (Article $article): void {
-            $check = $article->is_product;
+            $check = $article->is_product ?? false;
             $value = $article->reorder_level;
             $article->reorder_level = tannery($check, $value, null);
 
-            $check = $article->getAttribute('is_reference');
+            $check = $article->getAttribute('is_reference') ?? false;
             $value = $article->unit_capacity;
             $article->unit_capacity = tannery($check, $value, null);
 

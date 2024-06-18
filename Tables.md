@@ -59,8 +59,8 @@ Here's the parsed list of tables from the `mc` database:
 
 
 ## Procurement
-- kfs_vendors, suppliers (Combine?)
-- purchase_orders & lpos
+- kfs_vendors, suppliers (Combine)
+- purchase_orders & lpos (Combined)
 - purchase_order_items
 - price_quotes
 - grns
@@ -83,25 +83,36 @@ Here's the parsed list of tables from the `mc` database:
 
 
 ## Inventory
-- article_types (replaced by nested sets)
-- major_groups (replaced by nested sets)
-- item_groups (replaced by nested sets)
-- over_groups (replaced by nested sets)
-- stock_ledger_entries
-- trolley_mutations
-- stock_mutations
-- article_prices
-- derived_units
-- outlet_stocks
-- stock_takes
-- batch_items
-- articles
-- outlets
-- batches
-- stocks
-- depots
-~~- units~~
+~~- batch_items~~
 
+~~- stocks (stock levels)~~
+
+~~- article_types (replaced by nested sets)~~
+
+~~- major_groups (replaced by nested sets)~~
+
+~~- item_groups (replaced by nested sets)~~
+
+~~- over_groups (replaced by nested sets)~~
+
+~~- derived_units (replaced by unit nested sets)~~
+
+~~- trolley_mutations ((concept replaced by stock mutations)~~
+
+~~- outlet_stocks (concept replaced by stock levels)~~
+
+~~- stock_ledger_entries (concept replaced by stock levels)~~
+
+~~- article_prices (now price quotes)~~
+
+
+- stock_mutations (now stock movements)
+- stock_takes
+- articles
+- batches
+- depots (now stores)
+- units
+- outlets (now restaurants)
 
 ## Dispatch
 - bulk_dispatch_bulk_request

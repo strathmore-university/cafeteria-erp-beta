@@ -2,7 +2,6 @@
 
 namespace App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\Pages;
 
-use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource;
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -43,8 +42,7 @@ class ViewPurchaseOrder extends ViewRecord
                 ->button()
                 ->visible(fn ($record) => $record->canBeDownload())
                 ->action(function ($record): void {
-                    $grn = $record->fetchOrCreateGrn();
-                    redirect(GoodsReceivedNoteResource::getUrl('view', ['record' => $grn]));
+                    redirect(get_record_url($record->fetchOrCreateGrn()));
                 })
 //                    ->authorize('receive')
                 ->color('success')

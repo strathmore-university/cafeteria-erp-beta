@@ -9,6 +9,7 @@ use App\Filament\Clusters\Core\Resources\CategoryResource\Pages\ListCategories;
 use App\Filament\Clusters\Core\Resources\CategoryResource\RelationManagers\DescendantsRelationManager;
 use App\Models\Core\Category;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoryResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $model = Category::class;
 
@@ -31,35 +32,44 @@ class CategoryResource extends Resource
 
     protected static ?string $slug = 'categories';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
+        $cols = 2;
+
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                Select::make('parent_id')->label('Parent Category')
-                    ->options(Category::isReference()->pluck('name', 'id')->toArray())
-                    ->afterStateUpdated(
-                        fn (Set $set, Get $get) => $set('is_reference', blank($get('parent_id')))
-                    )
-                    ->reactive()
-                    ->nullable(),
-                Hidden::make('is_reference')->default(true),
-                placeholder('created_at', 'Created Date'),
-                placeholder('updated_at', 'Last Modified Date'),
+                Section::make([
+                    TextInput::make('name')->required(),
+                    Select::make('parent_id')->label('Parent Category')
+                        ->options(
+                            Category::isReference()->pluck('name', 'id')
+                                ->toArray()
+                        )
+                        ->afterStateUpdated(fn (Set $set, Get $get) => $set(
+                            'is_reference',
+                            blank($get('parent_id'))
+                        ))
+                        ->reactive()
+                        ->nullable(),
+                ]),
+                Section::make([
+                    Hidden::make('is_reference')->default(true),
+                    placeholder('created_at', 'Created Date'),
+                    placeholder('updated_at', 'Last Modified Date'),
+                ])->columns($cols),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('name'),
-                IconColumn::make('is_active')->boolean(),
-            ])
             ->actions([EditAction::make()])
-            ->bulkActions([]);
+            ->columns([
+                TextColumn::make('name')->searchable()->sortable(),
+                IconColumn::make('is_active')->boolean(),
+            ]);
     }
 
     public static function getPages(): array
@@ -79,10 +89,5 @@ class CategoryResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return Category::isReference();
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [];
     }
 }

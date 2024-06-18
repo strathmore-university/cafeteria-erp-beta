@@ -4,7 +4,6 @@ namespace App\Models\Procurement;
 
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasStatusTransitions;
-use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -60,7 +59,7 @@ class GoodsReceivedNote extends Model
                 ->get();
 
             $message = 'There are no items to be received';
-            throw_if(! $items->count(), new Exception($message));
+            throw_if( ! $items->count(), new Exception($message));
 
             $store = $this->purchaseOrder->store;
             $items->each(function (GoodsReceivedNoteItem $item) use ($store): void {
@@ -80,9 +79,7 @@ class GoodsReceivedNote extends Model
             error_notification($exception);
         }
 
-        redirect(GoodsReceivedNoteResource::getUrl('view', [
-            'record' => $this->id,
-        ]));
+        redirect(get_record_url($this));
     }
 
     protected static function booted(): void

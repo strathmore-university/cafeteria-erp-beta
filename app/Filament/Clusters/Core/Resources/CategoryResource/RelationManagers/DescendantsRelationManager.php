@@ -20,11 +20,10 @@ class DescendantsRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('name')->required(),
-                Toggle::make('is_active'),
-            ]);
+        return $form->columns(1)->schema([
+            TextInput::make('name')->required(),
+            Toggle::make('is_active'),
+        ]);
     }
 
     public function table(Table $table): Table
@@ -32,7 +31,7 @@ class DescendantsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('name'),
+                TextColumn::make('name')->searchable()->sortable(),
                 IconColumn::make('is_active')->boolean(),
             ])
             ->headerActions([
@@ -45,17 +44,14 @@ class DescendantsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     private function createDescendant(array $data): void
     {
-        $this->ownerRecord->appendNode(Category::create($data));
+        if ($this->ownerRecord instanceof Category) {
+            $this->ownerRecord->appendNode(Category::create($data));
+        }
     }
 }

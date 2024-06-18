@@ -7,8 +7,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class DescendantsRelationManager extends RelationManager
@@ -17,12 +19,11 @@ class DescendantsRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('code')->required(),
-                Toggle::make('is_active'),
-            ]);
+        return $form->schema([
+            TextInput::make('name')->required(),
+            TextInput::make('code')->required(),
+            Toggle::make('is_active'),
+        ]);
     }
 
     public function table(Table $table): Table
@@ -30,32 +31,28 @@ class DescendantsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('code'),
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('code'),
                 IconColumn::make('is_active')->boolean(),
             ])
-            ->filters([
-
-            ])
+            ->filters([])
             ->headerActions([
-                Tables\Actions\Action::make('create')->label('Create new item')->form([
-                    TextInput::make('name')->required(),
-                    TextInput::make('code')->required(),
-                ])->action(fn ($data) => $this->createDescendant($data)),
+                Action::make('create')->label('Create new item')
+                    ->form([
+                        TextInput::make('name')->required(),
+                        TextInput::make('code')->required(),
+                    ])->action(fn ($data) => $this->createDescendant($data)),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->actions([EditAction::make()])
+            ->bulkActions([]);
     }
 
     private function createDescendant(array $data): void
     {
-        $this->ownerRecord->appendNode(Unit::create($data));
+        if ($this->ownerRecord instanceof Unit) {
+            $this->ownerRecord->appendNode(Unit::create($data));
+
+            success();
+        }
     }
 }

@@ -56,6 +56,7 @@ class ProcurementDatabaseSeeder extends Seeder
         $purchaseOrder->requestReview();
         $purchaseOrder->submitReview(['comment' => 'good', 'status' => 'approved']);
 
-        $purchaseOrder->fetchOrCreateGrn();
+        $grn = $purchaseOrder->fetchOrCreateGrn();
+        $grn->receive();
     }
 }
