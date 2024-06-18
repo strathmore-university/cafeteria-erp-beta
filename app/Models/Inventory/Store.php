@@ -77,6 +77,14 @@ class Store extends Model
         };
     }
 
+    public function canBeModified(): bool
+    {
+        $forbiddenFor = ['Station', 'Restaurant'];
+        $class = class_basename($this->owner_type);
+
+        return ! in_array($class, $forbiddenFor);
+    }
+
     private function latestOpenStockTake(): ?StockTake
     {
         return StockTake::with('items')

@@ -63,9 +63,9 @@ class StockTake extends Model
     protected static function booted(): void
     {
         parent::creating(function (StockTake $stockTake): void {
-            $default = 'Stock take for '.now()->format('Y-m-d');
+            $default = 'Stock take for ' . now()->format('Y-m-d');
             $value = $stockTake->getAttribute('description');
-            $stockTake->setAttribute('description', $value ?: $default);
+            $stockTake->setAttribute('description', $value ? $value : $default);
         });
     }
 

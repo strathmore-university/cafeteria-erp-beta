@@ -6,6 +6,7 @@ use Database\Seeders\Core\CoreDatabaseSeeder;
 use Database\Seeders\Inventory\InventoryDatabaseSeeder;
 use Database\Seeders\Inventory\StockTakeSeeder;
 use Database\Seeders\Procurement\ProcurementDatabaseSeeder;
+use Database\Seeders\Production\ProductionSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             InventoryDatabaseSeeder::class,
             ProcurementDatabaseSeeder::class,
             StockTakeSeeder::class,
+            ProductionSeeder::class,
         ]);
     }
 }

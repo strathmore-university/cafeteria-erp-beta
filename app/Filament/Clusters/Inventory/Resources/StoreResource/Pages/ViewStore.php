@@ -26,7 +26,7 @@ class ViewStore extends ViewReview
                 ->action(function (Store $record): void {
                     redirect(get_record_url($record->performStockTake()));
                 }),
-            EditAction::make(),
+            EditAction::make()->visible(fn ($record) => $record->canBeModified()),
         ];
     }
 }

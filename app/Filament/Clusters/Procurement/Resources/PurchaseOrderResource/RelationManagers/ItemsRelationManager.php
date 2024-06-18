@@ -21,7 +21,7 @@ class ItemsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('article_id')->label('Article')
                     ->options(Article::canBeOrdered()->pluck('name', 'id')->toArray())
-                    ->afterStateUpdated(function (Set $set, Get $get, string $state): void {
+                    ->afterStateUpdated(function (Set $set, string $state): void {
                         $id = $this->ownerRecord->getAttribute('supplier_id');
                         $set('price', query_price_quotes((int) $state, $id));
                     })

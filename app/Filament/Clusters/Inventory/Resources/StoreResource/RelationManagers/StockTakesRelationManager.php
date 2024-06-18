@@ -21,7 +21,7 @@ class StockTakesRelationManager extends RelationManager
                 TextColumn::make('concluded_at')->dateTime()->sortable(),
                 TextColumn::make('status')->badge()
                     ->formatStateUsing(fn ($state) => Str::title($state))
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'completed' => 'success',
                         default => 'gray',
                     })->sortable(),
@@ -29,7 +29,7 @@ class StockTakesRelationManager extends RelationManager
             ->actions([
                 Action::make('view')
                     ->url(fn ($record) => get_record_url($record))
-                    ->icon('heroicon-o-eye')
+                    ->icon('heroicon-o-eye'),
             ]);
     }
 }

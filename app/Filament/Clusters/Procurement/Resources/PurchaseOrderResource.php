@@ -28,15 +28,15 @@ use Str;
 
 class PurchaseOrderResource extends Resource
 {
+    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+
     protected static ?string $model = PurchaseOrder::class;
 
     protected static ?string $cluster = Procurement::class;
 
-    protected static ?int $navigationSort = 2;
-
     protected static ?string $slug = 'purchase-orders';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -100,7 +100,7 @@ class PurchaseOrderResource extends Resource
                     ->icon('heroicon-o-shopping-cart'),
                 Action::make('download-lpo')->label('Download LPO')
                     ->color('success')->button()
-                    ->url(fn ($record) => route('download.purchase-order', ['purchaseOrder' => $record]))
+                    ->url(fn ($record) => route('download.purchase-order', ['purchaseOrder' => $record->id]))
                     ->visible(fn ($record) => $record->canBeDownload()),
                 ViewAction::make(),
             ])

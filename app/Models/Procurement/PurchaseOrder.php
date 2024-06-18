@@ -186,7 +186,7 @@ class PurchaseOrder extends Model
             throw_if($this->isFulfilled(), new Exception($message));
 
             $message = 'Purchase order is no-longer valid!';
-            throw_if( ! $this->canDownload(), new Exception($message));
+            throw_if(! $this->canDownload(), new Exception($message));
 
             $grn = GoodsReceivedNote::wherePurchaseOrderId($this->id)
                 ->where('status', '=', 'draft')

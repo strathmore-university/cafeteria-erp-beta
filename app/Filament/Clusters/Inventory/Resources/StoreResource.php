@@ -40,8 +40,6 @@ class StoreResource extends Resource
      */
     public static function form(Form $form): Form
     {
-        // todo: if the store belongs to a station or restaurant is is immutable
-
         return $form->schema([
             TextInput::make('name')->required(),
             TextInput::make('description')->required(),

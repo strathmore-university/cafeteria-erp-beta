@@ -5,10 +5,12 @@ namespace App\Models\Procurement;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasStatusTransitions;
 use App\Models\User;
+use Barryvdh\Snappy\PdfWrapper;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use PDF;
 use Throwable;
 
 class GoodsReceivedNote extends Model
@@ -49,6 +51,21 @@ class GoodsReceivedNote extends Model
         return $this->getAttribute('status') === 'draft';
     }
 
+    public function canBeDownload(): bool
+    {
+        return match (filled($this->purchaseOrder->expires_at)) {
+            true => $this->canDownload(),
+            false => false,
+        };
+    }
+
+    public function toPDF(): PdfWrapper
+    {
+        return PDF::loadView('pdf.purchases.grn', [
+            'grn' => $this,
+        ]);
+    }
+
     public function receive(): void
     {
         try {
@@ -59,7 +76,7 @@ class GoodsReceivedNote extends Model
                 ->get();
 
             $message = 'There are no items to be received';
-            throw_if( ! $items->count(), new Exception($message));
+            throw_if(! $items->count(), new Exception($message));
 
             $store = $this->purchaseOrder->store;
             $items->each(function (GoodsReceivedNoteItem $item) use ($store): void {
@@ -90,6 +107,15 @@ class GoodsReceivedNote extends Model
             $grn->setAttribute('code', $code);
             $grn->setAttribute('status', 'draft');
         });
+    }
+
+    private function canDownload(): bool
+    {
+        $check = $this->getAttribute('status') !== 'fulfilled';
+        $valid = now()->isBefore($this->purchaseOrder->expires_at);
+        $check = and_check($valid, $check);
+
+        return and_check($this->hasBeenApproved(), $check);
     }
 
     //    public function postToKfs()

@@ -10,7 +10,7 @@
 ?>
 @extends("layouts.pdf")
 @section('title-1')
-    <div class="header-4">{{$grn->lpo->purchaseOrder->supplier->name }}</div>
+    <div class="header-4">{{ $grn->supplier->name }}</div>
 @stop
 @section("title", "Goods Received Note (GRN)")
 @section("description", "Goods Received Note")
@@ -29,19 +29,19 @@
                 <table class="table table-bordered">
                     <tr>
                         <th class="border">GRN No.</th>
-                        <td class="border text-right">{{$grn->grn_number}}</td>
+                        <td class="border text-right">{{ $grn->code }}</td>
                     </tr>
                     <tr>
                         <th class="border">Delivery Note No.</th>
-                        <td class="border text-right">{{$grn->delivery_note_number}}</td>
+                        <td class="border text-right">{{ $grn->delivery_note_number }}</td>
                     </tr>
                     <tr>
                         <th class="border">Invoice No.</th>
-                        <td class="border text-right">{{$grn->supplier_invoice_number}}</td>
+                        <td class="border text-right">{{ $grn->invoice_number }}</td>
                     </tr>
                     <tr>
                         <th class="border">LPO No.</th>
-                        <td class="border text-right">{{$grn->lpo->lpo_number}}</td>
+                        <td class="border text-right">{{ $grn->purchaseOrder->code }}</td>
                     </tr>
                 </table>
             </td>
@@ -49,21 +49,21 @@
                 <table class="table table-bordered">
                     <tr>
                         <th class="border">Expected Delivery Date.</th>
-                        <td class="border text-right">{{\Carbon\Carbon::parse($grn->lpo->purchaseOrder->delivery_date)->isoFormat('ddd Do MMM, Y')}}</td>
+                        <td class="border text-right">{{ \Carbon\Carbon::parse($grn->purchaseOrder->expected_delivery_date)->isoFormat('ddd Do MMM, Y') }}</td>
                     </tr>
-                    @if ($grn->booked)
+                    @if ($grn->status == 'received')
                         <tr>
                             <th class="border">Delivered At.</th>
-                            <td class="border text-right">{{\Carbon\Carbon::parse($grn->generated_at)->isoFormat('ddd Do MMM, Y H:m:s')}}</td>
+                            <td class="border text-right">{{\Carbon\Carbon::parse($grn->received_at)->isoFormat('ddd Do MMM, Y H:m:s')}}</td>
                         </tr>
                         <tr>
                             <th class="border">Received By</th>
-                            <td class="border text-right">{{$grn->generator->username}}</td>
+                            <td class="border text-right">{{$grn->creator->name}}</td>
                         </tr>
-                        <tr>
-                            <th class="border">Batch No.</th>
-                            <td class="border text-right">{{$grn->batch ? $grn->batch->batch_number : null}}</td>
-                        </tr>
+{{--                        <tr>--}}
+{{--                            <th class="border">Batch No.</th>--}}
+{{--                            <td class="border text-right">{{$grn->batch ? $grn->batch->batch_number : null}}</td>--}}
+{{--                        </tr>--}}
                     @endif
                 </table>
             </td>
@@ -84,18 +84,15 @@
             <th>Total</th>
         </tr>
         @foreach($grn->items as $item)
-            @php
-                /***/
-            @endphp
         <tr>
-            <td>{{$item->purchaseOrderItem->article->id}}</td>
-            <td>{{$item->purchaseOrderItem->article->name}}</td>
-            <td>{{$item->purchaseOrderItem->purchaseOrder->depot->name}}</td>
-            <td>{{$item->expiry_date}}</td>
-            <td class="text-right">{{number_format($item->required_quantity, 2)." ".str_plural($item->derivedUnit->name, $item->quantity)}}</td>
-            <td class="text-right">{{number_format($item->quantity, 2)." ".str_plural($item->derivedUnit->name, $item->derivedUnit->quantity)}}</td>
-            <td class="text-right">{{number_format($item->price, 2)}}</td>
-            <td class="text-right">{{number_format($item->price * $item->quantity,2)}}</td>
+            <td>{{ $item->article_id }}</td>
+            <td>{{ $item->article->name }}</td>
+            <td>{{ $item->batch->store->name }}</td>
+            <td>{{ $item->batch->expires_at }}</td>
+            <td class="text-right">{{ number_format($item->units, 2) }}</td>
+            <td class="text-right">{{ number_format($item->purchaseOrderItem->ordered_units - $item->purchaseOrderItem->remaining_units, 2) }}</td>
+            <td class="text-right">{{ number_format($item->price, 2) }}</td>
+            <td class="text-right">{{ number_format($item->total_value,2) }}</td>
         </tr>
         @endforeach
         </tbody>
@@ -105,7 +102,7 @@
     <table class="table table-borderless" style="border-top: double !important;">
         <tr class="border-top" style="border-bottom: 1px solid black;">
             <th>Total Value:</th>
-            <th class="text-right bold">{{number_format($grn->total, 2)}}</th>
+{{--            <th class="text-right bold">{{ number_format($grn->total_value, 2) }}</th>--}}
         </tr>
     </table>
 @stop

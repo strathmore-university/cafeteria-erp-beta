@@ -20,15 +20,15 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SupplierResource extends Resource
 {
-    protected static ?string $model = Supplier::class;
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $cluster = Procurement::class;
 
-    protected static ?int $navigationSort = 1;
+    protected static ?string $model = Supplier::class;
 
     protected static ?string $slug = 'suppliers';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

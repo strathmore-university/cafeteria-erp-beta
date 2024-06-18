@@ -2,7 +2,7 @@
 
 use App\Models\Procurement\PriceQuote;
 
-if ( ! function_exists('query_price_quotes')) {
+if (! function_exists('query_price_quotes')) {
     function query_price_quotes(
         string|int $articleId,
         string|int $supplierId

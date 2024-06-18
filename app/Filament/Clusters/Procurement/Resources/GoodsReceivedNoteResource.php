@@ -12,6 +12,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -19,9 +20,9 @@ use Illuminate\Support\Str;
 
 class GoodsReceivedNoteResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
     protected static ?string $slug = 'procurement/goods-received-notes';
+
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
 
     protected static ?string $model = GoodsReceivedNote::class;
 
@@ -31,6 +32,8 @@ class GoodsReceivedNoteResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $cols = 2;
+
         return $form
             ->schema([
                 Section::make()->schema([
@@ -54,7 +57,7 @@ class GoodsReceivedNoteResource extends Resource
                         ->content(
                             fn (GoodsReceivedNote $record): string => $record->creator->name
                         ),
-                ])->columns(2),
+                ])->columns($cols),
                 Section::make()->schema([
                     TextInput::make('delivery_note_number')->string(),
                     TextInput::make('invoice_number')
@@ -90,7 +93,13 @@ class GoodsReceivedNoteResource extends Resource
                         default => 'warning'
                     }),
             ])
-            ->actions([ViewAction::make()])
+            ->actions([
+                ViewAction::make(),
+                Action::make('download-lpo')->label('Download LPO')
+                    ->color('success')->button()
+                    ->url(fn ($record) => route('download.grn', ['grn' => $record->id]))
+                    ->visible(fn ($record) => $record->canBeDownload()),
+            ])
             ->filters([])
             ->bulkActions([]);
     }

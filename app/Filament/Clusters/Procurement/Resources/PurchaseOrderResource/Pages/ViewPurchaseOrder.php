@@ -51,7 +51,7 @@ class ViewPurchaseOrder extends ViewRecord
                 ->label('Download LPO')
                 ->color('success')
                 ->visible(fn ($record) => $record->canBeDownload())
-                ->url(fn ($record) => route('download.purchase-order', ['purchaseOrder' => $record])),
+                ->url(fn ($record) => route('download.purchase-order', ['purchaseOrder' => $record->id])),
         ];
     }
 }

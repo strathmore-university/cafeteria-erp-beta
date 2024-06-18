@@ -8,16 +8,12 @@ return new class() extends Migration
 {
     public function up(): void
     {
-        Schema::create('stores', function (Blueprint $table): void {
+        Schema::create('restaurants', function (Blueprint $table): void {
             $table->id();
             $table->team();
-            $table->category();
             $table->name();
             $table->description();
             $table->active();
-            $table->morphs('owner');
-            $table->boolean('can_ship_stock')->default(true);
-            $table->default();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +21,6 @@ return new class() extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('restaurants');
     }
 };

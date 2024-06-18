@@ -6,5 +6,5 @@ use Filament\Clusters\Cluster;
 
 class Procurement extends Cluster
 {
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 }

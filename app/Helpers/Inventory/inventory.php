@@ -6,7 +6,7 @@ use App\Support\Inventory\FetchArticleCapacity;
 use App\Support\Inventory\FetchArticleUnits;
 use App\Support\Inventory\UpdateStockLevel;
 
-if ( ! function_exists('article_units')) {
+if (! function_exists('article_units')) {
     /**
      * @throws Throwable
      */
@@ -19,7 +19,7 @@ if ( ! function_exists('article_units')) {
     }
 }
 
-if ( ! function_exists('article_capacity')) {
+if (! function_exists('article_capacity')) {
     /**
      * @throws Throwable
      */
@@ -32,7 +32,7 @@ if ( ! function_exists('article_capacity')) {
     }
 }
 
-if ( ! function_exists('update_stock_level')) {
+if (! function_exists('update_stock_level')) {
     function update_stock_level(): UpdateStockLevel
     {
         return new UpdateStockLevel();

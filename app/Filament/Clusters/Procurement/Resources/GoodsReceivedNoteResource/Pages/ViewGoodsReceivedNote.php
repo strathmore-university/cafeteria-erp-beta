@@ -37,16 +37,16 @@ class ViewGoodsReceivedNote extends ViewRecord
 
                     $record->update();
 
-                    $url = GoodsReceivedNoteResource::getUrl('view', [
-                        'record' => $record->id,
-                    ]);
-
-                    $this->redirect($url, true);
+                    $this->redirect(get_record_url($record), true);
                 }),
             Action::make('execute-receipt')
                 ->action(fn ($record) => $record->receive())
                 ->visible(fn ($record) => $record->canBeReceived())
                 ->color('success'),
+            Action::make('download-lpo')->label('Download LPO')
+                ->color('success')->button()
+                ->url(fn ($record) => route('download.grn', ['grn' => $record->id]))
+                ->visible(fn ($record) => $record->canBeDownload()),
         ];
     }
 }
