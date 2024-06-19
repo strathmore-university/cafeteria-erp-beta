@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::shouldBeStrict();
+        Model::unguard();
 
         Blueprint::macro('team', function (): void {
             $this->foreignIdFor(Team::class)->index()->constrained('teams');

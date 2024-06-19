@@ -27,6 +27,17 @@ class StockTakeItem extends Model
         return $this->belongsTo(Store::class);
     }
 
+    protected static function booted(): void
+    {
+        parent::creating(function (StockTakeItem $item) {
+            $item->variance = abs($item->actual_units - $item->current_units);
+        });
+
+        parent::updating(function (StockTakeItem $item) {
+            $item->variance = abs($item->actual_units - $item->current_units);
+        });
+    }
+
     /**
      * @throws Throwable
      */

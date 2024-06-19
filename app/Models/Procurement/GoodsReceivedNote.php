@@ -76,7 +76,7 @@ class GoodsReceivedNote extends Model
                 ->get();
 
             $message = 'There are no items to be received';
-            throw_if(! $items->count(), new Exception($message));
+            throw_if( ! $items->count(), new Exception($message));
 
             $store = $this->purchaseOrder->store;
             $items->each(function (GoodsReceivedNoteItem $item) use ($store): void {

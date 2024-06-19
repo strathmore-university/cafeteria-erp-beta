@@ -16,16 +16,25 @@ class StockTakeSeeder extends Seeder
         $stockTake = $store->performStockTake();
         $stockTake->adjustStock();
 
-        // increase stock levels
+//         increase stock levels
         $stockTake = $store->performStockTake();
-        StockTakeItem::whereStockTakeId($stockTake->id)
-            ->update(['actual_units' => 100]);
+        $items = StockTakeItem::whereStockTakeId($stockTake->id)->get();
+        $items->each(fn(StockTakeItem $item) => $item->update(['actual_units' => 100]));
         $stockTake->adjustStock();
+
+        return;
 
         // decrease stock levels
         $stockTake = $store->performStockTake();
-        StockTakeItem::whereStockTakeId($stockTake->id)
-            ->update(['actual_units' => 0]);
+        $items = StockTakeItem::whereStockTakeId($stockTake->id)->get();
+        $items->each(fn(StockTakeItem $item) => $item->update(['actual_units' => 0]));
         $stockTake->adjustStock();
+
+//         increase stock levels
+        $stockTake = $store->performStockTake();
+        $items = StockTakeItem::whereStockTakeId($stockTake->id)->get();
+        $items->each(fn(StockTakeItem $item) => $item->update(['actual_units' => 100]));
+        $stockTake->adjustStock();
+        // todo: look into the error thrown when the stock levels are increased ofter reducing to 0
     }
 }

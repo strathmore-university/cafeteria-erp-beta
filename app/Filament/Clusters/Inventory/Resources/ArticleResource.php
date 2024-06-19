@@ -6,8 +6,10 @@ use App\Filament\Clusters\Inventory;
 use App\Filament\Clusters\Inventory\Resources\ArticleResource\Pages\CreateArticle;
 use App\Filament\Clusters\Inventory\Resources\ArticleResource\Pages\EditArticle;
 use App\Filament\Clusters\Inventory\Resources\ArticleResource\Pages\ListArticles;
+use App\Filament\Clusters\Inventory\Resources\ArticleResource\Pages\ViewArticle;
 use App\Filament\Clusters\Inventory\Resources\ArticleResource\RelationManagers\DescendantsRelationManager;
 use App\Models\Core\Team;
+use App\Models\Core\Unit;
 use App\Models\Inventory\Article;
 use App\Models\Inventory\Store;
 use Filament\Forms\Components\Hidden;
@@ -43,7 +45,7 @@ class ArticleResource extends Resource
                 TextInput::make('name')->required(),
                 TextInput::make('description')->required(),
                 Select::make('store_id')->label('Default Store')
-                    ->options(Store::whereStoreableType(Team::class)->pluck('name', 'id')->toArray())
+                    ->options(Store::whereOwnerType(Team::class)->pluck('name', 'id')->toArray())
                     ->searchable()
                     ->preload(),
                 Select::make('unit_id')->label('Tracking Unit')
@@ -125,12 +127,14 @@ class ArticleResource extends Resource
             'index' => ListArticles::route('/'),
             'create' => CreateArticle::route('/create'),
             'edit' => EditArticle::route('/{record}/edit'),
+            'view' => ViewArticle::route('/{record}/view'),
         ];
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return Article::isReference();
+        return Article::with('descendants'); // todo: review if i want to display the reference articles here
+//        isReference()->orWhere('is_product', '=', true);
     }
 
     public static function getRelations(): array

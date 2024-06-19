@@ -34,7 +34,7 @@ class ProcurementDatabaseSeeder extends Seeder
             ]);
         }
 
-        $articles = Article::canBeOrdered()->limit(5)->get();
+        $articles = Article::canBeOrdered()->get();
 
         Supplier::all()->each(function (Supplier $supplier) use ($articles): void {
             $po = $supplier->purchaseOrders()->create([
@@ -43,11 +43,11 @@ class ProcurementDatabaseSeeder extends Seeder
                 'expected_delivery_date' => now()->addDays(),
             ]);
 
-            $articles->take(5)->each(function (Article $article) use ($po): void {
+            $articles->each(function (Article $article) use ($po): void {
                 $po->items()->create([
                     'article_id' => $article->id,
-                    'ordered_units' => 50,
-                    'price' => 100,
+                    'ordered_units' => random_int(50, 100),
+                    'price' => random_int(150, 1000),
                 ]);
             });
         });

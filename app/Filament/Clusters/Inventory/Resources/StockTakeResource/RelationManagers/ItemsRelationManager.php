@@ -29,6 +29,7 @@ class ItemsRelationManager extends RelationManager
                 TextInputColumn::make('actual_units')
                     ->rules(['nullable', 'numeric', 'min:0'])
                     ->disabled($preventEdit),
+                Tables\Columns\TextColumn::make('variance'),
             ]);
     }
 }

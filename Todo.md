@@ -7,4 +7,6 @@
 - Review edit and delete actions on all resources and add relevant authorization
 - command to remove stock levels that are 0
 - credit notes in procurement module?
+- add `BelongsToTeam` to all models
+- lock down expired batches, create expired products virtual store
   // todo: add a total value as well

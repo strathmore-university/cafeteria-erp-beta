@@ -46,6 +46,7 @@ class SupplierResource extends Resource
                         ->hint('Fill this out to automatically fetch the preformat from KFS.'),
                     TextInput::make('kfs_preformat_code'),
                     TextInput::make('kfs_preformat_description'),
+                    TextInput::make('percentage_vat'),
                 ]),
                 common_fields(),
             ]);

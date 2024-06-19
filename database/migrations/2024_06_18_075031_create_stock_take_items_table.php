@@ -16,6 +16,7 @@ return new class() extends Migration
             $table->article();
             $table->decimal('current_units', 10);
             $table->decimal('actual_units', 10);
+            $table->decimal('variance', 10);
             $table->timestamps();
         });
     }

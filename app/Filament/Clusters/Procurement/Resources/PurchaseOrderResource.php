@@ -53,7 +53,7 @@ class PurchaseOrderResource extends Resource
                     ->preload(),
                 DatePicker::make('expected_delivery_date'),
                 DatePicker::make('expires_at')
-                    ->visible(fn ($record) => $record->hasBeenApproved())
+                    ->visible(fn ($record) => $record?->hasBeenApproved())
                     ->disabled(),
                 TextInput::make('kfs_account_number'),
                 Hidden::make('status')->default('draft'),

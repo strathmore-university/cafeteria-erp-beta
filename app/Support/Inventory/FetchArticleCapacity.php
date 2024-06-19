@@ -26,10 +26,12 @@ class FetchArticleCapacity
         $this->article = $article;
         $this->store = $store;
 
-        $isReference = $article->getAttribute('is_reference') ?? false;
+        $isReference = $article->getAttribute('is_reference');
+
+        info($isReference ? 'true' : 'false');
 
         return match ((bool) $isReference) {
-            default => $this->articleCapacity($article),
+            false => $this->articleCapacity($article),
             true => $this->referenceCapacity(),
         };
     }

@@ -4,7 +4,6 @@ namespace Database\Seeders\Inventory;
 
 use App\Models\Core\Unit;
 use App\Models\Inventory\Article;
-use App\Models\Inventory\StockLevel;
 use App\Models\Inventory\Store;
 use Illuminate\Database\Seeder;
 use Throwable;
@@ -32,32 +31,33 @@ class InventoryDatabaseSeeder extends Seeder
         $piece = Unit::where('name', '=', 'Piece')->first();
         $volume = Unit::where('name', '=', 'Volume')->first();
         $portion = Unit::where('name', '=', 'Portion')->first();
+
         $liter = Unit::where('name', '=', 'Liter')->first();
         $ml = Unit::where('name', '=', 'Milliliter')->first();
 
         $consumable = Article::create([
-            'name' => 'Soft Drinks',
-            'is_reference' => true,
-            'is_consumable' => true,
-            'team_id' => $team->id,
-            'store_id' => $store->id,
-            'unit_id' => $piece->id,
-            'reorder_level' => 5,
             'is_profit_contributing' => true,
+            'store_id' => $store->id,
+            'name' => 'Soft Drinks',
+            'is_consumable' => true,
+            'unit_id' => $piece->id,
+            'is_reference' => true,
+            'team_id' => $team->id,
             'is_sellable' => true,
+            'reorder_level' => 5,
         ]);
 
         foreach (range(1, 10) as $range) {
             $node = Article::create([
-                'name' => fake()->country,
-                'is_consumable' => true,
-                'team_id' => $team->id,
-                'store_id' => $store->id,
-                'unit_id' => $piece->id,
-                'unit_capacity' => 1,
                 'reorder_level' => fake()->numberBetween(1, 100),
                 'is_profit_contributing' => true,
+                'name' => fake()->country,
+                'store_id' => $store->id,
+                'is_consumable' => true,
+                'unit_id' => $piece->id,
+                'team_id' => $team->id,
                 'is_sellable' => true,
+                'unit_capacity' => 1,
             ]);
 
             $consumable->appendNode($node);
@@ -66,7 +66,7 @@ class InventoryDatabaseSeeder extends Seeder
         $ingredient = Article::create([
             'is_profit_contributing' => true,
             'store_id' => $store->id,
-            'unit_id' => $ml->id,
+            'unit_id' => $liter->id,
             'is_ingredient' => true,
             'is_reference' => true,
             'team_id' => $team->id,
@@ -76,26 +76,27 @@ class InventoryDatabaseSeeder extends Seeder
 
         foreach (range(1, 10) as $range) {
             $node = Article::create([
+                'unit_id' => $volume->descendants->random()->id,
+//                'unit_id' => fake()->randomElement([$liter->id, $ml->id]),
+                'reorder_level' => fake()->numberBetween(1, 100),
+                'unit_capacity' => fake()->numberBetween(1, 3),
+                'is_profit_contributing' => true,
                 'name' => fake()->country,
+                'store_id' => $store->id,
                 'is_ingredient' => true,
                 'team_id' => $team->id,
-                'store_id' => $store->id,
-                'unit_id' => $liter->id,
-                'unit_capacity' => 10 ?? fake()->randomElement([100, 250, 10, 5, 1000]),
-                'reorder_level' => fake()->numberBetween(1, 100),
-                'is_profit_contributing' => true,
             ]);
-
             $ingredient->appendNode($node);
         }
 
+        // todo: keep products under a reference or not
         $product = Article::create([
             'is_profit_contributing' => true,
-            'store_id' => $store->id,
             'unit_id' => $portion->id,
-            'is_product' => true,
+            'store_id' => $store->id,
             'is_reference' => true,
             'team_id' => $team->id,
+            'is_product' => true,
             'name' => 'Products',
         ]);
 
@@ -107,7 +108,6 @@ class InventoryDatabaseSeeder extends Seeder
             'is_product' => true,
             'name' => 'Pizza',
         ]);
-
         $product->appendNode($node);
 
         $node = Article::create([
@@ -118,20 +118,6 @@ class InventoryDatabaseSeeder extends Seeder
             'is_product' => true,
             'name' => 'Pilau',
         ]);
-
         $product->appendNode($node);
-
-        $articles = Article::isDescendant()->get();
-
-        //        $articles->each(function (Article $article): void {
-        //            StockLevel::create([
-        //                'article_id' => $article->id,
-        //                'store_id' => $article->store_id,
-        //                'current_units' => random_int(1, 1000),
-        //                'previous_units' => random_int(1, 1000),
-        //            ]);
-        //        });
-
-        //        article_capacity($consumable);
     }
 }

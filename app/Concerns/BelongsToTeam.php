@@ -20,7 +20,7 @@ trait BelongsToTeam
             $model->setAttribute('team_id', $id);
         });
 
-        if (! auth()->check()) {
+        if ( ! auth()->check()) {
             return;
         }
 
