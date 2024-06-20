@@ -10,3 +10,8 @@
 - add `BelongsToTeam` to all models
 - lock down expired batches, create expired products virtual store
   // todo: add a total value as well
+
+
+
+
+- https://spatie.be/docs/browsershot/v4/requirements

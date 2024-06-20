@@ -34,23 +34,23 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('produced_portions'),
             ])
             ->filters([
-                //
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->visible(false),
                 Tables\Actions\DeleteAction::make()->visible(false),
                 Tables\Actions\Action::make('view_recipe')
-                    ->url(fn($record) => get_record_url($record->recipe))
+                    ->url(fn ($record) => get_record_url($record->recipe))
                     ->icon('heroicon-o-eye'),
                 Tables\Actions\Action::make('update')->button()
-                    ->fillForm(fn($record) => $record->only('produced_portions'))
-                    ->visible(fn() => $this->ownerRecord->getAttribute('status') === 'preparation started')
+                    ->fillForm(fn ($record) => $record->only('produced_portions'))
+                    ->visible(fn () => $this->ownerRecord->getAttribute('status') === 'preparation started')
                     ->form([
                         Forms\Components\TextInput::make('produced_portions')
-                            ->required()->numeric()
+                            ->required()->numeric(),
                     ])
                     ->action(
-                        fn($record, array $data) => $record->fill($data)->update()
+                        fn ($record, array $data) => $record->fill($data)->update()
                     ),
             ]);
     }

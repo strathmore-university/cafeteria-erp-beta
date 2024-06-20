@@ -53,7 +53,7 @@ if ( ! function_exists('common_fields')) {
         return Section::make()->schema([
             placeholder('created_at', 'Created at'),
             placeholder('updated_at', 'Late updated'),
-        ])->columns(2);
+        ])->visible(fn ($record) => $record?->exists())->columns(2);
     }
 }
 

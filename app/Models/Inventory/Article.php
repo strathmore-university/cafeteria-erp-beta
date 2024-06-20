@@ -43,7 +43,6 @@ class Article extends Model
         return $this->hasOne(Recipe::class);
     }
 
-
     /**
      * @throws Throwable
      */
@@ -57,7 +56,7 @@ class Article extends Model
             //        });
 
             $descendants = $descendants->filter(function ($article) use ($quantity) {
-//                $available = article_units($article);
+                //                $available = article_units($article);
                 $available = article_capacity($article);
 
                 $id = $this->getAttribute('unit_id');
@@ -89,10 +88,10 @@ class Article extends Model
 
         return (int) ceil($quantity / ($this->unit_capacity ?? 1));
 
-//        return match ($id === $parentUnitId) {
-//            false => (int) ceil($quantity / ($this->unit_capacity ?? 1)),
-//            true => ceil($quantity / ($this->unit_capacity ?? 1)),
-//        };
+        //        return match ($id === $parentUnitId) {
+        //            false => (int) ceil($quantity / ($this->unit_capacity ?? 1)),
+        //            true => ceil($quantity / ($this->unit_capacity ?? 1)),
+        //        };
     }
 
     public function scopeCanBeOrdered(Builder $query): Builder
@@ -149,12 +148,12 @@ class Article extends Model
                 $article->weighted_cost = null;
             }
 
-//            $check = $article->getAttribute('is_reference') ?? false;
-//            $value = $article->unit_capacity;
-//            $article->unit_capacity = tannery($check, $value, null);
-//
-//            $value = $article->weighted_cost;
-//            $article->weighted_cost = tannery($check, $value, null);
+            //            $check = $article->getAttribute('is_reference') ?? false;
+            //            $value = $article->unit_capacity;
+            //            $article->unit_capacity = tannery($check, $value, null);
+            //
+            //            $value = $article->weighted_cost;
+            //            $article->weighted_cost = tannery($check, $value, null);
         });
     }
 

@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use PDF;
+use Spatie\LaravelPdf\PdfBuilder;
 use Throwable;
+
+use function Spatie\LaravelPdf\Support\pdf;
 
 class GoodsReceivedNote extends Model
 {
@@ -59,9 +62,14 @@ class GoodsReceivedNote extends Model
         };
     }
 
-    public function toPDF(): PdfWrapper
+    //    public function toPDF(): PdfWrapper
+    public function toPDF(): PdfBuilder
     {
-        return PDF::loadView('pdf.purchases.grn', [
+        //        return PDF::loadView('pdf.purchases.grn', [
+        //            'grn' => $this,
+        //        ]);
+
+        return pdf('pdf.purchases.grn', [
             'grn' => $this,
         ]);
     }

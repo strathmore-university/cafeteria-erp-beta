@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DispatchedIngredient extends Model
 {
     protected $guarded = [];
+
     public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
@@ -46,7 +47,7 @@ class DispatchedIngredient extends Model
     {
         dd($this);
 
-//        $a = 1;
+        //        $a = 1;
 
         // check stock levels?
 
@@ -55,12 +56,12 @@ class DispatchedIngredient extends Model
         // find its batches
 
         // loop over batches
-            // create new batch
-            // create movement
-            // update stock level
+        // create new batch
+        // create movement
+        // update stock level
 
         // update the requested ingredient
-//        $this->requestedIngredient->update(['dispatched_at' => now()]);
+        //        $this->requestedIngredient->update(['dispatched_at' => now()]);
 
         // update the status of the dispatched item
 

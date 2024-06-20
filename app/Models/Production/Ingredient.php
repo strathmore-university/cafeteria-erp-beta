@@ -30,10 +30,10 @@ class Ingredient extends Model
         return $this->belongsTo(Article::class);
     }
 
-        public function requestedIngredient(): HasOne
-        {
-            return $this->hasOne(RequestedIngredient::class);
-        }
+    public function requestedIngredient(): HasOne
+    {
+        return $this->hasOne(RequestedIngredient::class);
+    }
 
     public function requiredQuantity(int $portions): int
     {

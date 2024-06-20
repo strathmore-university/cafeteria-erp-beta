@@ -9,6 +9,15 @@
     <meta name="description" content="@yield('description')">
     {{-- <link rel="preconnect" href="https://fonts.gstatic.com"> --}}
     {{-- <link href="https://fonts.googleapis.com/css2?family=Mukta+Malar&display=swap" rel="stylesheet"> --}}
+{{--    <link rel="stylesheet" href="{{ url('assets/css/pdf.css') }}" type="text/css">--}}
+    @php
+        $cssPath = public_path('assets/css/pdf.css');
+        $cssContent = file_get_contents($cssPath);
+    @endphp
+
+    <style type="text/css">
+        {!! $cssContent !!}
+    </style>
 
 {{--    <link rel="stylesheet" href="{{ asset('assets/css/pdf.css') }}" type="text/css">--}}
     {{-- <link rel="stylesheet" href="{{public_path("css/fonts.css")}}" type="text/css"> --}}
@@ -33,7 +42,17 @@
         <table class="table table-clear">
             <tr>
                 <td class="header-logo">
-{{--                    <img src="{{ asset('assets/brand/banner-black.png') }}" width="200" alt="LOGO">--}}
+                    @php
+                        $imagePath = public_path('assets/brand/banner-black.png');
+                        $imageData = base64_encode(file_get_contents($imagePath));
+                        $imageType = pathinfo($imagePath, PATHINFO_EXTENSION);
+                        $imageSrc = 'data:image/' . $imageType . ';base64,' . $imageData;
+                    @endphp
+
+                    <img src="{{ $imageSrc }}" width="200" alt="LOGO">
+
+                    {{--                    <img src="http://127.0.0.1:8000/assets/brand/banner-black.png" width="200" alt="LOGO">--}}
+{{--                    <img src="{{ url('assets/brand/banner-black.png') }}" width="200" alt="LOGO">--}}
                 </td>
                 <td class="text-right">
                     <div>

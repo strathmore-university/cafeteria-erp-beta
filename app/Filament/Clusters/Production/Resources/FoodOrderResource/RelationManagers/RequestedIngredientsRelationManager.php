@@ -9,7 +9,6 @@ use Filament\Forms\Set;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\URL;
 
 class RequestedIngredientsRelationManager extends RelationManager
 {
@@ -46,7 +45,7 @@ class RequestedIngredientsRelationManager extends RelationManager
                                 return $viable->pluck('name', 'id')->toArray();
                             })
                             ->searchable()->preload()->reactive()
-                            ->afterStateUpdated(function (Set $set, ?string $state, RequestedIngredient $record) {
+                            ->afterStateUpdated(function (Set $set, ?string $state, RequestedIngredient $record): void {
                                 if (blank($state)) {
                                     $set('dispatched_quantity', null);
                                     $set('article_unit_capacity', null);
@@ -70,8 +69,8 @@ class RequestedIngredientsRelationManager extends RelationManager
                             ->reactive()->disabled(),
                         Forms\Components\TextInput::make('dispatched_quantity')
                             ->label('Units to dispatch')
-                            ->required()->reactive()->numeric()
-                    ])->action(function (RequestedIngredient $record, array $data) {
+                            ->required()->reactive()->numeric(),
+                    ])->action(function (RequestedIngredient $record, array $data): void {
                         $article = Article::find($data['article_id']);
                         $units = $data['dispatched_quantity'];
                         $record->createDispatchIngredient($article, $units);
@@ -80,12 +79,12 @@ class RequestedIngredientsRelationManager extends RelationManager
                         $url = get_record_url($this->ownerRecord, $attributes);
                         $this->redirect($url, true);
                     })
-                    ->visible(fn(RequestedIngredient $record) => $record->isPendingFulfilment()),
+                    ->visible(fn (RequestedIngredient $record) => $record->isPendingFulfilment()),
                 // todo: allow dispatching less
                 Tables\Actions\Action::make('use station stock')->button()
 //                    ->action(fn (RequestedIngredient $record) => $record->useAvailableStationStock())
-                    ->visible(fn(RequestedIngredient $record
-                    ) => $record->capacity_at_station > 0 && $record->isPendingFulfilment())
+                    ->visible(fn (RequestedIngredient $record
+                    ) => $record->capacity_at_station > 0 && $record->isPendingFulfilment()),
                 // todo: allow dispatching less
             ]);
     }

@@ -95,6 +95,7 @@ if ( ! function_exists('get_record_url')) {
         };
 
         $attributes = array_merge(['record' => $id], $attributes);
+
         return $resource::getUrl('view', $attributes);
     }
 }

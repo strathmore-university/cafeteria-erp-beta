@@ -11,10 +11,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class() extends Migration
+{
     public function up(): void
     {
-        Schema::create('dispatched_ingredients', function (Blueprint $table) {
+        Schema::create('dispatched_ingredients', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(User::class, 'dispatched_by')->index()->constrained('users');
             $table->foreignIdFor(FoodOrder::class)->index()->constrained();

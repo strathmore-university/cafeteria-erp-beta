@@ -16,28 +16,10 @@ use Throwable;
 
 class FoodOrder extends Model
 {
-    use HasReviews, SoftDeletes, BelongsToTeam;
+    use BelongsToTeam, HasReviews, SoftDeletes;
     use HasStatusTransitions;
 
     protected $guarded = [];
-
-    protected static function booted(): void
-    {
-        static::creating(function (FoodOrder $foodOrder): void {
-            $id = get_next_id($foodOrder);
-            $code = generate_code('FO-', $id);
-
-            $foodOrder->setAttribute('code', $code);
-//            $foodOrder->setAttribute('status', 'draft'); // todo:
-        });
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'ingredients_dispatched_at' => 'datetime'
-        ];
-    }
 
     public function items(): HasMany
     {
@@ -98,7 +80,7 @@ class FoodOrder extends Model
     public function requestIngredients(): void
     {
         try {
-            DB::transaction(function () {
+            DB::transaction(function (): void {
                 $store = $this->station->stores->first();
 
                 $this->items->each(function (FoodOrderRecipe $foodPrepItem) use ($store): void {
@@ -131,10 +113,10 @@ class FoodOrder extends Model
     public function executeIngredientDispatch(): void
     {
         try {
-            $this->items->each(function (FoodOrderRecipe $foodOrderRecipe) {
+            $this->items->each(function (FoodOrderRecipe $foodOrderRecipe): void {
                 $items = DispatchedIngredient::whereFoodOrderRecipeId($foodOrderRecipe->id)->get();
 
-                $items->each(function (DispatchedIngredient $dispatchedIngredient) {
+                $items->each(function (DispatchedIngredient $dispatchedIngredient): void {
                     $dispatchedIngredient->dispatch();
                 });
 
@@ -146,7 +128,7 @@ class FoodOrder extends Model
             // fetch the dispatched items
             $items = DispatchedIngredient::whereFoodOrderId($this->id)->get();
 
-            $items->each(function (DispatchedIngredient $dispatchedIngredient) {
+            $items->each(function (DispatchedIngredient $dispatchedIngredient): void {
                 $dispatchedIngredient->dispatch();
             });
 
@@ -182,11 +164,11 @@ class FoodOrder extends Model
     public function complete(): void
     {
         $this->items->each(
-        /**
-         * @throws Throwable
-         * @throws RandomException
-         */
-            fn(FoodOrderRecipe $item) => $item->prepare()
+            /**
+             * @throws Throwable
+             * @throws RandomException
+             */
+            fn (FoodOrderRecipe $item) => $item->prepare()
         );
 
         $this->status = 'pending dispatch';
@@ -237,9 +219,9 @@ class FoodOrder extends Model
         $dispatchedItems = $this->dispatchItems;
 
         $dispatchedItems->each(
-        /**
-         * @throws Throwable
-         */
+            /**
+             * @throws Throwable
+             */
             function (ProductDispatchItem $item) use ($from, $to): void {
                 $item->received_quantity = $item->dispatched_quantity;
                 $item->received_by = $this->prepared_by;
@@ -260,7 +242,7 @@ class FoodOrder extends Model
         // todo: allow dispatching less stock?
 
         return $this->items->every(
-            fn(FoodOrderRecipe $item) => $item->hasAdequateIngredients()
+            fn (FoodOrderRecipe $item) => $item->hasAdequateIngredients()
         );
     }
 
@@ -292,7 +274,25 @@ class FoodOrder extends Model
     public function statusTransitions(): array
     {
         return [
-//            'draft'
+            //            'draft'
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (FoodOrder $foodOrder): void {
+            $id = get_next_id($foodOrder);
+            $code = generate_code('FO-', $id);
+
+            $foodOrder->setAttribute('code', $code);
+            //            $foodOrder->setAttribute('status', 'draft'); // todo:
+        });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'ingredients_dispatched_at' => 'datetime',
         ];
     }
 }

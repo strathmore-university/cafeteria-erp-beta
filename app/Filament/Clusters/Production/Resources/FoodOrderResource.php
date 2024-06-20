@@ -56,13 +56,17 @@ class FoodOrderResource extends Resource
                 Section::make([
                     placeholder('created_at', 'Created at'),
                     placeholder('updated_at', 'Last updated at'),
-                ])->columns($cols)
+                ])->columns($cols),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
+            ])
             ->columns([
                 TextColumn::make('code')->searchable()->sortable(),
                 TextColumn::make('restaurant.name')->label('Destination')->searchable()->sortable(),
@@ -71,8 +75,8 @@ class FoodOrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Prepared by')->searchable()->sortable(),
                 TextColumn::make('status')->badge()
-                    ->formatStateUsing(fn($state) => Str::title($state))
-                    ->color(fn(string $state): string => match ($state) {
+                    ->formatStateUsing(fn ($state) => Str::title($state))
+                    ->color(fn (string $state): string => match ($state) {
                         'draft' => 'gray',
                         default => 'warning'
                     }),

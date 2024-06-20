@@ -16,8 +16,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use PDF;
+//use PDF;
+use Spatie\LaravelPdf\PdfBuilder;
 use Throwable;
+
+use function Spatie\LaravelPdf\Support\pdf;
 
 class PurchaseOrder extends Model
 {
@@ -116,9 +119,14 @@ class PurchaseOrder extends Model
         return and_check($items > 0, $this->allowEdits());
     }
 
-    public function toPDF(): PdfWrapper
+    //    public function toPDF(): PdfWrapper
+    public function toPDF(): PdfBuilder
     {
-        return PDF::loadView('pdf.purchases.lpo', [
+        //        return PDF::loadView('pdf.purchases.lpo', [
+        //            'purchaseOrder' => $this,
+        //        ]);
+
+        return pdf('pdf.purchases.lpo', [
             'purchaseOrder' => $this,
         ]);
     }

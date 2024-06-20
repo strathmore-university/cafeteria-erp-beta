@@ -61,13 +61,13 @@ class FoodOrderRecipe extends Model
     public function prepare(): void
     {
         $ingredients = $this->requestedIngredients;
-//        dump($ingredients->count());
+        //        dump($ingredients->count());
 
-        $ingredients->each(function (RequestedIngredient $ingredient) {
+        $ingredients->each(function (RequestedIngredient $ingredient): void {
             $ingredient->utilize($this);
         });
 
-//        todo: add production cost to the prep to batch ?
+        //        todo: add production cost to the prep to batch ?
         $expected = $this->expected_portions;
         $this->produced_portions = random_int($expected / 2, $expected);
         $this->update();

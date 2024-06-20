@@ -1,0 +1,114 @@
+{
+  "alps": {
+    "version": "1.0",
+    "descriptor": [
+      {
+        "id": "vendor-representation",
+        "href": "https://ams.strathmore.edu/dataservice/profile/vendors",
+        "descriptor": [
+          {
+            "name": "preFormatCode",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "vendorId",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "vendorName",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "preFormartDescription",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "bankCode",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "status",
+            "type": "SEMANTIC"
+          }
+        ]
+      },
+      {
+        "id": "create-vendors",
+        "name": "vendors",
+        "type": "UNSAFE",
+        "descriptor": [],
+        "rt": "#vendor-representation"
+      },
+      {
+        "id": "get-vendors",
+        "name": "vendors",
+        "type": "SAFE",
+        "descriptor": [
+          {
+            "name": "page",
+            "type": "SEMANTIC",
+            "doc": {
+              "format": "TEXT",
+              "value": "The page to return."
+            }
+          },
+          {
+            "name": "size",
+            "type": "SEMANTIC",
+            "doc": {
+              "format": "TEXT",
+              "value": "The size of the page to return."
+            }
+          },
+          {
+            "name": "sort",
+            "type": "SEMANTIC",
+            "doc": {
+              "format": "TEXT",
+              "value": "The sorting criteria to use to calculate the content of the page."
+            }
+          }
+        ],
+        "rt": "#vendor-representation"
+      },
+      {
+        "id": "delete-vendor",
+        "name": "vendor",
+        "type": "IDEMPOTENT",
+        "descriptor": [],
+        "rt": "#vendor-representation"
+      },
+      {
+        "id": "patch-vendor",
+        "name": "vendor",
+        "type": "UNSAFE",
+        "descriptor": [],
+        "rt": "#vendor-representation"
+      },
+      {
+        "id": "update-vendor",
+        "name": "vendor",
+        "type": "IDEMPOTENT",
+        "descriptor": [],
+        "rt": "#vendor-representation"
+      },
+      {
+        "id": "get-vendor",
+        "name": "vendor",
+        "type": "SAFE",
+        "descriptor": [],
+        "rt": "#vendor-representation"
+      },
+      {
+        "name": "findByPreFormatCode",
+        "type": "SAFE",
+        "descriptor": [
+          {
+            "name": "preFormatCode",
+            "type": "SEMANTIC"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -20304,6 +20304,281 @@ namespace Nwidart\Modules\Facades {
             }
     }
 
+namespace  {
+            /**
+     * 
+     *
+     */        class Pdf {
+                    /**
+         * Get the Snappy instance.
+         *
+         * @return \Knp\Snappy\Pdf 
+         * @static 
+         */        public static function snappy()
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->snappy();
+        }
+                    /**
+         * Set temporary folder
+         *
+         * @param string $path
+         * @static 
+         */        public static function setTemporaryFolder($path)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->setTemporaryFolder($path);
+        }
+                    /**
+         * Set the paper size (default A4)
+         *
+         * @param string $paper
+         * @param string $orientation
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function setPaper($paper, $orientation = null)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->setPaper($paper, $orientation);
+        }
+                    /**
+         * Set the orientation (default portrait)
+         *
+         * @param string $orientation
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function setOrientation($orientation)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->setOrientation($orientation);
+        }
+                    /**
+         * Show or hide warnings
+         *
+         * @param bool $warnings
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @deprecated 
+         * @static 
+         */        public static function setWarnings($warnings)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->setWarnings($warnings);
+        }
+                    /**
+         * 
+         *
+         * @param string $name
+         * @param mixed $value
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function setOption($name, $value)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->setOption($name, $value);
+        }
+                    /**
+         * 
+         *
+         * @param array $options
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function setOptions($options)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->setOptions($options);
+        }
+                    /**
+         * Load a HTML string
+         *
+         * @param Array|string|\Illuminate\Contracts\Support\Renderable $html
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function loadHTML($html)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->loadHTML($html);
+        }
+                    /**
+         * Load a HTML file
+         *
+         * @param string $file
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function loadFile($file)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->loadFile($file);
+        }
+                    /**
+         * Load a View and convert to HTML
+         *
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function loadView($view, $data = [], $mergeData = [])
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->loadView($view, $data, $mergeData);
+        }
+                    /**
+         * Output the PDF as a string.
+         *
+         * @return string The rendered PDF as string
+         * @throws \InvalidArgumentException
+         * @static 
+         */        public static function output()
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->output();
+        }
+                    /**
+         * Save the PDF to a file
+         *
+         * @param $filename
+         * @return \Barryvdh\Snappy\PdfWrapper 
+         * @static 
+         */        public static function save($filename, $overwrite = false)
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->save($filename, $overwrite);
+        }
+                    /**
+         * Make the PDF downloadable by the user
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */        public static function download($filename = 'document.pdf')
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->download($filename);
+        }
+                    /**
+         * Return a response with the PDF to show in the browser
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */        public static function inline($filename = 'document.pdf')
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->inline($filename);
+        }
+                    /**
+         * Return a response with the PDF to show in the browser
+         *
+         * @param string $filename
+         * @return \Symfony\Component\HttpFoundation\StreamedResponse 
+         * @deprecated use inline() instead
+         * @static 
+         */        public static function stream($filename = 'document.pdf')
+        {
+                        /** @var \Barryvdh\Snappy\PdfWrapper $instance */
+                        return $instance->stream($filename);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function assertViewIs($value)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertViewIs($value);
+        }
+                    /**
+         * Assert that the response view has a given piece of bound data.
+         *
+         * @param string|array $key
+         * @param mixed $value
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertViewHas($key, $value = null)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertViewHas($key, $value);
+        }
+                    /**
+         * Assert that the response view has a given list of bound data.
+         *
+         * @param array $bindings
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertViewHasAll($bindings)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertViewHasAll($bindings);
+        }
+                    /**
+         * Assert that the response view is missing a piece of bound data.
+         *
+         * @param string $key
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertViewMissing($key)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertViewMissing($key);
+        }
+                    /**
+         * Assert that the given string is contained within the response.
+         *
+         * @param string $value
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertSee($value)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertSee($value);
+        }
+                    /**
+         * Assert that the given string is contained within the response text.
+         *
+         * @param string $value
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertSeeText($value)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertSeeText($value);
+        }
+                    /**
+         * Assert that the given string is not contained within the response.
+         *
+         * @param string $value
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertDontSee($value)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertDontSee($value);
+        }
+                    /**
+         * Assert that the given string is not contained within the response text.
+         *
+         * @param string $value
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertDontSeeText($value)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertDontSeeText($value);
+        }
+                    /**
+         * Assert that the given string is equal to the saved filename.
+         *
+         * @param string $value
+         * @return \Barryvdh\Snappy\PdfFaker 
+         * @static 
+         */        public static function assertFileNameIs($value)
+        {
+                        /** @var \Barryvdh\Snappy\PdfFaker $instance */
+                        return $instance->assertFileNameIs($value);
+        }
+            }
+    }
+
 namespace Illuminate\Support {
             /**
      * 
@@ -27494,6 +27769,7 @@ namespace  {
             class Top extends \Leventcz\Top\Facades\Top {}
             class Livewire extends \Livewire\Livewire {}
             class Module extends \Nwidart\Modules\Facades\Module {}
+            class LaravelPdf extends \Pdf {}
     }
 
 

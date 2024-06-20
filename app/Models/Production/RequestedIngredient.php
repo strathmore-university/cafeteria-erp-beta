@@ -15,20 +15,22 @@ use Throwable;
 class RequestedIngredient extends Model
 {
     protected $guarded = [];
+
     public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
     }
 
-//    public function recipe(): BelongsTo
-//    {
-//        return $this->belongsTo(Recipe::class);
-//    }
+    //    public function recipe(): BelongsTo
+    //    {
+    //        return $this->belongsTo(Recipe::class);
+    //    }
 
     public function foodOrderRecipe(): BelongsTo
     {
         return $this->belongsTo(FoodOrderRecipe::class);
     }
+
     public function batches(): MorphMany
     {
         return $this->morphMany(Batch::class, 'owner');
@@ -61,7 +63,7 @@ class RequestedIngredient extends Model
 
     public function isFulfilled(): bool
     {
-        return $this->remaining_quantity == 0;
+        return $this->remaining_quantity === 0;
     }
 
     public function isPendingFulfilment(): bool
@@ -97,8 +99,6 @@ class RequestedIngredient extends Model
         );
     }
 
-
-
     public function utilize(FoodOrderRecipe $foodOrderRecipe): void
     {
         $ingredient = $this->ingredient;
@@ -107,10 +107,10 @@ class RequestedIngredient extends Model
 
         $remaining = $quantityToConsume;
 
-//        dump('Utilizing ' . $quantityToConsume . ' ' . $ingredient->unit->code . ' of ' . $ingredient->article->name . '.');
-//        dump($remaining . ' remaining');
+        //        dump('Utilizing ' . $quantityToConsume . ' ' . $ingredient->unit->code . ' of ' . $ingredient->article->name . '.');
+        //        dump($remaining . ' remaining');
 
-        $this->batches->each(function (Batch $batch) use ($remaining) {
+        $this->batches->each(function (Batch $batch) use ($remaining): void {
             if ($remaining <= 0) {
                 return;
             }
@@ -119,9 +119,9 @@ class RequestedIngredient extends Model
             $id = $article->unit_measurement_id;
             $quantity = $this->unit->convert($id, $remaining);
             dump('reducing ' . $quantity . ' ' . $article->unit->code . ' of ' . $article->name . '.');
-//            $units = $quantity / $article->unit_quantity;
+            //            $units = $quantity / $article->unit_quantity;
 
-//            dump('reducing ' . $units . 'units');
+            //            dump('reducing ' . $units . 'units');
             $batch->remaining_units -= $quantity;
             $batch->utilised_at = now();
             $batch->update();
@@ -129,16 +129,31 @@ class RequestedIngredient extends Model
             // todo: instead of reducing
 
             $remaining -= $quantity;
-//            $this->dispatchIngredient($batch->article, $quantity);
+            //            $this->dispatchIngredient($batch->article, $quantity);
         });
 
-//        $article->
-//        $this->dispatchIngredient($article, $quantity);
+        //        $article->
+        //        $this->dispatchIngredient($article, $quantity);
         // recalculate the quantity of ingredients to use
-//        $quantity =
+        //        $quantity =
 
         // reduce the quantity of ingredients used
         // update the status of the batch
+    }
+
+    /**
+     * @throws Throwable
+     */
+    protected function getCapacityAtStationAttribute(): int
+    {
+        $reference = $this->article;
+        $store = $this->store;
+
+        // first get list of descendants. check if that store has batches of those units
+        // todo: do this here! check for batches that don't have owners
+        $capacity = article_capacity($reference, $store);
+
+        return 10 ?? $capacity;
     }
 
     /**
@@ -157,20 +172,5 @@ class RequestedIngredient extends Model
         $this->remaining_quantity -= ceil($units);
         $this->dispatched_units += ceil($units);
         $this->update();
-    }
-
-    /**
-     * @throws Throwable
-     */
-    protected function getCapacityAtStationAttribute(): int
-    {
-        $reference = $this->article;
-        $store = $this->store;
-
-        // first get list of descendants. check if that store has batches of those units
-        // todo: do this here! check for batches that don't have owners
-        $capacity = article_capacity($reference, $store);
-
-        return 10 ?? $capacity;
     }
 }

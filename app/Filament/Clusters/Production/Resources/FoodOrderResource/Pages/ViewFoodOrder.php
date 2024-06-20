@@ -28,21 +28,21 @@ class ViewFoodOrder extends ViewRecord
                 ->action(fn (FoodOrder $record) => $record->executeIngredientDispatch())
                 ->visible(fn (FoodOrder $record) => $record->canExecuteDispatch())
                 ->button(),
-//            Action::make('initiate-preparation')
-//                ->requiresConfirmation()
-//                ->action(fn (FoodOrder $record) => $record->initiate())
-//                ->visible(fn (FoodOrder $record) => $record->has_dispatched_ingredients) // todo: change! add a bool column to indicate that dispatch was done and should allow initiation with or without adequate stock
-//                ->button(),
-//            Action::make('complete-preparation')
-//                ->requiresConfirmation()
-//                ->button(),
-//            Action::make('dispatch-products')
-//                ->requiresConfirmation()
-//                ->button(),
-//            Action::make('receive')
-//                ->requiresConfirmation()
-//                ->button(),
-//            EditAction::make(), // todo: allow chef to edit? before ingredients are requested
+            //            Action::make('initiate-preparation')
+            //                ->requiresConfirmation()
+            //                ->action(fn (FoodOrder $record) => $record->initiate())
+            //                ->visible(fn (FoodOrder $record) => $record->has_dispatched_ingredients) // todo: change! add a bool column to indicate that dispatch was done and should allow initiation with or without adequate stock
+            //                ->button(),
+            //            Action::make('complete-preparation')
+            //                ->requiresConfirmation()
+            //                ->button(),
+            //            Action::make('dispatch-products')
+            //                ->requiresConfirmation()
+            //                ->button(),
+            //            Action::make('receive')
+            //                ->requiresConfirmation()
+            //                ->button(),
+            //            EditAction::make(), // todo: allow chef to edit? before ingredients are requested
         ];
     }
 }

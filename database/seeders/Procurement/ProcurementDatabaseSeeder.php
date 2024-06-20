@@ -3,6 +3,7 @@
 namespace Database\Seeders\Procurement;
 
 use App\Models\Inventory\Article;
+use App\Models\Procurement\KfsVendor;
 use App\Models\Procurement\PurchaseOrder;
 use App\Models\Procurement\Supplier;
 use Illuminate\Database\Seeder;
@@ -18,21 +19,23 @@ class ProcurementDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (range(1, 10) as $item) {
+        $vendors = KfsVendor::limit(10)->get();
+        $vendors->each(function (KfsVendor $vendor): void {
             Supplier::create([
-                'name' => fake()->name,
-                'description' => fake()->sentence,
-                'email' => fake()->email,
+                'kfs_preformat_description' => $vendor->pre_format_description,
+                'kfs_preformat_code' => $vendor->pre_format_code,
+                'kfs_vendor_number' => $vendor->vendor_number,
                 'phone_number' => fake()->phoneNumber,
-                'address' => fake()->address,
-                'kfs_preformat_description' => fake()->sentence(2),
-                'kfs_preformat_code' => fake()->slug,
-                'percentage_vat' => 16,
-                'kfs_vendor_number' => fake()->numberBetween(10000, 20000),
+                'description' => fake()->sentence,
+                'name' => $vendor->vendor_name,
+                'kfs_vendor_id' => $vendor->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+                'address' => fake()->address,
+                'email' => fake()->email,
+                'percentage_vat' => 16,
             ]);
-        }
+        });
 
         $articles = Article::canBeOrdered()->get();
 

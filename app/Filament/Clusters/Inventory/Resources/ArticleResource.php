@@ -134,7 +134,7 @@ class ArticleResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return Article::with('descendants'); // todo: review if i want to display the reference articles here
-//        isReference()->orWhere('is_product', '=', true);
+        //        isReference()->orWhere('is_product', '=', true);
     }
 
     public static function getRelations(): array

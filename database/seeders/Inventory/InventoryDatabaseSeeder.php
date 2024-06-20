@@ -77,7 +77,7 @@ class InventoryDatabaseSeeder extends Seeder
         foreach (range(1, 10) as $range) {
             $node = Article::create([
                 'unit_id' => $volume->descendants->random()->id,
-//                'unit_id' => fake()->randomElement([$liter->id, $ml->id]),
+                //                'unit_id' => fake()->randomElement([$liter->id, $ml->id]),
                 'reorder_level' => fake()->numberBetween(1, 100),
                 'unit_capacity' => fake()->numberBetween(1, 3),
                 'is_profit_contributing' => true,

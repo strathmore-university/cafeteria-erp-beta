@@ -11,12 +11,13 @@ return new class() extends Migration
         Schema::create('suppliers', function (Blueprint $table): void {
             $table->id();
             $table->team();
+            $table->unsignedInteger('kfs_vendor_id')->nullable()->index();
             $table->name();
             $table->description();
             $table->string('email', 100)->nullable();
             $table->string('phone_number', 20)->nullable();
             $table->string('address');
-            $table->integer('kfs_vendor_number')->nullable();
+            $table->integer('kfs_vendor_number')->nullable()->unique();
             $table->string('kfs_preformat_code')->nullable();
             $table->string('kfs_preformat_description')->nullable();
             $table->string('supplier_number')->nullable();
