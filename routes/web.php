@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Downloads\DownloadCrn;
 use App\Http\Controllers\Downloads\DownloadGRN;
 use App\Http\Controllers\Downloads\DownloadPurchaseOrder;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,11 @@ Route::middleware('auth')->group(function (): void {
         '/download/{grn}/grn',
         DownloadGRN::class
     )->name('download.grn');
+
+    Route::get(
+        '/download/{crn}/crn',
+        DownloadCrn::class
+    )->name('download.crn');
 });
 
 require __DIR__ . '/auth.php';

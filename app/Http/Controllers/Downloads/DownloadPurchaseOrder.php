@@ -17,7 +17,7 @@ class DownloadPurchaseOrder extends Controller
         $pdf = $purchaseOrder->toPDF();
 
         // todo: fix css and image
-        //        return  view('pdf.purchases.lpo', ['purchaseOrder' => $purchaseOrder]);
+        //        return  view('pdf.procurement.lpo', ['purchaseOrder' => $purchaseOrder]);
 
         return $pdf->download($code . '-' . now() . '.pdf');
     }

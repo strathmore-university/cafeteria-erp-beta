@@ -3,6 +3,7 @@
 namespace App\Models\Procurement;
 
 use App\Actions\Procurement\FetchOrCreateGrn;
+use App\Actions\Procurement\GenerateCrn;
 use App\Concerns\BelongsToCreator;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasReviews;
@@ -40,6 +41,11 @@ class PurchaseOrder extends Model
     public function goodsReceivedNotes(): HasMany
     {
         return $this->hasMany(GoodsReceivedNote::class);
+    }
+
+    public function creditNotes(): HasMany
+    {
+        return $this->hasMany(CreditNote::class);
     }
 
     public function creator(): BelongsTo
@@ -127,11 +133,11 @@ class PurchaseOrder extends Model
     //    public function toPDF(): PdfWrapper
     public function toPDF(): PdfBuilder
     {
-        //        return PDF::loadView('pdf.purchases.lpo', [
+        //        return PDF::loadView('pdf.procurement.lpo', [
         //            'purchaseOrder' => $this,
         //        ]);
 
-        return pdf('pdf.purchases.lpo', [
+        return pdf('pdf.procurement.lpo', [
             'purchaseOrder' => $this,
         ]);
     }
@@ -189,9 +195,14 @@ class PurchaseOrder extends Model
         return (new FetchOrCreateGrn())->execute($this);
     }
 
+    public function isExpired(): bool
+    {
+        return now()->isAfter($this->expires_at ?? now());
+    }
+
     public function isValidLPO(): bool
     {
-        $notExpired = now()->isBefore($this->expires_at ?? now());
+        $notExpired = !$this->isExpired();
 
         return and_check($this->hasBeenApproved(), $notExpired);
     }
@@ -217,5 +228,20 @@ class PurchaseOrder extends Model
             $purchaseOrder->setAttribute('code', $code);
             $purchaseOrder->setAttribute('status', 'draft');
         });
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function generateCrn(): CreditNote
+    {
+        return (new GenerateCrn())->execute($this);
+    }
+
+    public function canGeneratedCrn():bool
+    {
+        $one = or_check($this->isExpired(), $this->isValidLPO());
+
+        return and_check($one, $this->pendingFulfillment());
     }
 }

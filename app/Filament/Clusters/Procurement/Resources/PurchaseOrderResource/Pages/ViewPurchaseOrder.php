@@ -44,6 +44,12 @@ class ViewPurchaseOrder extends ViewRecord
                     redirect(get_record_url($record->fetchGrn()));
                 })
                 ->icon('heroicon-o-truck'),
+            Action::make('generate-credit-note')->requiresConfirmation()
+                ->action(function (PurchaseOrder $record): void {
+                    redirect(get_record_url($record->generateCrn()));
+                })
+                ->visible(fn(PurchaseOrder $record) => $record->canGeneratedCrn())
+                ->icon('heroicon-o-receipt-percent'),
             Action::make('download')
                 ->visible(fn (PurchaseOrder $record) => $record->canBeDownloaded())
                 ->url(fn (PurchaseOrder $record) => $record->downloadLink())

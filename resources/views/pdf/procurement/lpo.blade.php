@@ -14,13 +14,22 @@
 @stop
 @section("title","LOCAL PURCHASE ORDER")
 @section("description")
-    <p>Local purchase order</p>
+        <p>Local purchase order</p>
 @endsection
 
 {{--@section("addressee", "Emirand Enterprises Ltd.")--}}
 @section('report-details')
     <table class="w-100 border p-2 table-borderless">
         <tr>
+            @if($purchaseOrder->isExpired())
+                <td>
+                    <dl style="color: red;" class="px-2">
+                        <dt>Expired</dt>
+                        <dd>This LPO is no longer valid!</dd>
+                    </dl>
+                </td>
+            @endif
+
             <td>
                 <dl class="px-2">
                     <dt>Address</dt>

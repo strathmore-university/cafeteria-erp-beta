@@ -68,7 +68,7 @@ class GoodsReceivedNote extends Model implements HasMedia
 
     public function toPDF(): PdfBuilder
     {
-        return pdf('pdf.purchases.grn', ['grn' => $this]);
+        return pdf('pdf.procurement.grn', ['grn' => $this]);
     }
 
     public function downloadLink(): string
@@ -98,7 +98,6 @@ class GoodsReceivedNote extends Model implements HasMedia
     {
         return [
             'invoiced_at' => 'datetime',
-            'attachments' => 'array',
         ];
     }
 

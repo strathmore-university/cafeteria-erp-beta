@@ -31,6 +31,8 @@ class ExecuteGrnReceipt
 
                 // todo: create payment voucher
 
+                // todo: create transfer request
+
                 $store = $this->grn->store;
                 $items->each(fn ($item) => $this->processGrnItem($item, $store));
 
@@ -82,6 +84,7 @@ class ExecuteGrnReceipt
             ->index();
 
         // todo: add accounting lines
+        // todo: add to transfer request
     }
 
     /**
@@ -183,6 +186,9 @@ class ExecuteGrnReceipt
             ->update(['price' => $price]);
     }
 
+    /**
+     * @throws Throwable
+     */
     private function updateGrn(array $data, float $total): void
     {
         $invoice = $data['invoice_number'] ?? null;

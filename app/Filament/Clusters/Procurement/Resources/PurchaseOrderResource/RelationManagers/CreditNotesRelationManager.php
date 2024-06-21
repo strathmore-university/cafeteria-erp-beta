@@ -2,7 +2,7 @@
 
 namespace App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\RelationManagers;
 
-use App\Models\Procurement\GoodsReceivedNote;
+use App\Models\Procurement\CreditNote;
 use App\Models\Procurement\PurchaseOrder;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -11,39 +11,37 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class GoodsReceivedNotesRelationManager extends RelationManager
+class CreditNotesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'goodsReceivedNotes';
+    protected static string $relationship = 'creditNotes';
 
     public static function canViewForRecord(
         Model|PurchaseOrder $ownerRecord,
         string $pageClass
     ): bool {
-        $count = GoodsReceivedNote::wherePurchaseOrderId($ownerRecord->id)
-            ->count();
-
-        return or_check($ownerRecord->isValidLPO(), $count);
+        return CreditNote::wherePurchaseOrderId($ownerRecord->id)
+            ->exists();
     }
 
     public function table(Table $table): Table
     {
         return $table->recordTitleAttribute('code')
             ->columns([
-                TextColumn::make('code')->label('GRN Number')
+                TextColumn::make('code')->label('Credit Note Number')
                     ->searchable()->sortable(),
                 TextColumn::make('total_value')->numeric()
                     ->sortable()->prefix('Ksh. '),
-                TextColumn::make('received_by')->searchable()
-                    ->label('Received By')->sortable()->formatStateUsing(
-                        fn ($record) => Str::title($record->receiver->name)
+                TextColumn::make('created_by')->searchable()
+                    ->label('Created By')->sortable()->formatStateUsing(
+                        fn ($record) => Str::title($record->creator->name)
                     )
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('received_at')->searchable()->dateTime()
+                TextColumn::make('issued_at')->searchable()->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('status')->badge()
                     ->formatStateUsing(fn (string $state) => Str::title($state))
                     ->color(fn (string $state): string => match ($state) {
-                        'received' => 'success',
+                        'issued' => 'success',
                         default => 'warning'
                     }),
             ])->actions([

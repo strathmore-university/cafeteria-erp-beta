@@ -44,6 +44,7 @@ class ProcurementDatabaseSeeder extends Seeder
                 'team_id' => system_team()->id,
                 'store_id' => system_team()->stores()->first()->id,
                 'expected_delivery_date' => now()->addDays(),
+                'kfs_account_number' => auth_team()->kfs_account_number
             ]);
 
             $articles->take(1)->each(function (Article $article) use ($po): void {
