@@ -17,12 +17,10 @@ class InventoryDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $type = store_types()->random();
-
         $store = Store::create([
             'name' => 'Main Store',
             'team_id' => system_team()->id,
-            'category_id' => $type->id,
+            'category_id' => store_types('Main Store')->id,
             'owner_id' => system_team()->id,
             'owner_type' => system_team()->getMorphClass(),
         ]);

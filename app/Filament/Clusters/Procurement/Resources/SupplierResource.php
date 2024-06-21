@@ -40,56 +40,52 @@ class SupplierResource extends Resource
     {
         $cols = 2;
 
-        return $form
-            ->schema([
-                Section::make('Supplier Info')->schema([
-                    TextInput::make('name')->required()->string()->maxLength(255),
-                    TextInput::make('phone_number')->required()->maxLength(20),
-                    TextInput::make('email')->email()->nullable()->maxLength(255),
-                    TextInput::make('address')->required()->string()->maxLength(255),
-                    TextInput::make('description')->nullable()->maxLength(255)->columnSpan(2),
-                ])->columns($cols),
-                Section::make('KFS Info')->schema([
-                    TextInput::make('kfs_vendor_number')->reactive()
-                        ->afterStateUpdated(function (string $state, Set $set): void {
-                            try {
-                                $kfsVendor = KfsVendor::whereVendorNumber($state)->firstOrFail();
+        return $form->schema([
+            Section::make('Supplier Info')->schema([
+                TextInput::make('name')->required()->string()->maxLength(255),
+                TextInput::make('phone_number')->required()->maxLength(20),
+                TextInput::make('email')->email()->nullable()->maxLength(100),
+                TextInput::make('address')->required()->string()->maxLength(255),
+                TextInput::make('description')->nullable()->maxLength(255)->columnSpan(2),
+            ])->columns($cols),
+            Section::make('KFS Info')->schema([
+                TextInput::make('kfs_vendor_number')->reactive()
+                    ->afterStateUpdated(function (string $state, Set $set): void {
+                        try {
+                            $kfsVendor = KfsVendor::whereVendorNumber($state)->firstOrFail();
 
-                                $value = $kfsVendor->pre_format_description;
-                                $set('kfs_preformat_description', $value);
-                                $set('kfs_preformat_code', $kfsVendor->pre_format_code);
-                                $set('kfs_vendor_id', $kfsVendor->id);
-                            } catch (Exception $exception) {
-                                $set('kfs_preformat_description', null);
-                                $set('kfs_preformat_code', null);
-                                $set('kfs_vendor_id', null);
+                            $value = $kfsVendor->pre_format_description;
+                            $set('kfs_preformat_description', $value);
+                            $set('kfs_preformat_code', $kfsVendor->pre_format_code);
+                            $set('kfs_vendor_id', $kfsVendor->id);
+                        } catch (Exception $exception) {
+                            $set('kfs_preformat_description', null);
+                            $set('kfs_preformat_code', null);
+                            $set('kfs_vendor_id', null);
 
-                                error_notification($exception);
-                            }
-                        }),
-                    TextInput::make('percentage_vat')->required()->numeric()
-                        ->maxValue(100)->minValue(0),
-                    Hidden::make('kfs_vendor_id'),
-                    TextInput::make('kfs_preformat_code')->readOnly(),
-                    TextInput::make('kfs_preformat_description')->readOnly(),
-                    Toggle::make('is_active')->default(true),
-                ])->columns($cols),
-                common_fields(),
-            ]);
+                            error_notification($exception);
+                        }
+                    }),
+                TextInput::make('percentage_vat')->required()->numeric()
+                    ->maxValue(100)->minValue(0),
+                Hidden::make('kfs_vendor_id'),
+                TextInput::make('kfs_preformat_code')->readOnly(),
+                TextInput::make('kfs_preformat_description')->readOnly(),
+                Toggle::make('is_active')->default(true),
+            ])->columns($cols),
+            common_fields(),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('phone_number'),
-                TextColumn::make('email'),
-                TextColumn::make('kfs_vendor_number'),
-                IconColumn::make('is_active')->boolean(),
-            ])
-            ->actions([ViewAction::make()])
-            ->bulkActions([]);
+        return $table->columns([
+            TextColumn::make('name')->searchable()->sortable(),
+            TextColumn::make('phone_number'),
+            TextColumn::make('email')->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('kfs_vendor_number')->searchable()->sortable(),
+            IconColumn::make('is_active')->boolean(),
+        ])->actions([ViewAction::make()]);
     }
 
     public static function getPages(): array
@@ -102,20 +98,10 @@ class SupplierResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery();
-    }
-
     public static function getRelations(): array
     {
         return [
             PurchaseOrdersRelationManager::class,
         ];
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [];
     }
 }

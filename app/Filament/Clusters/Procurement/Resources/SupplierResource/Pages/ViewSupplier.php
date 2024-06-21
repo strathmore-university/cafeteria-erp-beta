@@ -12,8 +12,6 @@ class ViewSupplier extends ViewRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            EditAction::make(),
-        ];
+        return [EditAction::make()];
     }
 }

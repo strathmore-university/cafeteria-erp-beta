@@ -2,25 +2,23 @@
 
 namespace App\Models\Procurement;
 
+use App\Actions\Procurement\FetchOrCreateGrn;
 use App\Concerns\BelongsToCreator;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasReviews;
 use App\Concerns\HasStatusTransitions;
 use App\Models\Inventory\Store;
 use App\Models\User;
-use Barryvdh\Snappy\PdfWrapper;
-use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-//use PDF;
 use Spatie\LaravelPdf\PdfBuilder;
+use function Spatie\LaravelPdf\Support\pdf;
 use Throwable;
 
-use function Spatie\LaravelPdf\Support\pdf;
+//use PDF;
 
 class PurchaseOrder extends Model
 {
@@ -63,6 +61,13 @@ class PurchaseOrder extends Model
         ];
     }
 
+    public function downloadLink(): string
+    {
+        return route('download.purchase-order', [
+            'purchaseOrder' => $this->id,
+        ]);
+    }
+
     public function requestReview(): void
     {
         try {
@@ -86,7 +91,7 @@ class PurchaseOrder extends Model
      */
     public function approvalAction(): void
     {
-        $this->expires_at = now()->addDays(14);
+        $this->expires_at = now()->addDays(14); // todo: add to procurement settings
         $this->lpo_generated_at = now();
         $this->updateStatus();
         $this->is_lpo = true;
@@ -129,14 +134,6 @@ class PurchaseOrder extends Model
         return pdf('pdf.purchases.lpo', [
             'purchaseOrder' => $this,
         ]);
-    }
-
-    public function canBeDownload(): bool
-    {
-        return match (filled($this->expires_at)) {
-            true => $this->canDownload(),
-            false => false,
-        };
     }
 
     public function fetchItems(): Collection
@@ -187,28 +184,28 @@ class PurchaseOrder extends Model
     /**
      * @throws Throwable
      */
-    public function fetchOrCreateGrn(): ?GoodsReceivedNote
+    public function fetchGrn(): ?GoodsReceivedNote
     {
-        try {
-            $message = 'Purchase order has already been fulfilled!';
-            throw_if($this->isFulfilled(), new Exception($message));
+        return (new FetchOrCreateGrn())->execute($this);
+    }
 
-            $message = 'Purchase order is no-longer valid!';
-            throw_if( ! $this->canDownload(), new Exception($message));
+    public function isValidLPO(): bool
+    {
+        $notExpired = now()->isBefore($this->expires_at ?? now());
 
-            $grn = GoodsReceivedNote::wherePurchaseOrderId($this->id)
-                ->where('status', '=', 'draft')
-                ->first();
+        return and_check($this->hasBeenApproved(), $notExpired);
+    }
 
-            return match (filled($grn)) {
-                false => $this->createGrn(),
-                true => $grn,
-            };
-        } catch (Throwable $exception) {
-            error_notification($exception);
-        }
+    public function canBeReceived(): bool
+    {
+        $one = $this->pendingFulfillment();
 
-        return null;
+        return and_check($this->isValidLPO(), $one);
+    }
+
+    public function canBeDownloaded(): bool
+    {
+        return $this->hasBeenApproved();
     }
 
     protected static function booted(): void
@@ -220,46 +217,5 @@ class PurchaseOrder extends Model
             $purchaseOrder->setAttribute('code', $code);
             $purchaseOrder->setAttribute('status', 'draft');
         });
-    }
-
-    private function canDownload(): bool
-    {
-        $check = $this->getAttribute('status') !== 'fulfilled';
-        $valid = now()->isBefore($this->expires_at);
-        $check = and_check($valid, $check);
-
-        return and_check($this->hasBeenApproved(), $check);
-    }
-
-    /**
-     * @throws Throwable
-     */
-    private function createGrn(): ?GoodsReceivedNote
-    {
-        $grn = DB::transaction(function () {
-            $grn = $this->goodsReceivedNotes()->create([
-                'supplier_id' => $this->supplier_id,
-                'created_by' => auth_id(),
-                'team_id' => team_id(),
-            ]);
-
-            $items = collect();
-            $remainingItems = $this->remainingItems();
-            $remainingItems->each(function (PurchaseOrderItem $item) use ($items): void {
-                $items->push([
-                    'article_id' => $item->getAttribute('article_id'),
-                    'purchase_order_id' => $item->purchase_order_id,
-                    'purchase_order_item_id' => $item->id,
-                    'units' => $item->remaining_units,
-                    'price' => $item->price,
-                ]);
-            });
-
-            $grn->items()->createMany($items->toArray());
-
-            return $grn;
-        });
-
-        return filled($grn) ? $grn : null;
     }
 }

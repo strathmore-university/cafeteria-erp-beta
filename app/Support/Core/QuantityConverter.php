@@ -43,7 +43,7 @@ class QuantityConverter
         int|float $value
     ): float|int {
         $message = 'Units ' . $from->id . ' and ' . $to->id . ' are not compatible';
-        throw_if( ! $from->isSiblingOf($to), new Exception($message));
+        throw_if(! $from->isSiblingOf($to), new Exception($message));
 
         $conversion = UnitConversion::whereFromUnitId($from->id)
             ->whereToUnitId($to->id)

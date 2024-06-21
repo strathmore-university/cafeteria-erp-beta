@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
             CoreDatabaseSeeder::class,
             InventoryDatabaseSeeder::class,
             ProcurementDatabaseSeeder::class,
-            StockTakeSeeder::class,
-            ProductionSeeder::class,
+            //            StockTakeSeeder::class,
+            //            ProductionSeeder::class,
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models\Inventory;
 
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasCategory;
+use App\Concerns\HasIsActiveColumn;
 use App\Concerns\HasOwner;
 use App\Concerns\HasStock;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Store extends Model
 {
     use BelongsToTeam, HasCategory, SoftDeletes;
-    use HasOwner, HasStock;
+    use HasIsActiveColumn, HasOwner, HasStock;
 
     protected $guarded = [];
 

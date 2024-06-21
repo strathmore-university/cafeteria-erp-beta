@@ -29,7 +29,7 @@ class CategorySeeder extends Seeder
         $this->process('Balance Types', $types);
 
         $types = [
-            'Main Store', 'Preparation Area', 'Sales Point',
+            'Main Store', 'Preparation Area', 'Sales Point', 'Procurement Store',
             'For Statistics', 'Cost Center', 'Virtual Store',
         ];
         $this->process('Store Types', $types);

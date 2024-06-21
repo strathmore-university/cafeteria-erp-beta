@@ -24,15 +24,19 @@ class CoreDatabaseSeeder extends Seeder
         $head = User::first();
 
         $team = Team::create([
-            'description' => 'Cafeteria Erp',
+            'description' => 'SU Cafeteria Team',
+            'kfs_account_number' => '3001000',
             'head_user_id' => $head->id,
-            'name' => 'Cafeteria Erp',
+            'name' => 'SU Cafeteria',
             'is_default' => true,
         ]);
 
-        $head->teams()->attach($team->id);
-
+        $head->update(['team_id' => $team->id]);
         $data = User::factory(9)->make(['team_id' => $team->id])->toArray();
         $team->members()->createMany($data);
+
+        User::all()->each(function ($user) use ($team): void {
+            $user->teams()->attach($team->id);
+        });
     }
 }

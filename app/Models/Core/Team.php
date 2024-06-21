@@ -2,35 +2,24 @@
 
 namespace App\Models\Core;
 
-//use App\Concerns\HasHiddenRecords;
-//use App\Concerns\HasKitchens;
-//use App\Concerns\HasStock;
-//use App\Concerns\HasStockLevels;
-//use App\Concerns\HasStores;
-//use App\Models\Core\User;
-//use App\Models\Inventory\Article;
-//use App\Models\Production\Restaurant;
 use App\Concerns\HasStores;
+use App\Models\Production\Restaurant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-//use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 class Team extends Model
 {
-    use HasStores;
-    use SoftDeletes;
-    //    use HasHiddenRecords, HasKitchens, HasStockLevels;
-    //    use HasStock;
+    use HasStores, SoftDeletes;
 
     protected $guarded = [];
 
-    public function members(): HasMany
+    public function members(): BelongsToMany
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'team_user');
     }
 
     public function head(): BelongsTo
@@ -38,8 +27,31 @@ class Team extends Model
         return $this->belongsTo(User::class, 'head_user_id');
     }
 
-    //    public function restaurants(): HasMany
-    //    {
-    //        return $this->hasMany(Restaurant::class);
-    //    }
+    public function restaurants(): HasMany
+    {
+        return $this->hasMany(Restaurant::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (Team $team): void {
+            $name = $team->getAttribute('name');
+
+            $category = store_types('Procurement Store');
+            $team->stores()->create([
+                'name' => $name . ' ' . $category->getAttribute('name'),
+                'category_id' => $category->id,
+                'owner_type' => Team::class,
+                'owner_id' => $team->id,
+            ]);
+
+            $category = store_types('Main Store');
+            $team->stores()->create([
+                'name' => $name . ' ' . $category->getAttribute('name'),
+                'category_id' => $category->id,
+                'owner_type' => Team::class,
+                'owner_id' => $team->id,
+            ]);
+        });
+    }
 }

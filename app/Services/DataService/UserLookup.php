@@ -104,7 +104,7 @@ class UserLookup
 
         $code = tannery($canSearch, 2, $code);
 
-        $dontSearch = both( ! $this->search, ! $this->user);
+        $dontSearch = both(! $this->search, ! $this->user);
 
         $code = tannery($dontSearch, 3, $code);
 
@@ -194,7 +194,7 @@ class UserLookup
 
         $this->reset();
 
-        throw_if( ! $username, new MissingUsername());
+        throw_if(! $username, new MissingUsername());
 
         return null;
     }

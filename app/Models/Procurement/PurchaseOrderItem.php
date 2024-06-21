@@ -53,4 +53,9 @@ class PurchaseOrderItem extends Model
             ]);
         });
     }
+
+    protected function getDeliveredUnitsAttribute(): int
+    {
+        return $this->ordered_units - $this->remaining_units;
+    }
 }

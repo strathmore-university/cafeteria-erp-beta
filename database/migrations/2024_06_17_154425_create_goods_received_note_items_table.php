@@ -21,6 +21,7 @@ return new class() extends Migration
             $table->foreignIdFor(Article::class)->index()->constrained();
             $table->foreignIdFor(Batch::class)->nullable()->index()->constrained();
             $table->string('batch_number')->nullable();
+            $table->date('expires_at')->nullable();
             $table->integer('units');
             $table->integer('price');
             $table->decimal('total_value');

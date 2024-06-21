@@ -7,12 +7,13 @@ use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\Pages\
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\Pages\ViewGoodsReceivedNote;
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\RelationManagers\ItemsRelationManager;
 use App\Models\Procurement\GoodsReceivedNote;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -34,74 +35,79 @@ class GoodsReceivedNoteResource extends Resource
     {
         $cols = 2;
 
-        return $form
-            ->schema([
-                Section::make()->schema([
-                    Placeholder::make('code')
-                        ->visible(fn ($record) => filled($record?->exists()))
-                        ->content(
-                            fn (GoodsReceivedNote $record): string => $record->getAttribute('code')
-                        ),
-                    Placeholder::make('Purchase_order')
-                        ->visible(fn ($record) => filled($record?->exists()))
-                        ->content(
-                            fn (GoodsReceivedNote $record): string => $record->purchaseOrder->getAttribute('code')
-                        ),
-                    Placeholder::make('supplier')
-                        ->visible(fn ($record) => filled($record?->exists()))
-                        ->content(
-                            fn (GoodsReceivedNote $record): string => $record->supplier->getAttribute('name')
-                        ),
-                    Placeholder::make('grn_generated_by')
-                        ->visible(fn ($record) => filled($record?->exists()))
-                        ->content(
-                            fn (GoodsReceivedNote $record): string => $record->creator->name
-                        ),
-                ])->columns($cols),
-                Section::make()->schema([
-                    TextInput::make('delivery_note_number')->string(),
-                    TextInput::make('invoice_number')
-                        ->string()
-                        ->afterStateUpdated(fn (GoodsReceivedNote $record) => $record->invoiced_at = now()),
-                ]),
-                Section::make()->schema([
-                    Placeholder::make('status')
-                        ->visible(fn ($record) => filled($record?->exists()))
-                        ->content(
-                            fn (GoodsReceivedNote $record): string => Str::title($record->getAttribute('status'))
-                        ),
-                    placeholder('created_at', 'Created at'),
-                    placeholder('updated_at', 'Late updated'),
-                ])->columns(3),
-            ])
-            ->disabled(fn ($record) => ! $record->canBeReceived());
+        return $form->schema([
+            Section::make()->schema([
+                TextInput::make('code')->label('GRN Number'),
+                TextInput::make('purchase_order_id')->label('LPO Number')
+                    ->formatStateUsing(fn ($record) => $record->purchaseOrder->code),
+                TextInput::make('supplier_id')->label('Supplier')
+                    ->formatStateUsing(
+                        fn ($record) => Str::title($record->supplier->getAttribute('name'))
+                    ),
+                TextInput::make('received_by')->label('Receiver')
+                    ->formatStateUsing(
+                        fn (GoodsReceivedNote $record) => Str::title($record->receiver?->name)
+                    ),
+            ])->columns($cols),
+            Section::make()->schema([
+                TextInput::make('total_value')
+                    ->formatStateUsing(fn ($state) => 'Ksh. ' . number_format($state)),
+                TextInput::make('delivery_note_number'),
+                TextInput::make('invoice_number'),
+                placeholder('invoiced_at', 'Invoiced at'),
+            ])->columns($cols),
+            //            FileUpload::make('attachments')->multiple()->nullable()->columnSpan(2)
+            //                ->directory('app/Attachments/Procurement')
+            //                ->deletable(false)
+            //                ->downloadable()
+            //                ->visibility('private')
+            SpatieMediaLibraryFileUpload::make('attachments')
+                ->deletable(false)->visibility('private')
+                ->downloadable()
+                ->multiple(),
+
+            Section::make()->schema([
+                TextInput::make('status')
+                    ->formatStateUsing(fn ($state) => Str::title($state)),
+                placeholder('created_at', 'Created at'),
+                placeholder('updated_at', 'Last updated'),
+            ])->columns(3),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('code'),
-                TextColumn::make('purchaseOrder.code'),
-                TextColumn::make('supplier.name'),
-                TextColumn::make('creator.name')->label('Created By'),
-                TextColumn::make('status')
-                    ->formatStateUsing(fn (string $state) => Str::title($state))
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'received' => 'success',
-                        default => 'warning'
-                    }),
-            ])
-            ->actions([
+        return $table->columns([
+            TextColumn::make('code')->label('GRN Number')
+                ->searchable()->sortable(),
+            TextColumn::make('purchaseOrder.code')
+                ->searchable()->sortable(),
+            TextColumn::make('supplier.name')
+                ->searchable()->sortable(),
+            TextColumn::make('total_value')->numeric()
+                ->sortable()->prefix('Ksh. '),
+            TextColumn::make('received_by')->searchable()
+                ->label('Received By')->sortable()->formatStateUsing(
+                    fn ($record) => Str::title($record->receiver->name)
+                )
+                ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('received_at')->searchable()->dateTime()
+                ->toggleable(isToggledHiddenByDefault: true)->sortable(),
+            TextColumn::make('status')->badge()
+                ->formatStateUsing(fn (string $state) => Str::title($state))
+                ->color(fn (string $state): string => match ($state) {
+                    'received' => 'success',
+                    default => 'warning'
+                }),
+        ])->actions([
+            ActionGroup::make([
+                Action::make('download')
+                    ->visible(fn (GoodsReceivedNote $record) => $record->canBeDownload())
+                    ->url(fn (GoodsReceivedNote $record) => $record->downloadLink())
+                    ->icon('heroicon-o-arrow-down-tray'),
                 ViewAction::make(),
-                Action::make('download-lpo')->label('Download LPO')
-                    ->color('success')->button()
-                    ->url(fn ($record) => route('download.grn', ['grn' => $record->id]))
-                    ->visible(fn ($record) => $record->canBeDownload()),
-            ])
-            ->filters([])
-            ->bulkActions([]);
+            ]),
+        ]);
     }
 
     public static function getPages(): array
@@ -115,10 +121,5 @@ class GoodsReceivedNoteResource extends Resource
     public static function getRelations(): array
     {
         return [ItemsRelationManager::class];
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [];
     }
 }

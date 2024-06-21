@@ -83,7 +83,8 @@ class RequestedIngredientsRelationManager extends RelationManager
                 // todo: allow dispatching less
                 Tables\Actions\Action::make('use station stock')->button()
 //                    ->action(fn (RequestedIngredient $record) => $record->useAvailableStationStock())
-                    ->visible(fn (RequestedIngredient $record
+                    ->visible(fn (
+                        RequestedIngredient $record
                     ) => $record->capacity_at_station > 0 && $record->isPendingFulfilment()),
                 // todo: allow dispatching less
             ]);

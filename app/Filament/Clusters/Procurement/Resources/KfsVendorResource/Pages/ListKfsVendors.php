@@ -16,20 +16,16 @@ class ListKfsVendors extends ListRecords
     {
         return [
             Action::make('retrieve_a_vendor_from_kfs')->form([
-                TextInput::make('vendor_number')
+                TextInput::make('vendor_number')->required()
                     ->placeholder('xxxxx')
-                    ->maxLength(5)
-                    ->required()
-                    ->string(),
+                    ->maxLength(5)->string(),
             ])->button()->action(
                 fn (array $data) => KfsVendor::retrieve($data['vendor_number'])
             ),
             Action::make('refresh_kfs_vendors')
-                ->action(fn (array $data) => KfsVendor::refreshEntries())
-                ->label('Refresh KFS Vendors')
-//                ->message('Are you sure you want to refresh KFS Vendors? This action will fetch all vendors from KFS and update the database.')
+                ->action(fn () => KfsVendor::refreshEntries())
+                ->visible(app()->isLocal())
                 ->requiresConfirmation()
-//                ->visible(false)
                 ->color('danger')
                 ->button(),
         ];

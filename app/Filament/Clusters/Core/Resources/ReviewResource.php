@@ -73,7 +73,7 @@ class ReviewResource extends Resource
                     ->formatStateUsing(fn (string $state): string => Str::title($state)),
                 TextColumn::make('comment')
                     ->formatStateUsing(fn (string $state): string => Str::title($state)),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('reviewed_at')->dateTime(),
                 TextColumn::make('status')->badge()
                     ->formatStateUsing(fn (string $state): string => Str::title($state))
                     ->color(fn (string $state): string => match ($state) {

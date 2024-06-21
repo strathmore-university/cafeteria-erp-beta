@@ -46,20 +46,23 @@ class ProcurementDatabaseSeeder extends Seeder
                 'expected_delivery_date' => now()->addDays(),
             ]);
 
-            $articles->each(function (Article $article) use ($po): void {
+            $articles->take(1)->each(function (Article $article) use ($po): void {
                 $po->items()->create([
+                    'price' => fake()->randomElement([50, 100]),
                     'article_id' => $article->id,
-                    'ordered_units' => random_int(50, 100),
-                    'price' => random_int(150, 1000),
+                    'ordered_units' => 100,
                 ]);
             });
         });
 
-        $purchaseOrder = PurchaseOrder::first();
-        $purchaseOrder->requestReview();
-        $purchaseOrder->submitReview(['comment' => 'good', 'status' => 'approved']);
+        $purchaseOrders = PurchaseOrder::get();
+        $purchaseOrders->take(2)->each(function (PurchaseOrder $purchaseOrder): void {
+            $purchaseOrder->requestReview();
+            $purchaseOrder->submitReview([
+                'comment' => 'good', 'status' => 'approved',
+            ]);
 
-        $grn = $purchaseOrder->fetchOrCreateGrn();
-        $grn->receive();
+            $purchaseOrder->fetchGrn()->receive();
+        });
     }
 }

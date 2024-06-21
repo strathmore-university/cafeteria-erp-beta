@@ -15,8 +15,9 @@ return new class() extends Migration
             $table->description();
             $table->active();
             $table->foreignIdFor(User::class, 'head_user_id')->index()->constrained('users');
+            $table->string('kfs_chart_code')->default('SC');
+            $table->string('kfs_account_number');
             $table->default();
-            $table->hidden();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -8,9 +8,4 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateSupplier extends CreateRecord
 {
     protected static string $resource = SupplierResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [];
-    }
 }

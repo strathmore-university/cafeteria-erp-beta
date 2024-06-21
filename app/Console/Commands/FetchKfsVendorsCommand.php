@@ -6,7 +6,6 @@ use App\Facades\ApiClient;
 use App\Models\Procurement\KfsVendor;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class FetchKfsVendorsCommand extends Command

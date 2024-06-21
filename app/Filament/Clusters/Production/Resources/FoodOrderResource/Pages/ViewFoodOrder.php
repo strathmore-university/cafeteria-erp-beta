@@ -5,7 +5,6 @@ namespace App\Filament\Clusters\Production\Resources\FoodOrderResource\Pages;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource;
 use App\Models\Production\FoodOrder;
 use Filament\Actions\Action;
-use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewFoodOrder extends ViewRecord

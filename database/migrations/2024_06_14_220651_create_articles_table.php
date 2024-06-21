@@ -18,7 +18,7 @@ return new class() extends Migration
             $table->description();
 
             $table->integer('unit_capacity')->nullable();
-            $table->decimal('weighted_cost')->nullable();
+            $table->decimal('valuation_rate')->nullable();
             $table->integer('lifespan_days')->nullable();
             $table->integer('reorder_level')->nullable();
 

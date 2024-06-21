@@ -4,38 +4,26 @@ namespace App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\
 
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 
 class ItemsRelationManager extends RelationManager
 {
+    protected static ?string $title = 'Received Items';
+
     protected static string $relationship = 'items';
 
     public function table(Table $table): Table
     {
-        $preventEdit = $this->ownerRecord->preventEdit();
-
-        return $table
-            ->recordTitleAttribute('article.name')
+        return $table->recordTitleAttribute('article.name')
             ->columns([
                 Tables\Columns\TextColumn::make('article.name')
-                    ->searchable()
-                    ->sortable(),
-                TextInputColumn::make('batch_number')->disabled($preventEdit)
-                    ->rules(['nullable', 'string']),
-                TextInputColumn::make('units')->disabled($preventEdit)
-                    ->rules(['numeric']),
-                TextInputColumn::make('price')->disabled($preventEdit)
-                    ->rules(['numeric']),
-                // todo: add expires at here and on the form as well
-
+                    ->searchable()->sortable(),
+                grn_item_numeric_column($this->ownerRecord, 'units'),
+                grn_item_numeric_column($this->ownerRecord, 'price'),
+                grn_item_string_column($this->ownerRecord, 'batch_number'),
+                grn_item_date_column($this->ownerRecord, 'expires_at'),
                 Tables\Columns\TextColumn::make('total_value')
-                    ->numeric()
-                    ->prefix('Ksh. '),
-            ])
-            ->headerActions([])
-            ->bulkActions([])
-            ->filters([])
-            ->actions([]);
+                    ->numeric()->sortable()->prefix('Ksh. '),
+            ]);
     }
 }

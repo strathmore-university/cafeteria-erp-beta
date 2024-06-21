@@ -64,6 +64,5 @@ class DispatchedIngredient extends Model
         //        $this->requestedIngredient->update(['dispatched_at' => now()]);
 
         // update the status of the dispatched item
-
     }
 }

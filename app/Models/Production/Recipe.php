@@ -19,7 +19,8 @@ class Recipe extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(
-            Article::class, 'article_id'
+            Article::class,
+            'article_id'
         );
     }
 

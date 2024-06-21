@@ -3,6 +3,7 @@
 namespace App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\Pages;
 
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource;
+use App\Models\Procurement\PurchaseOrder;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -19,39 +20,34 @@ class ViewPurchaseOrder extends ViewRecord
         return [
             EditAction::make()->visible(fn ($record) => $record->allowEdits()),
             DeleteAction::make()->visible(fn ($record) => $record->allowEdits()),
-            Action::make('submit_for_review')
-                ->label('Submit for review')
-                ->requiresConfirmation()
-                ->visible(fn ($record) => $record->canBeSubmittedForReview())
-                ->action(fn ($record) => $record->requestReview()),
+            Action::make('submit_for_review')->requiresConfirmation()
+                ->visible(fn (PurchaseOrder $record) => $record->canBeSubmittedForReview())
+                ->action(fn (PurchaseOrder $record) => $record->requestReview())
+                ->label('Submit for review'),
             Action::make('review')->label('Submit review')
                 ->form([
-                    TextInput::make('comment'),
+                    TextInput::make('comment')->label('comments')
+                        ->required()->string()->maxLength(255),
                     Radio::make('status')->default('approve')
-                        ->columns(3)
-                        ->options([
+                        ->required()->columns(3)->options([
                             'approved' => 'Approve',
                             'rejected' => 'Reject',
                             'returned' => 'Return',
                         ]),
                 ])
-                ->action(fn ($record, $data) => $record->submitReview($data))
-                ->visible(fn ($record) => $record->canBeReviewed())
+                ->action(fn (PurchaseOrder $record, $data) => $record->submitReview($data))
+                ->visible(fn (PurchaseOrder $record) => $record->canBeReviewed())
                 ->requiresConfirmation(),
-            Action::make('receive')->requiresConfirmation()
-                ->button()
-                ->visible(fn ($record) => $record->canBeDownload())
+            Action::make('receive')->requiresConfirmation()->button()
+                ->visible(fn (PurchaseOrder $record) => $record->canBeReceived())
                 ->action(function ($record): void {
-                    redirect(get_record_url($record->fetchOrCreateGrn()));
+                    redirect(get_record_url($record->fetchGrn()));
                 })
-//                    ->authorize('receive')
-                ->color('success')
-                ->icon('heroicon-o-shopping-cart'),
-            Action::make('download-lpo')
-                ->label('Download LPO')
-                ->color('success')
-                ->visible(fn ($record) => $record->canBeDownload())
-                ->url(fn ($record) => route('download.purchase-order', ['purchaseOrder' => $record->id])),
+                ->icon('heroicon-o-truck'),
+            Action::make('download')
+                ->visible(fn (PurchaseOrder $record) => $record->canBeDownloaded())
+                ->url(fn (PurchaseOrder $record) => $record->downloadLink())
+                ->icon('heroicon-o-arrow-down-tray'),
         ];
     }
 }

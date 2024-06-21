@@ -7,10 +7,9 @@ use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\Pages\Crea
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\Pages\EditPurchaseOrder;
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\Pages\ListPurchaseOrders;
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\Pages\ViewPurchaseOrder;
+use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\RelationManagers\GoodsReceivedNotesRelationManager;
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource\RelationManagers\ItemsRelationManager;
-use App\Models\Inventory\Store;
 use App\Models\Procurement\PurchaseOrder;
-use App\Models\Procurement\Supplier;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
@@ -20,11 +19,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Str;
+use Throwable;
 
 class PurchaseOrderResource extends Resource
 {
@@ -38,73 +39,80 @@ class PurchaseOrderResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    /**
+     * @throws Throwable
+     */
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Select::make('supplier_id')->options(Supplier::all()
-                    ->pluck('name', 'id'))
-                    ->disabled(fn ($record) => filled($record?->exists()))
-                    ->searchable()
-                    ->preload(),
-                Select::make('store_id')
-                    ->options(Store::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->preload(),
-                DatePicker::make('expected_delivery_date'),
-                DatePicker::make('expires_at')
-                    ->visible(fn ($record) => $record?->hasBeenApproved())
-                    ->disabled(),
-                TextInput::make('kfs_account_number'),
-                Hidden::make('status')->default('draft'),
-                Section::make()->schema([
-                    Placeholder::make('status')
-                        ->visible(fn ($record) => filled($record?->exists()))
-                        ->content(
-                            fn (PurchaseOrder $record): string => Str::title($record->getAttribute('status'))
-                        ),
-                    placeholder('created_at', 'Created at'),
-                    placeholder('updated_at', 'Late updated'),
-                ])->columns(3),
-            ])->disabled(fn ($record) => $record?->preventEdit());
+        $cols = 2;
+
+        return $form->columns($cols)->schema([
+            Select::make('supplier_id')->label('Supplier')
+                ->options(active_suppliers())->searchable()->preload(),
+            Select::make('store_id')->label('Store')
+                ->options(procurement_stores())->searchable()->preload(),
+            TextInput::make('created_by')
+                ->formatStateUsing(fn ($record) => Str::title($record->creator->name))
+                ->label('Requested by')->readOnly(),
+            TextInput::make('kfs_account_number')
+                ->default(fn () => auth_team()->kfs_account_number)
+                ->required()->string()->numeric(),
+            DatePicker::make('expected_delivery_date')
+                ->visible(fn ($record) => $record?->hasBeenApproved())
+                ->rules('required|after:yesterday|date'),
+            DatePicker::make('expires_at')->readOnly()
+                ->visible(fn ($record) => $record?->hasBeenApproved()),
+            TextInput::make('total_value')->readOnly(),
+            Hidden::make('status')->default('draft'),
+            Section::make()->columns(3)->schema([
+                Placeholder::make('status')
+                    ->visible(fn ($record) => filled($record?->exists()))
+                    ->content(fn (PurchaseOrder $record): string => Str::title($record->getAttribute('status'))),
+                placeholder('created_at', 'Created at'),
+                placeholder('updated_at', 'Late updated'),
+            ]),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('code'),
-                TextColumn::make('supplier.name'),
-                TextColumn::make('creator.name')->label('Requested By'),
-                TextColumn::make('total_value')->numeric(),
-                TextColumn::make('expected_delivery_date')->dateTime(),
-                TextColumn::make('status')->badge()
-                    ->formatStateUsing(fn ($state) => Str::title($state))
-                    ->color(fn (string $state): string => match ($state) {
-                        'pending review', 'returned', 'pending fulfilment' => 'warning',
-                        'delivered', 'fulfilled' => 'success',
-                        'rejected' => 'danger',
-                        default => 'gray'
-                    }),
-            ])
-            ->filters([])
-            ->actions([
-                Action::make('receive')->requiresConfirmation()
-                    ->button()
-                    ->visible(fn ($record) => $record->canBeDownload())
-                    ->action(function ($record): void {
-                        redirect(get_record_url($record->fetchOrCreateGrn()));
-                    })
-//                    ->authorize('receive')
-                    ->color('success')
-                    ->icon('heroicon-o-shopping-cart'),
-                Action::make('download-lpo')->label('Download LPO')
-                    ->color('success')->button()
-                    ->url(fn ($record) => route('download.purchase-order', ['purchaseOrder' => $record->id]))
-                    ->visible(fn ($record) => $record->canBeDownload()),
+        return $table->columns([
+            TextColumn::make('code')->label('PO Number')
+                ->searchable()->sortable(),
+            TextColumn::make('supplier.name')->searchable()->sortable(),
+            TextColumn::make('creator.name')->label('Requested By')
+                ->formatStateUsing(fn ($state) => Str::title($state))
+                ->searchable()->sortable(),
+            TextColumn::make('total_value')->numeric()->sortable()
+                ->prefix('Ksh. '),
+            TextColumn::make('expected_delivery_date')->dateTime()
+                ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('status')->badge()
+                ->formatStateUsing(fn ($state) => Str::title($state))
+                ->color(fn (string $state): string => match ($state) {
+                    'pending review', 'returned', 'pending fulfilment' => 'warning',
+                    'delivered', 'fulfilled' => 'success',
+                    'rejected' => 'danger',
+                    default => 'gray'
+                }),
+        ])->actions([
+            ActionGroup::make([
+                ActionGroup::make([
+                    Action::make('receive')->requiresConfirmation()
+                        ->action(function (PurchaseOrder $record): void {
+                            redirect(get_record_url($record->fetchGrn()));
+                        })
+                        ->visible(fn (PurchaseOrder $record) => $record->canBeReceived())
+                        ->icon('heroicon-o-truck'),
+                    Action::make('download')
+                        ->url(fn (PurchaseOrder $record) => $record->downloadLink())
+                        ->visible(fn (PurchaseOrder $record) => $record->canBeDownloaded())
+                        ->icon('heroicon-o-arrow-down-tray'),
+                ])
+                    ->dropdown(false),
                 ViewAction::make(),
-            ])
-            ->bulkActions([]);
+            ])->dropdownPlacement('top-end'),
+        ]);
     }
 
     public static function getPages(): array
@@ -121,17 +129,7 @@ class PurchaseOrderResource extends Resource
     {
         return [
             ItemsRelationManager::class,
-            // todo: add grn relation
+            GoodsReceivedNotesRelationManager::class,
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery();
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [];
     }
 }

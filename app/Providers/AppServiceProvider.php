@@ -67,7 +67,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Blueprint::macro('name', function (): void {
-            $this->string('name', 100)->index();
+            $this->string('name', 255)->index();
         });
 
         Blueprint::macro('status', function (): void {

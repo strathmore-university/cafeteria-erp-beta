@@ -33,12 +33,12 @@ class StockMovement extends Model
             $value = abs($movement->units) * $movement->weighted_cost;
             $movement->stock_value = $value;
         });
-
-        $message = 'StockMovement is immutable';
-        static::updating(fn () => throw_if(true, $message));
-
-        static::saving(
-            fn (Model $model) => throw_if($model->exists, $message)
-        );
+        // todo: review
+        //        $message = 'StockMovement is immutable';
+        //        static::updating(fn () => throw_if(true, $message));
+        //
+        //        static::saving(
+        //            fn (Model $model) => throw_if($model->exists, $message)
+        //        );
     }
 }

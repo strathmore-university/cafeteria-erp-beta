@@ -3,7 +3,6 @@
 namespace App\Concerns;
 
 use App\Models\Core\Review;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Throwable;
 
@@ -56,7 +55,7 @@ trait HasReviews
     {
         $this->latestPendingReview()->update([
             'comment' => $data['comment'],
-            'reviewed_by' => auth()->id() ?? User::first()->id, // todo: make system user
+            'reviewed_by' => auth_id(),
             'status' => $data['status'],
             'reviewed_at' => now(),
         ]);
@@ -71,8 +70,8 @@ trait HasReviews
     {
         match ($status) {
             'approved' => $this->approvalAction(),
-            'returned' => $this->returnAction(),
             'rejected' => $this->rejectedAction(),
+            'returned' => $this->returnAction(),
         };
     }
 }
