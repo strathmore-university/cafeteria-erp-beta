@@ -6,7 +6,6 @@ use App\Models\Core\Unit;
 use App\Models\Inventory\Article;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ingredient extends Model
@@ -22,7 +21,7 @@ class Ingredient extends Model
 
     public function unit(): BelongsTo
     {
-        return $this->belongsTo(Unit::class, 'unit_id');
+        return $this->belongsTo(Unit::class);
     }
 
     public function article(): BelongsTo
@@ -30,18 +29,12 @@ class Ingredient extends Model
         return $this->belongsTo(Article::class);
     }
 
-    public function requestedIngredient(): HasOne
-    {
-        return $this->hasOne(RequestedIngredient::class);
-    }
-
     public function requiredQuantity(int $portions): int
     {
-        $recipe = $this->recipe;
         $quantity = $this->getAttribute('quantity');
-        $calculated = $quantity * $portions / $recipe->yield;
+        $calculated = $quantity * $portions / $this->recipe->yield;
 
-        return match ($recipe->yield === $portions) {
+        return match ($this->recipe->yield === $portions) {
             false => (int) ceil($calculated),
             true => $quantity,
         };

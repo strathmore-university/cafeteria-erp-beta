@@ -16,6 +16,8 @@ return new class() extends Migration
             $table->name();
             $table->description();
             $table->integer('yield')->default(1);
+            $table->integer('surplus_tolerance');
+            $table->integer('wastage_tolerance');
             $table->active();
             $table->softDeletes();
             $table->timestamps();

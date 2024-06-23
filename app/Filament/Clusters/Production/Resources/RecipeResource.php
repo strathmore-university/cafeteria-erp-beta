@@ -7,8 +7,8 @@ use App\Filament\Clusters\Production\Resources\RecipeResource\Pages\CreateRecipe
 use App\Filament\Clusters\Production\Resources\RecipeResource\Pages\EditRecipe;
 use App\Filament\Clusters\Production\Resources\RecipeResource\Pages\ListRecipes;
 use App\Filament\Clusters\Production\Resources\RecipeResource\Pages\ViewRecipe;
+use App\Filament\Clusters\Production\Resources\RecipeResource\RelationManagers\ByProductsRelationManager;
 use App\Filament\Clusters\Production\Resources\RecipeResource\RelationManagers\IngredientsRelationManager;
-use App\Models\Inventory\Article;
 use App\Models\Production\Recipe;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -44,18 +44,24 @@ class RecipeResource extends Resource
         return $form->schema([
             TextInput::make('name')->required(),
             TextInput::make('description')->required(),
-            Select::make('article_id')->label('Article')
-                ->preload()->searchable()->required()
-                ->options(Article::isProduct()->isDescendant()->get()->pluck('name', 'id')->toArray()),
-            TextInput::make('yield')->required(),
-            Select::make('category_id')->label('Category')
-                ->preload()->searchable()->required()
-                ->options(recipe_groups()->pluck('name', 'id')->toArray()),
+            Select::make('article_id')->label('Product')
+                ->options(product_articles())->preload()->searchable()
+                ->required(),
+            TextInput::make('yield')->required()->numeric(),
+            TextInput::make('surplus_tolerance')->required()
+                ->label('Surplus Tolerance (%)')->suffix('%')
+                ->numeric()->maxValue(100)->minValue(0),
+            TextInput::make('wastage_tolerance')->required()
+                ->label('Wastage Tolerance (%)')->suffix('%')
+                ->numeric()->maxValue(100)->minValue(0),
+            Select::make('category_id')->label('Recipe Category')
+                ->options(recipe_groups()->pluck('name', 'id')->toArray())
+                ->preload()->searchable()->required(),
             Toggle::make('is_active')->default(true),
             Section::make([
                 placeholder('created_at', 'Created Date'),
                 placeholder('updated_at', 'Last Modified Date'),
-            ])->columns($cols),
+            ])->visible(fn ($record) => $record?->exists())->columns($cols),
         ]);
     }
 
@@ -63,8 +69,13 @@ class RecipeResource extends Resource
     {
         return $table->columns([
             TextColumn::make('name')->searchable()->sortable(),
+            TextColumn::make('product.name')->searchable()->sortable(),
+            TextColumn::make('yield')->sortable(),
+            TextColumn::make('surplus_tolerance')->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('wastage_tolerance')->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('category.name')->searchable()->sortable(),
-            TextColumn::make('yield'),
             IconColumn::make('is_active')->boolean(),
         ])->actions([ViewAction::make()]);
     }
@@ -73,6 +84,7 @@ class RecipeResource extends Resource
     {
         return [
             IngredientsRelationManager::class,
+            ByProductsRelationManager::class,
         ];
     }
 

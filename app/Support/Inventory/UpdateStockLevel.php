@@ -118,7 +118,7 @@ class UpdateStockLevel
             'current_units' => $this->units,
             'is_sold_stock' => $this->sale,
             'store_id' => $this->storeId,
-            'team_id' => team_id(),
+            'team_id' => $this->teamId,
             'previous_units' => 0,
         ]);
     }

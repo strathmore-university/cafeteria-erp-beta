@@ -26,9 +26,9 @@ trait HasStores
 
     public function defaultStore(): Store
     {
-        return Store::where('storeable_type', $this->getMorphClass())
+        return Store::where('owner_type', $this->getMorphClass())
             ->where('is_default', '=', true)
-            ->where('storeable_id', $this->getKey())
+            ->where('owner_id', $this->getKey())
             ->first();
     }
 

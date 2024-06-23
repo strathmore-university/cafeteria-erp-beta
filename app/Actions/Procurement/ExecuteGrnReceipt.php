@@ -117,7 +117,7 @@ class ExecuteGrnReceipt
             ->get();
 
         $message = 'There are no items to be received';
-        throw_if(! $items->count(), new Exception($message));
+        throw_if( ! $items->count(), new Exception($message));
 
         return $items;
     }
@@ -136,12 +136,10 @@ class ExecuteGrnReceipt
 
         $batch = Batch::create([
             'team_id' => $store->getAttribute('team_id'),
-            'owner_type' => $this->item->getMorphClass(),
             'batch_number' => $this->item->batch_number,
             'article_id' => $this->item->article_id,
             'initial_units' => $this->item->units,
             'weighted_cost' => $this->item->price,
-            'owner_id' => $this->item->id,
             'expires_at' => $expiryDate,
             'narration' => $narration,
             'store_id' => $store->id,

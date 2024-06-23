@@ -14,11 +14,6 @@ class CoreDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            CategorySeeder::class,
-            UnitSeeder::class,
-        ]);
-
         Artisan::call('make:filament-user', ['--name' => 'tony', '--email' => 'tony@gmail.com', '--password' => '12345678']);
 
         $head = User::first();

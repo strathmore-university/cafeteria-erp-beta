@@ -35,7 +35,7 @@ class DispatchedIngredient extends Model
 
     public function foodOrderRecipe(): BelongsTo
     {
-        return $this->belongsTo(FoodOrderRecipe::class);
+        return $this->belongsTo(FoodOrder::class);
     }
 
     public function foodOrder(): BelongsTo
@@ -43,26 +43,17 @@ class DispatchedIngredient extends Model
         return $this->belongsTo(FoodOrder::class);
     }
 
-    public function dispatch(): void
+    public function requestedIngredient(): BelongsTo
     {
-        dd($this);
+        return $this->belongsTo(RequestedIngredient::class);
+    }
 
-        //        $a = 1;
-
-        // check stock levels?
-
-        // get the article
-
-        // find its batches
-
-        // loop over batches
-        // create new batch
-        // create movement
-        // update stock level
-
-        // update the requested ingredient
-        //        $this->requestedIngredient->update(['dispatched_at' => now()]);
-
-        // update the status of the dispatched item
+    protected static function booted(): void
+    {
+        parent::creating(function (DispatchedIngredient $ingredient) {
+            if ($ingredient->getAttribute('status') === 'draft') {
+                $ingredient->current_units = $ingredient->initial_units;
+            }
+        });
     }
 }

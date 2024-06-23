@@ -46,29 +46,22 @@ class Article extends Model
     /**
      * @throws Throwable
      */
-    public function viableDispatchArticles(float $quantity): Collection
-    {
+    public function viableDispatchArticles(
+        ?Store $store = null
+    ): Collection {
         try {
-            $descendants = $this->descendants;
-
-            //        $descendants = $descendants->filter(function ($article) {
-            //            return $article->unit_measurement_id !== $this->unit_measurement_id;
-            //        });
-
-            $descendants = $descendants->filter(function ($article) use ($quantity) {
-                //                $available = article_units($article);
-                $available = article_capacity($article);
-
+            $articles = $this->descendants->filter(function ($article) use ($store) {
+                $available = article_capacity($article, $store);
                 $id = $this->getAttribute('unit_id');
-                $inReferenceUnit = quantity_converter($article->unit_id, $id, $available);
+                $from = $article->unit_id;
 
-                return $inReferenceUnit >= $quantity;
+                return quantity_converter($from, $id, $available) >= 0;
             });
 
             $message = 'No articles with adequate stock to dispatch found!';
-            throw_if($descendants->isEmpty(), new Exception($message));
+            throw_if( ! count($articles), new Exception($message));
 
-            return $descendants;
+            return $articles;
         } catch (Throwable $exception) {
             error_notification($exception);
         }
@@ -79,20 +72,27 @@ class Article extends Model
     /**
      * @throws Throwable
      */
-    public function unitsToDispatch(int $quantity): int
-    {
-        $parentUnitId = $this->parent->getAttribute('unit_id');
-
+    public function unitsToDispatch(
+        int $requiredCapacity,
+        ?Store $store = null,
+        ?int $parentUnitId = null
+    ): int {
+        $parentUnitId = $parentUnitId ?? $this->parent->getAttribute('unit_id');
         $id = $this->getAttribute('unit_id');
-        $quantity = quantity_converter($parentUnitId, $id, $quantity);
 
-        return (int) ceil($quantity / ($this->unit_capacity ?? 1));
+        $capacity = article_capacity($this, $store);
+        $capacity = quantity_converter($id, $parentUnitId, $capacity);
 
-        //        return match ($id === $parentUnitId) {
-        //            false => (int) ceil($quantity / ($this->unit_capacity ?? 1)),
-        //            true => ceil($quantity / ($this->unit_capacity ?? 1)),
-        //        };
+        if ($capacity < $requiredCapacity) {
+            return article_units($this, $store);
+        }
+
+        $capacity = quantity_converter($parentUnitId, $id, $requiredCapacity);
+
+        return (int) ceil($capacity / ($this->unit_capacity ?? 1));
     }
+
+    // todo: lorem ipsum
 
     public function scopeCanBeOrdered(Builder $query): Builder
     {

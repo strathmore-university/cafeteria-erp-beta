@@ -7,7 +7,6 @@ use App\Filament\Clusters\Production\Resources\RecipeResource;
 use App\Models\Inventory\Article;
 use App\Models\Production\Recipe;
 use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 
 class ViewRecipe extends ViewReview
@@ -18,15 +17,15 @@ class ViewRecipe extends ViewReview
     {
         return [
             //todo: download button
-            // todo: button to go to the product
-            Action::make('View-product')->button()
-                ->url(function (Recipe $record) {
-                    $article = Article::find($record->article_id);
+            Action::make('View-product')->icon('heroicon-o-eye')
+                ->button()->url(function (Recipe $record) {
+                    $id = $record->getAttribute('article_id');
+                    $article = Article::select('id')->find($id);
 
                     return get_record_url($article);
                 }),
             EditAction::make(),
-            DeleteAction::make(),
+            //            DeleteAction::make(),
         ];
     }
 }

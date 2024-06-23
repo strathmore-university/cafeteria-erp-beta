@@ -40,6 +40,7 @@ class Team extends Model
             $category = store_types('Procurement Store');
             $team->stores()->create([
                 'name' => $name . ' ' . $category->getAttribute('name'),
+                'description' => 'Procurement Store',
                 'category_id' => $category->id,
                 'owner_type' => Team::class,
                 'owner_id' => $team->id,
@@ -48,9 +49,11 @@ class Team extends Model
             $category = store_types('Main Store');
             $team->stores()->create([
                 'name' => $name . ' ' . $category->getAttribute('name'),
+                'description' => 'Main Store',
                 'category_id' => $category->id,
                 'owner_type' => Team::class,
                 'owner_id' => $team->id,
+                'is_default' => true,
             ]);
         });
     }

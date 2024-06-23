@@ -22,9 +22,13 @@ use Illuminate\Support\Str;
 class CreditNoteResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
+
     protected static ?string $slug = 'procurement/credit-notes';
+
     protected static ?string $cluster = Procurement::class;
+
     protected static ?string $model = CreditNote::class;
+
     protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
@@ -35,27 +39,27 @@ class CreditNoteResource extends Resource
             Section::make()->schema([
                 TextInput::make('code')->label('Credit Not Number'),
                 TextInput::make('purchase_order_id')->label('LPO Number')
-                    ->formatStateUsing(fn($record) => $record->purchaseOrder->code),
+                    ->formatStateUsing(fn ($record) => $record->purchaseOrder->code),
                 TextInput::make('supplier_id')->label('Supplier')
                     ->formatStateUsing(
-                        fn($record) => Str::title($record->supplier->getAttribute('name'))
+                        fn ($record) => Str::title($record->supplier->getAttribute('name'))
                     ),
                 TextInput::make('created_by')->label('Creator')
                     ->formatStateUsing(
-                        fn(CreditNote $record) => Str::title($record->creator->name)
+                        fn (CreditNote $record) => Str::title($record->creator->name)
                     ),
                 TextInput::make('total_value')
-                    ->formatStateUsing(fn($state) => 'Ksh. '.number_format($state)),
+                    ->formatStateUsing(fn ($state) => 'Ksh. ' . number_format($state)),
             ])->columns($cols),
             SpatieMediaLibraryFileUpload::make('attachments')
                 ->columnSpan(2)
-                ->visible(fn(CreditNote $record) => $record->hasMedia())
+                ->visible(fn (CreditNote $record) => $record->hasMedia())
                 ->deletable(false)->visibility('private')
                 ->downloadable()
                 ->multiple(),
             Section::make()->schema([
                 TextInput::make('status')
-                    ->formatStateUsing(fn($state) => Str::title($state)),
+                    ->formatStateUsing(fn ($state) => Str::title($state)),
                 placeholder('created_at', 'Created at'),
                 placeholder('updated_at', 'Last updated'),
                 placeholder('issued_at', 'Issued at'),
@@ -77,14 +81,14 @@ class CreditNoteResource extends Resource
                     ->sortable()->prefix('Ksh. '),
                 TextColumn::make('created_by')->searchable()
                     ->label('Created By')->sortable()->formatStateUsing(
-                        fn($record) => Str::title($record->creator->name)
+                        fn ($record) => Str::title($record->creator->name)
                     )
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('issued_at')->searchable()->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true)->sortable(),
                 TextColumn::make('status')->badge()
-                    ->formatStateUsing(fn(string $state) => Str::title($state))
-                    ->color(fn(string $state): string => match ($state) {
+                    ->formatStateUsing(fn (string $state) => Str::title($state))
+                    ->color(fn (string $state): string => match ($state) {
                         'issued' => 'success',
                         default => 'warning'
                     }),
@@ -103,7 +107,7 @@ class CreditNoteResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ItemsRelationManager::class
+            ItemsRelationManager::class,
         ];
     }
 

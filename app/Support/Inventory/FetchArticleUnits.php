@@ -26,9 +26,12 @@ class FetchArticleUnits
         $check = $article->getAttribute('is_reference');
         throw_if((bool) $check, new Exception($message));
 
+//        todo: when batches expire, update stock level
+
+        $id = $article->getAttribute('team_id');
         return StockLevel::where('article_id', '=', $article->id)
-            ->where('team_id', '=', $article->getAttribute('team_id'))
             ->where('is_sold_stock', '=', $soldStock)
+            ->where('team_id', '=', $id)
             ->when(filled($this->store), function ($query): void {
                 $query->where('store_id', '=', $this->store->id);
             })

@@ -36,20 +36,21 @@ class StationResource extends Resource
         $cols = 2;
 
         return $form->schema([
-            TextInput::make('name')->required(),
-            TextInput::make('description')->required(),
+            TextInput::make('name')->required()->string()->maxLength(255),
+            TextInput::make('description')->required()->string()->maxLength(255),
             Toggle::make('is_active')->default(true),
             Section::make([
                 placeholder('created_at', 'Created Date'),
                 placeholder('updated_at', 'Last Modified Date'),
-            ])->columns($cols),
-        ]);
+            ])->visible(fn ($record) => $record?->exists())->columns($cols),
+        ])->columns(1);
     }
 
     public static function table(Table $table): Table
     {
         return $table->columns([
             TextColumn::make('name')->searchable()->sortable(),
+            TextColumn::make('description')->searchable()->sortable(),
             IconColumn::make('is_active')->boolean(),
         ])->actions([ViewAction::make()]);
     }

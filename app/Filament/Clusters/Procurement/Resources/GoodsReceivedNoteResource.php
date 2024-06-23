@@ -6,7 +6,6 @@ use App\Filament\Clusters\Procurement;
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\Pages\ListGoodsReceivedNotes;
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\Pages\ViewGoodsReceivedNote;
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\RelationManagers\ItemsRelationManager;
-use App\Models\Procurement\CreditNote;
 use App\Models\Procurement\GoodsReceivedNote;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;

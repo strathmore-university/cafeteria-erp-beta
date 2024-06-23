@@ -12,9 +12,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\LaravelPdf\PdfBuilder;
-use function Spatie\LaravelPdf\Support\pdf;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+
+use function Spatie\LaravelPdf\Support\pdf;
 
 class GoodsReceivedNote extends Model implements HasMedia
 {

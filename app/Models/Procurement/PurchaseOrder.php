@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Spatie\LaravelPdf\PdfBuilder;
-use function Spatie\LaravelPdf\Support\pdf;
 use Throwable;
+
+use function Spatie\LaravelPdf\Support\pdf;
 
 //use PDF;
 
@@ -202,7 +203,7 @@ class PurchaseOrder extends Model
 
     public function isValidLPO(): bool
     {
-        $notExpired = !$this->isExpired();
+        $notExpired = ! $this->isExpired();
 
         return and_check($this->hasBeenApproved(), $notExpired);
     }
@@ -219,6 +220,21 @@ class PurchaseOrder extends Model
         return $this->hasBeenApproved();
     }
 
+    /**
+     * @throws Throwable
+     */
+    public function generateCrn(): CreditNote
+    {
+        return (new GenerateCrn())->execute($this);
+    }
+
+    public function canGeneratedCrn(): bool
+    {
+        $one = or_check($this->isExpired(), $this->isValidLPO());
+
+        return and_check($one, $this->pendingFulfillment());
+    }
+
     protected static function booted(): void
     {
         static::creating(function (PurchaseOrder $purchaseOrder): void {
@@ -228,20 +244,5 @@ class PurchaseOrder extends Model
             $purchaseOrder->setAttribute('code', $code);
             $purchaseOrder->setAttribute('status', 'draft');
         });
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function generateCrn(): CreditNote
-    {
-        return (new GenerateCrn())->execute($this);
-    }
-
-    public function canGeneratedCrn():bool
-    {
-        $one = or_check($this->isExpired(), $this->isValidLPO());
-
-        return and_check($one, $this->pendingFulfillment());
     }
 }

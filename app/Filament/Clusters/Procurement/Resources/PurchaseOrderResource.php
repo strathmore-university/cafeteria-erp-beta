@@ -52,22 +52,22 @@ class PurchaseOrderResource extends Resource
             Select::make('store_id')->label('Store')
                 ->options(procurement_stores())->searchable()->preload(),
             TextInput::make('created_by')
-                ->formatStateUsing(fn($record) => Str::title($record?->creator->name))
+                ->formatStateUsing(fn ($record) => Str::title($record?->creator->name))
                 ->label('Requested by')->readOnly(),
             TextInput::make('kfs_account_number')
-                ->default(fn() => auth_team()->kfs_account_number)
+                ->default(fn () => auth_team()->kfs_account_number)
                 ->required()->string()->numeric(),
             DatePicker::make('expected_delivery_date')
-                ->visible(fn($record) => $record?->hasBeenApproved())
+                ->visible(fn ($record) => $record?->hasBeenApproved())
                 ->rules('required|after:yesterday|date'),
             DatePicker::make('expires_at')->readOnly()
-                ->visible(fn($record) => $record?->hasBeenApproved()),
+                ->visible(fn ($record) => $record?->hasBeenApproved()),
             TextInput::make('total_value')->readOnly(),
             Hidden::make('status')->default('draft'),
             Section::make()->columns(3)->schema([
                 Placeholder::make('status')
-                    ->visible(fn($record) => filled($record?->exists()))
-                    ->content(fn(PurchaseOrder $record): string => Str::title($record->getAttribute('status'))),
+                    ->visible(fn ($record) => filled($record?->exists()))
+                    ->content(fn (PurchaseOrder $record): string => Str::title($record->getAttribute('status'))),
                 placeholder('created_at', 'Created at'),
                 placeholder('updated_at', 'Late updated'),
             ]),
@@ -81,15 +81,15 @@ class PurchaseOrderResource extends Resource
                 ->searchable()->sortable(),
             TextColumn::make('supplier.name')->searchable()->sortable(),
             TextColumn::make('creator.name')->label('Requested By')
-                ->formatStateUsing(fn($state) => Str::title($state))
+                ->formatStateUsing(fn ($state) => Str::title($state))
                 ->searchable()->sortable(),
             TextColumn::make('total_value')->numeric()->sortable()
                 ->prefix('Ksh. '),
             TextColumn::make('expected_delivery_date')->dateTime()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('status')->badge()
-                ->formatStateUsing(fn($state) => Str::title($state))
-                ->color(fn(string $state): string => match ($state) {
+                ->formatStateUsing(fn ($state) => Str::title($state))
+                ->color(fn (string $state): string => match ($state) {
                     'pending review', 'returned', 'pending fulfilment' => 'warning',
                     'delivered', 'fulfilled' => 'success',
                     'rejected', 'expired' => 'danger',
@@ -102,17 +102,17 @@ class PurchaseOrderResource extends Resource
                         ->action(function (PurchaseOrder $record): void {
                             redirect(get_record_url($record->fetchGrn()));
                         })
-                        ->visible(fn(PurchaseOrder $record) => $record->canBeReceived())
+                        ->visible(fn (PurchaseOrder $record) => $record->canBeReceived())
                         ->icon('heroicon-o-truck'),
                     Action::make('generate-credit-note')->requiresConfirmation()
                         ->action(function (PurchaseOrder $record): void {
                             redirect(get_record_url($record->generateCrn()));
                         })
-                        ->visible(fn(PurchaseOrder $record) => $record->canGeneratedCrn())
+                        ->visible(fn (PurchaseOrder $record) => $record->canGeneratedCrn())
                         ->icon('heroicon-o-receipt-percent'),
                     Action::make('download')
-                        ->url(fn(PurchaseOrder $record) => $record->downloadLink())
-                        ->visible(fn(PurchaseOrder $record) => $record->canBeDownloaded())
+                        ->url(fn (PurchaseOrder $record) => $record->downloadLink())
+                        ->visible(fn (PurchaseOrder $record) => $record->canBeDownloaded())
                         ->icon('heroicon-o-arrow-down-tray'),
                 ])
                     ->dropdown(false),
@@ -136,7 +136,7 @@ class PurchaseOrderResource extends Resource
         return [
             ItemsRelationManager::class,
             GoodsReceivedNotesRelationManager::class,
-            CreditNotesRelationManager::class
+            CreditNotesRelationManager::class,
         ];
     }
 }

@@ -8,7 +8,6 @@ use App\Models\Procurement\PurchaseOrder;
 use App\Models\Procurement\PurchaseOrderItem;
 use Exception;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class IssueCrn
@@ -19,26 +18,26 @@ class IssueCrn
     {
         $this->crn = $crn;
 
-//        try {
-//            DB::transaction(function (): void {
-                $items = $this->crnItems();
-                $items->each(fn($item) => $this->processCrnItem($item));
+        //        try {
+        //            DB::transaction(function (): void {
+        $items = $this->crnItems();
+        $items->each(fn ($item) => $this->processCrnItem($item));
 
-                $total = $items->sum('total_value');
-                $this->updatePurchaseOrder();
-                $this->updateCrn($total);
+        $total = $items->sum('total_value');
+        $this->updatePurchaseOrder();
+        $this->updateCrn($total);
 
-                CreditNoteItem::where('units', '<=', 0)
-                    ->whereCreditNoteId($this->crn->id)
-                    ->delete();
+        CreditNoteItem::where('units', '<=', 0)
+            ->whereCreditNoteId($this->crn->id)
+            ->delete();
 
-                success('Credit note successfully!');
-//            });
-//        } catch (Throwable $exception) {
-//            error_notification($exception);
-//        }
-//
-//        redirect(get_record_url($this->crn));
+        success('Credit note successfully!');
+        //            });
+        //        } catch (Throwable $exception) {
+        //            error_notification($exception);
+        //        }
+        //
+        //        redirect(get_record_url($this->crn));
     }
 
     /**
@@ -69,7 +68,7 @@ class IssueCrn
             ->get();
 
         $message = 'There are no items to be written off!';
-        throw_if(!$items->count(), new Exception($message));
+        throw_if( ! $items->count(), new Exception($message));
 
         return $items;
     }
@@ -92,7 +91,7 @@ class IssueCrn
     private function updatePurchaseOrder(): void
     {
         $select = [
-            'id', 'is_fulfilled', 'delivered_at', 'status', 'total_value'
+            'id', 'is_fulfilled', 'delivered_at', 'status', 'total_value',
         ];
         $purchaseOrder = PurchaseOrder::whereId($this->crn->purchase_order_id)
             ->select($select)

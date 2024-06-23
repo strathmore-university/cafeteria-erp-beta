@@ -11,6 +11,7 @@ return new class() extends Migration
         Schema::create('stations', function (Blueprint $table): void {
             $table->id();
             $table->team();
+            $table->morphs('owner');
             $table->category();
             $table->common();
             $table->softDeletes();

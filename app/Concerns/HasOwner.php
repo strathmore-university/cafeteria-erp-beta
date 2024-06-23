@@ -22,4 +22,11 @@ trait HasOwner
 
         return and_Check($identicalClass, $identicalId);
     }
+
+    public function ownerName(): string
+    {
+        $name = $this->owner->getAttribute('name');
+
+        return $name . ' (' . class_basename($this->owner_type) . ')';
+    }
 }

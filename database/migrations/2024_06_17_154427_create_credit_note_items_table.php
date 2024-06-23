@@ -8,10 +8,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class() extends Migration
+{
     public function up(): void
     {
-        Schema::create('credit_note_items', function (Blueprint $table) {
+        Schema::create('credit_note_items', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(PurchaseOrder::class)->index()->constrained();
             $table->foreignIdFor(PurchaseOrderItem::class)->index()->constrained();

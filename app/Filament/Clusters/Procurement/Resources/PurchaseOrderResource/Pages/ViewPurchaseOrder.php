@@ -48,7 +48,7 @@ class ViewPurchaseOrder extends ViewRecord
                 ->action(function (PurchaseOrder $record): void {
                     redirect(get_record_url($record->generateCrn()));
                 })
-                ->visible(fn(PurchaseOrder $record) => $record->canGeneratedCrn())
+                ->visible(fn (PurchaseOrder $record) => $record->canGeneratedCrn())
                 ->icon('heroicon-o-receipt-percent'),
             Action::make('download')
                 ->visible(fn (PurchaseOrder $record) => $record->canBeDownloaded())

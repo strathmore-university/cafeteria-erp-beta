@@ -18,6 +18,6 @@ class DownloadCrn extends Controller
         $code = $crn->getAttribute('code');
         $pdf = $crn->toPDF();
 
-        return $pdf->download($code.'-'.now().'.pdf');
+        return $pdf->download($code . '-' . now() . '.pdf');
     }
 }

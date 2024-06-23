@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\LaravelPdf\PdfBuilder;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+
 use function Spatie\LaravelPdf\Support\pdf;
 
 class CreditNote extends Model implements HasMedia
@@ -22,27 +23,10 @@ class CreditNote extends Model implements HasMedia
 
     protected $guarded = [];
 
-    protected static function booted(): void
-    {
-        static::creating(function (CreditNote $grn): void {
-            $code = generate_code('CRN-', get_next_id($grn));
-
-            $grn->setAttribute('code', $code);
-            $grn->setAttribute('status', 'draft');
-        });
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'issued_at' => 'datetime',
-        ];
-    }
-
     public function statusTransitions(): array
     {
         return [
-          'draft' => 'issued',
+            'draft' => 'issued',
         ];
     }
 
@@ -85,11 +69,28 @@ class CreditNote extends Model implements HasMedia
 
     public function deleteCrn(): void
     {
-        (new DeleteCrn)->execute($this);
+        (new DeleteCrn())->execute($this);
     }
 
     public function issueCrn(): void
     {
         (new IssueCrn())->execute($this);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (CreditNote $grn): void {
+            $code = generate_code('CRN-', get_next_id($grn));
+
+            $grn->setAttribute('code', $code);
+            $grn->setAttribute('status', 'draft');
+        });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'issued_at' => 'datetime',
+        ];
     }
 }

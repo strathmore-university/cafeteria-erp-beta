@@ -18,31 +18,41 @@ class UpdateExpiredPurchaseOrders extends Command
     {
         $this->log('Updating expired purchase orders');
 
-        $purchaseOrders = PurchaseOrder::where('expires_at', '<', now())
+        $purchaseOrders = PurchaseOrder::withoutGlobalScopes()
+            ->where('expires_at', '<', now())
             ->where('status', '!=', 'fulfilled')
             ->get();
 
-        $this->log('Found '.$purchaseOrders->count().' expired purchase orders');
+        $this->log('Found ' . $purchaseOrders->count() . ' expired purchase orders');
 
         $purchaseOrders->each(
-        /**
-         * @throws Throwable
-         */
-            function (PurchaseOrder $purchaseOrder) {
-                DB::transaction(function () use ($purchaseOrder) {
+            /**
+             * @throws Throwable
+             */
+            function (PurchaseOrder $purchaseOrder): void {
+                DB::transaction(function () use ($purchaseOrder): void {
                     $code = $purchaseOrder->getAttribute('code');
-                    $this->log('Updating purchase order: '.$code);
+                    $this->log('Updating purchase order: ' . $code);
 
                     $crn = $purchaseOrder->generateCrn();
                     $crn->issueCrn();
 
                     $purchaseOrder->update([
                         'status' => 'expired',
-                        'is_lpo' => false
+                        'is_lpo' => false,
                     ]);
-                    $this->log('Purchase order: '.$code.' updated');
+
+                    // todo: send notification to creator
+                    //                    $purchaseOrder->creator->notify(
+                    //                        'Purchase order '.$code.' has expired',
+                    //                        'Your purchase order '.$code.' has expired.
+                    //                        A credit note has been generated for it.'
+                    //                    );
+
+                    $this->log('Purchase order: ' . $code . ' updated');
                 });
-            });
+            }
+        );
     }
 
     private function log(string $message): void

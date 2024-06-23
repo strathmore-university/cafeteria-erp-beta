@@ -29,7 +29,7 @@ class ViewCreditNote extends ViewRecord
                                 ->downloadable()->multiple()->visibility('private')
                                 ->getUploadedFileNameForStorageUsing(
                                     function (TemporaryUploadedFile $file, $record): string {
-                                        $prefix = $record->code.'-';
+                                        $prefix = $record->code . '-';
 
                                         return str($file->getClientOriginalName())->prepend($prefix);
                                     }
@@ -40,7 +40,7 @@ class ViewCreditNote extends ViewRecord
                         ->url(fn (CreditNote $record) => $record->downloadLink())
                         ->icon('heroicon-o-arrow-down-tray'),
                     Action::make('view-purchase-order')->icon('heroicon-o-eye')
-                        ->url(fn($record) => PurchaseOrderResource::getUrl('view', [
+                        ->url(fn ($record) => PurchaseOrderResource::getUrl('view', [
                             'record' => $record->purchase_order_id,
                         ])),
                 ])->dropdown(false),

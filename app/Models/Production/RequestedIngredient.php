@@ -9,7 +9,7 @@ use App\Models\Inventory\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Str;
 use Throwable;
 
 class RequestedIngredient extends Model
@@ -19,21 +19,6 @@ class RequestedIngredient extends Model
     public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
-    }
-
-    //    public function recipe(): BelongsTo
-    //    {
-    //        return $this->belongsTo(Recipe::class);
-    //    }
-
-    public function foodOrderRecipe(): BelongsTo
-    {
-        return $this->belongsTo(FoodOrderRecipe::class);
-    }
-
-    public function batches(): MorphMany
-    {
-        return $this->morphMany(Batch::class, 'owner');
     }
 
     public function ingredient(): BelongsTo
@@ -56,50 +41,27 @@ class RequestedIngredient extends Model
         return $this->hasMany(DispatchedIngredient::class);
     }
 
-    public function foodOrder(): BelongsTo
+    /**
+     * @throws Throwable
+     */
+    public function viableArticles(): array
     {
-        return $this->belongsTo(FoodOrder::class);
+        $article = $this->article;
+        $store = Store::select('id')->find(1); // todo: remove hardcoding
+        $viable = $article->viableDispatchArticles($store);
+
+        return $viable->pluck('name', 'id')->toArray();
     }
 
     public function isFulfilled(): bool
     {
-        return $this->remaining_quantity === 0;
+        return $this->remaining_quantity < 1;
     }
 
-    public function isPendingFulfilment(): bool
-    {
-        return ! $this->isFulfilled();
-    }
+    // todo: lorem
+    //
 
-    /**
-     * @throws Throwable
-     */
-    public function createDispatchIngredient(
-        Article $article,
-        int $units
-    ): void {
-        // todo: prevent dispatching surplus
-        // todo: add transaction & try catch
-
-        $dispatchedIngredient = $this->dispatchedIngredients()->create([
-            'food_order_recipe_id' => $this->food_order_recipe_id,
-            'unit_id' => $article->getAttribute('unit_id'),
-            'food_order_id' => $this->food_order_id,
-            'store_id' => $this->store_id,
-            'dispatched_by' => auth_id(),
-            'article_id' => $article->id,
-            'status' => 'draft',
-            'units' => $units,
-        ]);
-
-        $this->updateRemainingQuantity(
-            $article,
-            $units,
-            $dispatchedIngredient
-        );
-    }
-
-    public function utilize(FoodOrderRecipe $foodOrderRecipe): void
+    public function utilize(FoodOrder $foodOrderRecipe): void
     {
         $ingredient = $this->ingredient;
         $portions = $foodOrderRecipe->expected_portions;
@@ -144,33 +106,29 @@ class RequestedIngredient extends Model
     /**
      * @throws Throwable
      */
-    protected function getCapacityAtStationAttribute(): int
+    protected function getCapacityAtStationAttribute(): string
     {
-        $reference = $this->article;
-        $store = $this->store;
+        $id = $this->article_id;
+        $reference = Article::with('descendants')->find($id);
+        $store = Store::select('id')->find($this->store_id);
 
-        // first get list of descendants. check if that store has batches of those units
-        // todo: do this here! check for batches that don't have owners
-        $capacity = article_capacity($reference, $store);
+        $ids = $reference->descendants->pluck('id')->toArray();
+        $batches = Batch::where('store_id', $store->id)
+            ->where('owner_id', null)
+            ->whereIn('article_id', $ids)
+            ->exists();
 
-        return 10 ?? $capacity;
-    }
+        $id = $reference->getAttribute('unit_id');
+        $unit = Unit::select('name')->find($id);
 
-    /**
-     * @throws Throwable
-     */
-    private function updateRemainingQuantity(
-        Article $article,
-        int $units,
-        DispatchedIngredient $dispatchedIngredient
-    ): void {
-        $capacity = $units * $article->unit_capacity;
-        $from = $dispatchedIngredient->unit;
-        $to = $this->unit;
+        $capacity = match ($batches) {
+            true => article_capacity($reference, $store),
+            false => 0
+        };
 
-        $units = quantity_converter($from, $to, $capacity);
-        $this->remaining_quantity -= ceil($units);
-        $this->dispatched_units += ceil($units);
-        $this->update();
+        $name = $unit->getAttribute('name');
+        $unitName = Str::plural($name, $capacity);
+
+        return number_format($capacity) . ' ' .$unitName;
     }
 }

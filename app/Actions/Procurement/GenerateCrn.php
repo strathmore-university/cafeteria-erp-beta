@@ -17,25 +17,25 @@ class GenerateCrn
     public function execute(
         PurchaseOrder $purchaseOrder
     ): CreditNote {
-//        try {
-//            DB::transaction(function () use ($purchaseOrder) {
-                $message = 'Purchase order has already been fulfilled!';
-                throw_if($purchaseOrder->isFulfilled(), new Exception($message));
+        //        try {
+        //            DB::transaction(function () use ($purchaseOrder) {
+        $message = 'Purchase order has already been fulfilled!';
+        throw_if($purchaseOrder->isFulfilled(), new Exception($message));
 
-                $crn = CreditNote::wherePurchaseOrderId($purchaseOrder->id)
-                    ->where('status', '=', 'draft')
-                    ->first();
+        $crn = CreditNote::wherePurchaseOrderId($purchaseOrder->id)
+            ->where('status', '=', 'draft')
+            ->first();
 
-                return match (filled($crn)) {
-                    false => $this->createCrn($purchaseOrder),
-                    true => $crn,
-                };
-//            });
-//        } catch (Throwable $exception) {
-//            error_notification($exception);
-//        }
+        return match (filled($crn)) {
+            false => $this->createCrn($purchaseOrder),
+            true => $crn,
+        };
+        //            });
+        //        } catch (Throwable $exception) {
+        //            error_notification($exception);
+        //        }
 
-//        return null;
+        //        return null;
     }
 
     /**
@@ -69,6 +69,7 @@ class GenerateCrn
             $crn->update(['total_value' => $total]);
 
             success('Credit Note generated successfully');
+
             return $crn;
         });
 

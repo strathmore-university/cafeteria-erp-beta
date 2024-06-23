@@ -32,8 +32,6 @@ trait HasStatusTransitions
         $this->setAttribute($column, $key);
     }
 
-    abstract public function statusTransitions(): array;
-
     public function allowEdits(): bool
     {
         return $this->getAttribute('status') === 'draft';
@@ -56,4 +54,6 @@ trait HasStatusTransitions
 
         return ! in_array($status, $invalidStatus);
     }
+
+    abstract protected function statusTransitions(): array;
 }

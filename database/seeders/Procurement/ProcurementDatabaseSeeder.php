@@ -37,17 +37,17 @@ class ProcurementDatabaseSeeder extends Seeder
             ]);
         });
 
-        $articles = Article::canBeOrdered()->get();
+        $articles = Article::whereCanBePurchased(true)->get();
 
-        Supplier::all()->each(function (Supplier $supplier) use ($articles): void {
+        Supplier::take(1)->each(function (Supplier $supplier) use ($articles): void {
             $po = $supplier->purchaseOrders()->create([
                 'team_id' => system_team()->id,
                 'store_id' => system_team()->stores()->first()->id,
                 'expected_delivery_date' => now()->addDays(),
-                'kfs_account_number' => auth_team()->kfs_account_number
+                'kfs_account_number' => auth_team()->kfs_account_number,
             ]);
 
-            $articles->take(1)->each(function (Article $article) use ($po): void {
+            $articles->each(function (Article $article) use ($po): void {
                 $po->items()->create([
                     'price' => fake()->randomElement([50, 100]),
                     'article_id' => $article->id,
@@ -57,7 +57,7 @@ class ProcurementDatabaseSeeder extends Seeder
         });
 
         $purchaseOrders = PurchaseOrder::get();
-        $purchaseOrders->take(2)->each(function (PurchaseOrder $purchaseOrder): void {
+        $purchaseOrders->each(function (PurchaseOrder $purchaseOrder): void {
             $purchaseOrder->requestReview();
             $purchaseOrder->submitReview([
                 'comment' => 'good', 'status' => 'approved',

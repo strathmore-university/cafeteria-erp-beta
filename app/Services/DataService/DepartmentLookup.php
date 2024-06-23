@@ -74,7 +74,7 @@ class DepartmentLookup
 
         $code = tannery($canSearch, 2, $code);
 
-        $dontSearch = both(! $this->search, ! $this->department);
+        $dontSearch = both( ! $this->search, ! $this->department);
 
         $code = tannery($dontSearch, 3, $code);
 
@@ -184,7 +184,7 @@ class DepartmentLookup
 
         $this->reset();
 
-        throw_if(! $id, new MissingDepartmentId());
+        throw_if( ! $id, new MissingDepartmentId());
 
         return null;
     }

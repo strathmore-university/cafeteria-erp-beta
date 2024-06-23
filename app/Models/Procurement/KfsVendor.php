@@ -4,7 +4,7 @@ namespace App\Models\Procurement;
 
 use App\Facades\ApiClient;
 use App\Filament\Clusters\Procurement\Resources\KfsVendorResource;
-use Database\Seeders\Procurement\KfsVendorSeeder;
+use Database\Seeders\Base\KfsVendorSeeder;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

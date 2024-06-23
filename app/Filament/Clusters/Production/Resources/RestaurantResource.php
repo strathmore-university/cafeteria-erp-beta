@@ -7,6 +7,7 @@ use App\Filament\Clusters\Production\Resources\RestaurantResource\Pages\CreateRe
 use App\Filament\Clusters\Production\Resources\RestaurantResource\Pages\EditRestaurant;
 use App\Filament\Clusters\Production\Resources\RestaurantResource\Pages\ListRestaurants;
 use App\Filament\Clusters\Production\Resources\RestaurantResource\Pages\ViewRestaurant;
+use App\Filament\Clusters\Production\Resources\RestaurantResource\RelationManagers\MenusRelationManager;
 use App\Filament\Clusters\Production\Resources\RestaurantResource\RelationManagers\StoresRelationManager;
 use App\Models\Production\Restaurant;
 use Filament\Forms\Components\Section;
@@ -36,30 +37,30 @@ class RestaurantResource extends Resource
         $cols = 2;
 
         return $form->schema([
-            TextInput::make('name')->required(),
-            TextInput::make('description')->required(),
+            TextInput::make('name')->rules('string|required|max:255'),
+            TextInput::make('description')->rules('string|required|max:255'),
             Toggle::make('is_active')->default(true),
             Section::make([
                 placeholder('created_at', 'Created Date'),
                 placeholder('updated_at', 'Last Modified Date'),
-            ])->columns($cols),
-        ]);
+            ])->visible(fn ($record) => $record?->exists())->columns($cols),
+        ])->columns(1);
     }
 
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('name'),
+            TextColumn::make('name')->searchable(),
             TextColumn::make('description'),
             IconColumn::make('is_active')->boolean(),
-        ])
-            ->actions([ViewAction::make()]);
+        ])->actions([ViewAction::make()]);
     }
 
     public static function getRelations(): array
     {
         return [
             StoresRelationManager::class,
+            MenusRelationManager::class,
         ];
     }
 

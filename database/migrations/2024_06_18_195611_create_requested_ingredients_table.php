@@ -4,7 +4,6 @@ use App\Models\Core\Unit;
 use App\Models\Inventory\Article;
 use App\Models\Inventory\Store;
 use App\Models\Production\FoodOrder;
-use App\Models\Production\FoodOrderRecipe;
 use App\Models\Production\Ingredient;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,7 +16,6 @@ return new class() extends Migration
         Schema::create('requested_ingredients', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(FoodOrder::class)->index()->constrained();
-            $table->foreignIdFor(FoodOrderRecipe::class)->index()->constrained();
             $table->foreignIdFor(Ingredient::class)->index()->constrained();
             $table->foreignIdFor(Store::class)->index()->constrained();
             $table->foreignIdFor(Article::class)->index()->constrained();

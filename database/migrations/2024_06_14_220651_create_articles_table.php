@@ -27,6 +27,7 @@ return new class() extends Migration
             $table->boolean('is_expense')->default(false);
 
             $table->boolean('is_ingredient')->default(false);
+            $table->boolean('can_be_purchased')->default(false);
             $table->boolean('is_sellable')->default(false);
             $table->boolean('is_consumable')->default(false);
             $table->boolean('is_product')->default(false);

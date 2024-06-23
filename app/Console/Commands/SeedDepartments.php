@@ -9,9 +9,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
+
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\progress;
-use Throwable;
 
 //use function Laravel\Prompts\confirm;
 

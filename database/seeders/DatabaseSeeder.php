@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Core\CoreDatabaseSeeder;
-use Database\Seeders\Inventory\InventoryDatabaseSeeder;
-use Database\Seeders\Inventory\StockTakeSeeder;
+use Database\Seeders\Base\FoundationSeeder;
+use Database\Seeders\Inventory\ConsumableArticlesSeeder;
+use Database\Seeders\Inventory\IngredientArticlesSeeder;
 use Database\Seeders\Procurement\ProcurementDatabaseSeeder;
 use Database\Seeders\Production\ProductionSeeder;
 use Illuminate\Database\Seeder;
@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             FoundationSeeder::class,
-            CoreDatabaseSeeder::class,
-            InventoryDatabaseSeeder::class,
+            ConsumableArticlesSeeder::class,
+            IngredientArticlesSeeder::class,
             ProcurementDatabaseSeeder::class,
             //            StockTakeSeeder::class,
-            //            ProductionSeeder::class,
+            ProductionSeeder::class,
         ]);
     }
 }
