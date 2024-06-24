@@ -68,7 +68,7 @@ class IssueCrn
             ->get();
 
         $message = 'There are no items to be written off!';
-        throw_if( ! $items->count(), new Exception($message));
+        throw_if(! $items->count(), new Exception($message));
 
         return $items;
     }

@@ -11,8 +11,7 @@ trait BelongsToCreator
     public static function bootBelongsToCreator(): void
     {
         static::creating(function (Model $model): void {
-            $id = auth()->user()->id ?? system_team()->members->random()->id;
-            $model->setAttribute('created_by', $id);
+            $model->setAttribute('created_by', auth_id());
         });
     }
 

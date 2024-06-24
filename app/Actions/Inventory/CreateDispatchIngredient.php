@@ -37,7 +37,7 @@ class CreateDispatchIngredient
                 $this->createDispatch();
                 $this->updateRemainingQuantity();
 
-                if ( ! $quiet) {
+                if (! $quiet) {
                     success();
                 }
             });

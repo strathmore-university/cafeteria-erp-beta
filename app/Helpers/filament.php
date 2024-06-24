@@ -5,7 +5,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Illuminate\Database\Eloquent\Model;
 
-if ( ! function_exists('flag_table_field')) {
+if (! function_exists('flag_table_field')) {
     function flag_table_field()
     {
         return TextColumn::make('is_flagged')->label('Flagged')->badge()
@@ -17,7 +17,7 @@ if ( ! function_exists('flag_table_field')) {
     }
 }
 
-if ( ! function_exists('numeric_alt_column')) {
+if (! function_exists('numeric_alt_column')) {
     function numeric_alt_column(bool $condition, Model $model)
     {
         if ($condition) {

@@ -89,7 +89,7 @@ class RecordByProducts extends ManageRelatedRecords
                     ->url(get_record_url($this->getOwnerRecord()))
                     ->color('gray')
                     ->icon('heroicon-o-ticket'),
-            ])
+            ]),
         ];
     }
 }

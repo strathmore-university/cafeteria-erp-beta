@@ -32,7 +32,7 @@ class FoodOrderResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
-    protected static ?string $slug = 'production/food-orders';
+    protected static ?string $slug = 'food-orders';
 
     protected static ?string $cluster = Production::class;
 
@@ -48,19 +48,19 @@ class FoodOrderResource extends Resource
             ->schema([
                 TextInput::make('code')->disabled(),
                 TextInput::make('owner_id')->label('Order For')
-                    ->formatStateUsing(fn($record) => $record->ownerName()),
+                    ->formatStateUsing(fn ($record) => $record->ownerName()),
                 TextInput::make('recipe.name')->label('Recipe')
-                    ->formatStateUsing(fn($record) => $record->recipe->name)
+                    ->formatStateUsing(fn ($record) => $record->recipe->name)
                     ->disabled(),
                 TextInput::make('recipe.name')->label('Product')
-                    ->formatStateUsing(fn($record) => $record->recipe->product->name)
+                    ->formatStateUsing(fn ($record) => $record->recipe->product->name)
                     ->disabled(),
                 Select::make('station_id')->label('Station')
                     ->searchable()->preload()
                     ->options(Station::get()->pluck('name', 'id')->toArray()),
                 Select::make('prepared_by')
                     ->searchable()->preload()
-                    ->visible(fn($state) => filled($state))
+                    ->visible(fn ($state) => filled($state))
                     ->options(User::pluck('name', 'id')->toArray()),
                 Section::make([
                     TextInput::make('expected_portions')->disabled(),
@@ -87,7 +87,7 @@ class FoodOrderResource extends Resource
         return $table->columns([
             TextColumn::make('code')->searchable()->sortable(),
             TextColumn::make('owner_id')->label('Destination')
-                ->formatStateUsing(fn($record) => $record->ownerName())
+                ->formatStateUsing(fn ($record) => $record->ownerName())
                 ->searchable()->sortable(),
             TextColumn::make('station.name')->label('Prepared at')->searchable()->sortable(),
             TextColumn::make('expected_portions')->sortable(),
@@ -98,8 +98,8 @@ class FoodOrderResource extends Resource
             flag_table_field()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('status')->badge()
-                ->formatStateUsing(fn($state) => Str::title($state))
-                ->color(fn(string $state): string => match ($state) {
+                ->formatStateUsing(fn ($state) => Str::title($state))
+                ->color(fn (string $state): string => match ($state) {
                     'prepared' => 'success',
                     'flagged' => 'danger',
                     default => 'warning'
@@ -121,7 +121,7 @@ class FoodOrderResource extends Resource
         return [
             RequestedIngredientsRelationManager::class,
             DispatchedIngredientsRelationManager::class,
-            ByProductsRelationManager::class
+            ByProductsRelationManager::class,
         ];
     }
 

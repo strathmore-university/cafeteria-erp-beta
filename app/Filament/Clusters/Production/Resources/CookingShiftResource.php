@@ -19,7 +19,7 @@ class CookingShiftResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
-    protected static ?string $slug = 'production/cooking-shifts';
+    protected static ?string $slug = 'cooking-shifts';
 
     protected static ?string $model = CookingShift::class;
 

@@ -117,7 +117,7 @@ class ExecuteGrnReceipt
             ->get();
 
         $message = 'There are no items to be received';
-        throw_if( ! $items->count(), new Exception($message));
+        throw_if(! $items->count(), new Exception($message));
 
         return $items;
     }

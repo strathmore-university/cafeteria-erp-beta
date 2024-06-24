@@ -43,14 +43,14 @@ class RecordRemainingStock extends ManageRelatedRecords
                     ->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('initial_units')->numeric(),
                 Tables\Columns\TextInputColumn::make('current_units')
-                    ->rules(fn(DispatchedIngredient $record) => [
-                        'required', 'numeric', 'min:0', 'max:'.$record->initial_units
+                    ->rules(fn (DispatchedIngredient $record) => [
+                        'required', 'numeric', 'min:0', 'max:'.$record->initial_units,
                     ])
                     ->afterStateUpdated(function (DispatchedIngredient $record): void {
                         $diff = $record->initial_units - $record->current_units;
                         $record->used_units = $diff;
                         $record->update();
-                    })->disabled(fn() => $this->getOwnerRecord()->getAttribute('has_recorded_remaining_stock')),
+                    })->disabled(fn () => $this->getOwnerRecord()->getAttribute('has_recorded_remaining_stock')),
                 Tables\Columns\TextColumn::make('article.unit_capacity')
                     ->label('Unit Capacity'),
                 Tables\Columns\TextColumn::make('unit.name'),
@@ -78,7 +78,7 @@ class RecordRemainingStock extends ManageRelatedRecords
                     ->url(get_record_url($this->getOwnerRecord()))
                     ->color('gray')
                     ->icon('heroicon-o-ticket'),
-            ])
+            ]),
         ];
     }
 }

@@ -56,7 +56,7 @@ class QuantityConverter
         int|float $value
     ): float {
         $message = 'Units ' . $from->id . ' and ' . $to->id . ' are not compatible';
-        throw_if( ! $from->isSiblingOf($to), new Exception($message));
+        throw_if(! $from->isSiblingOf($to), new Exception($message));
 
         $key = 'unit_conversion_' . $from->id . '_' . $to->id;
         $factor = Cache::rememberForever($key, function () use ($from, $to) {

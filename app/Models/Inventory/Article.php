@@ -59,7 +59,7 @@ class Article extends Model
             });
 
             $message = 'No articles with adequate stock to dispatch found!';
-            throw_if( ! count($articles), new Exception($message));
+            throw_if(! count($articles), new Exception($message));
 
             return $articles;
         } catch (Throwable $exception) {

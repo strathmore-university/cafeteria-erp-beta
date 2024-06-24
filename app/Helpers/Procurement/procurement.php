@@ -8,7 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Illuminate\Database\Eloquent\Model;
 
-if ( ! function_exists('query_price_quotes')) {
+if (! function_exists('query_price_quotes')) {
     function query_price_quotes(
         string|int $articleId,
         string|int $supplierId
@@ -23,7 +23,7 @@ if ( ! function_exists('query_price_quotes')) {
     }
 }
 
-if ( ! function_exists('articles_that_can_be_added')) {
+if (! function_exists('articles_that_can_be_added')) {
     function articles_that_can_be_added(string|int $id): array
     {
         $addedIds = PurchaseOrderItem::wherePurchaseOrderId($id)
@@ -39,7 +39,7 @@ if ( ! function_exists('articles_that_can_be_added')) {
     }
 }
 
-if ( ! function_exists('grn_item_numeric_column')) {
+if (! function_exists('grn_item_numeric_column')) {
     function grn_item_numeric_column(
         GoodsReceivedNoteItem|Model $grn,
         string $column
@@ -53,7 +53,7 @@ if ( ! function_exists('grn_item_numeric_column')) {
     }
 }
 
-if ( ! function_exists('grn_item_string_column')) {
+if (! function_exists('grn_item_string_column')) {
     function grn_item_string_column(
         GoodsReceivedNoteItem|Model $grn,
         string $column
@@ -67,7 +67,7 @@ if ( ! function_exists('grn_item_string_column')) {
     }
 }
 
-if ( ! function_exists('grn_item_date_column')) {
+if (! function_exists('grn_item_date_column')) {
     function grn_item_date_column(
         GoodsReceivedNoteItem|Model $grn,
         string $column

@@ -20,7 +20,7 @@ class ViewFoodOrder extends ViewRecord
     {
         return [
             Action::make('request_ingredients')
-                ->visible(fn(FoodOrder $record) => $record->canRequestIngredients())
+                ->visible(fn (FoodOrder $record) => $record->canRequestIngredients())
                 ->icon('heroicon-o-inbox-arrow-down')
                 ->requiresConfirmation()->button()
                 ->action(function (FoodOrder $record): void {
@@ -28,33 +28,33 @@ class ViewFoodOrder extends ViewRecord
                     $this->back($record);
                 }),
             Action::make('populate-dispatch')
-                ->visible(fn(FoodOrder $record) => $record->canPopulateDispatch())
+                ->visible(fn (FoodOrder $record) => $record->canPopulateDispatch())
                 ->icon('heroicon-o-bolt')->requiresConfirmation()->button()
                 ->action(function (FoodOrder $record): void {
                     $record->populateDispatch();
                     $this->back($record);
                 }),
             Action::make('execute-dispatch')->requiresConfirmation()
-                ->action(fn(FoodOrder $record) => $record->executeIngredientDispatch())
-                ->visible(fn(FoodOrder $record) => $record->canExecuteDispatch())
+                ->action(fn (FoodOrder $record) => $record->executeIngredientDispatch())
+                ->visible(fn (FoodOrder $record) => $record->canExecuteDispatch())
                 ->icon('heroicon-o-check')->color('success')->button(),
             Action::make('initiate-preparation')->button()
-                ->visible(fn(FoodOrder $record) => $record->canBeInitiated())
+                ->visible(fn (FoodOrder $record) => $record->canBeInitiated())
                 ->icon('heroicon-o-sparkles')->requiresConfirmation()
                 ->action(function (FoodOrder $record): void {
                     $record->initiate();
                     $this->back($record);
                 }),
             Action::make('record-remaining-stock')
-                ->visible(fn(FoodOrder $record) => $record->canRecordRemainingStock())
-                ->url(fn(FoodOrder $record) => $record->remainingStockUrl())
+                ->visible(fn (FoodOrder $record) => $record->canRecordRemainingStock())
+                ->url(fn (FoodOrder $record) => $record->remainingStockUrl())
                 ->icon('heroicon-o-pencil-square')->button(),
             Action::make('record-by-products')
-                ->visible(fn(FoodOrder $record) => $record->canRecordByProductsStock())
-                ->url(fn(FoodOrder $record) => $record->recordByProductUrl())
+                ->visible(fn (FoodOrder $record) => $record->canRecordByProductsStock())
+                ->url(fn (FoodOrder $record) => $record->recordByProductUrl())
                 ->icon('heroicon-o-pencil-square')->button(),
             Action::make('complete')->color('success')
-                ->visible(fn(FoodOrder $record) => $record->canBeCompleted())
+                ->visible(fn (FoodOrder $record) => $record->canBeCompleted())
                 ->action(function (FoodOrder $record, array $data) {
                     $record->complete($data);
                     $this->back($record);
@@ -65,10 +65,10 @@ class ViewFoodOrder extends ViewRecord
                 ]),
             ActionGroup::make([
                 Action::make('view-shift')
-                    ->url(fn(FoodOrder $record) => $record->shiftUrl())
+                    ->url(fn (FoodOrder $record) => $record->shiftUrl())
                     ->icon('heroicon-o-clock')->color('gray'),
                 Action::make('view-recipe')
-                    ->url(fn(FoodOrder $record) => $record->recipeUrl())
+                    ->url(fn (FoodOrder $record) => $record->recipeUrl())
                     ->icon('heroicon-o-puzzle-piece')->color('gray'),
             ]),
             //            Action::make('dispatch-products')

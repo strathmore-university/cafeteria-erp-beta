@@ -24,7 +24,7 @@ class RestaurantResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
-    protected static ?string $slug = 'production/restaurants';
+    protected static ?string $slug = 'restaurants';
 
     protected static ?string $cluster = Production::class;
 

@@ -16,9 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Spatie\LaravelPdf\PdfBuilder;
-use Throwable;
-
 use function Spatie\LaravelPdf\Support\pdf;
+use Throwable;
 
 //use PDF;
 

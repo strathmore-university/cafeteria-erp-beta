@@ -28,7 +28,7 @@ class RecipeResource extends Resource
 
     protected static ?string $cluster = Production::class;
 
-    protected static ?string $slug = 'production/recipes';
+    protected static ?string $slug = 'recipes';
 
     protected static ?string $model = Recipe::class;
 

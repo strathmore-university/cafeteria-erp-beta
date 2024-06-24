@@ -26,7 +26,7 @@ class MenuResource extends Resource
 
     protected static ?string $cluster = Production::class;
 
-    protected static ?string $slug = 'production/menus';
+    protected static ?string $slug = 'menus';
 
     protected static ?string $model = Menu::class;
 

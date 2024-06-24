@@ -216,11 +216,11 @@ class CompleteFoodOrder
         $expected = $this->foodOrder->expected_portions;
         $rating = $produced / $expected * 100;
 
-        $surplusRate = $expected * ($recipe->surplus_tolerance / 100) / $recipe->yield;
+        $surplusRate = $expected * $recipe->surplus_tolerance / 100 / $recipe->yield;
         $surplusRate += 1;
         $allowedSurplus = (int) ceil($expected * $surplusRate);
 
-        $wastageRate = $expected * ($recipe->wastage_tolerance / 100) / $recipe->yield;
+        $wastageRate = $expected * $recipe->wastage_tolerance / 100 / $recipe->yield;
         $wastageRate = abs($wastageRate - 1);
         $allowedWastage = (int) ceil($expected * $wastageRate);
 
@@ -248,6 +248,5 @@ class CompleteFoodOrder
         $this->foodOrder->update();
 
         // todo: create product dispatch
-
     }
 }

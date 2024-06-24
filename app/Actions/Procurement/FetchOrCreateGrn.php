@@ -22,7 +22,7 @@ class FetchOrCreateGrn
             throw_if($purchaseOrder->isFulfilled(), new Exception($message));
 
             $message = 'Purchase order is no-longer valid!';
-            throw_if( ! $purchaseOrder->isValidLPO(), new Exception($message));
+            throw_if(! $purchaseOrder->isValidLPO(), new Exception($message));
 
             $grn = GoodsReceivedNote::wherePurchaseOrderId($purchaseOrder->id)
                 ->where('status', '=', 'draft')

@@ -4,7 +4,7 @@ use App\Models\Core\Category;
 use App\Support\Core\CategoryDirectory;
 use Illuminate\Support\Collection;
 
-if ( ! function_exists('account_types')) {
+if (! function_exists('account_types')) {
     /**
      * @throws Throwable
      */
@@ -16,7 +16,7 @@ if ( ! function_exists('account_types')) {
     }
 }
 
-if ( ! function_exists('accounting_categories')) {
+if (! function_exists('accounting_categories')) {
     /**
      * @throws Throwable
      */
@@ -28,7 +28,7 @@ if ( ! function_exists('accounting_categories')) {
     }
 }
 
-if ( ! function_exists('balance_types')) {
+if (! function_exists('balance_types')) {
     /**
      * @throws Throwable
      */
@@ -40,7 +40,7 @@ if ( ! function_exists('balance_types')) {
     }
 }
 
-if ( ! function_exists('store_types')) {
+if (! function_exists('store_types')) {
     /**
      * @throws Throwable
      */
@@ -52,7 +52,7 @@ if ( ! function_exists('store_types')) {
     }
 }
 
-if ( ! function_exists('disposal_types')) {
+if (! function_exists('disposal_types')) {
     /**
      * @throws Throwable
      */
@@ -64,7 +64,7 @@ if ( ! function_exists('disposal_types')) {
     }
 }
 
-if ( ! function_exists('object_types')) {
+if (! function_exists('object_types')) {
     /**
      * @throws Throwable
      */
@@ -76,7 +76,7 @@ if ( ! function_exists('object_types')) {
     }
 }
 
-if ( ! function_exists('organization_types')) {
+if (! function_exists('organization_types')) {
     /**
      * @throws Throwable
      */
@@ -88,7 +88,7 @@ if ( ! function_exists('organization_types')) {
     }
 }
 
-if ( ! function_exists('recipe_groups')) {
+if (! function_exists('recipe_groups')) {
     /**
      * @throws Throwable
      */
@@ -100,7 +100,7 @@ if ( ! function_exists('recipe_groups')) {
     }
 }
 
-if ( ! function_exists('transaction_types')) {
+if (! function_exists('transaction_types')) {
     /**
      * @throws Throwable
      */

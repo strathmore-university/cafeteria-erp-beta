@@ -167,14 +167,16 @@ class FoodOrder extends Model
     public function remainingStockUrl(): string
     {
         return FoodOrderResource::getUrl(
-            'record-stock', ['record' => $this]
+            'record-stock',
+            ['record' => $this]
         );
     }
 
     public function recordByProductUrl(): string
     {
         return FoodOrderResource::getUrl(
-            'record-by-products', ['record' => $this]
+            'record-by-products',
+            ['record' => $this]
         );
     }
 

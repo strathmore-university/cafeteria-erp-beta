@@ -103,7 +103,7 @@ class UpdateStockLevel
     private function update(StockLevel $stockLevel): void
     {
         $condition = $this->units > $stockLevel->current_units;
-        $condition = and_check(!$this->add, $condition);
+        $condition = and_check(! $this->add, $condition);
         $message = 'Insufficient stock';
         throw_if($condition, new Exception($message));
 
