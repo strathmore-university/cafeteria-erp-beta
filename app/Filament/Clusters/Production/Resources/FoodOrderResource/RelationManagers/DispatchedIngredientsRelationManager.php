@@ -5,8 +5,9 @@ namespace App\Filament\Clusters\Production\Resources\FoodOrderResource\RelationM
 use App\Models\Production\DispatchedIngredient;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Columns\TextInputColumn;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -41,28 +42,28 @@ class DispatchedIngredientsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('unit.name')
                     ->label('Unit Name'),
                 Tables\Columns\TextColumn::make('dispatcher.name')
-                    ->formatStateUsing(fn($record) => Str::title($record->dispatcher->name))
+                    ->formatStateUsing(fn ($record) => Str::title($record->dispatcher->name))
                     ->label('Dispatched by')
                     ->toggleable(isToggledHiddenByDefault: $value),
-//                TextInputColumn::make('initial_units')
-//                    ->rules(['numeric', 'required'])
-//                    ->disabled(function () {
-//                        $method = 'canExecuteDispatch';
-//
-//                        return !$this->ownerRecord->$method();
-//                    })
-//                    ->afterStateUpdated(function (DispatchedIngredient $record, $state) {
-//                        $record->update(['current_units' => $state]);
-//                    })
-                numeric_alt_column($value),
-//                Tables\Columns\TextColumn::make('current_units')
-//                    ->numeric()->visible(function () {
-//                        $record = $this->ownerRecord;
-//                        $two = filled($record->getAttribute('initiated_at'));
-//                        $key = 'has_recorded_remaining_stock';
-//
-//                        return or_check($record->getAttribute($key), $two);
-//                    }),
+                //                TextInputColumn::make('initial_units')
+                //                    ->rules(['numeric', 'required'])
+                //                    ->disabled(function () {
+                //                        $method = 'canExecuteDispatch';
+                //
+                //                        return !$this->ownerRecord->$method();
+                //                    })
+                //                    ->afterStateUpdated(function (DispatchedIngredient $record, $state) {
+                //                        $record->update(['current_units' => $state]);
+                //                    })
+                numeric_alt_column($value, $this->ownerRecord),
+                //                Tables\Columns\TextColumn::make('current_units')
+                //                    ->numeric()->visible(function () {
+                //                        $record = $this->ownerRecord;
+                //                        $two = filled($record->getAttribute('initiated_at'));
+                //                        $key = 'has_recorded_remaining_stock';
+                //
+                //                        return or_check($record->getAttribute($key), $two);
+                //                    }),
                 Tables\Columns\TextColumn::make('used_units')
                     ->numeric()->visible(function () {
                         $one = $this->ownerRecord->getAttribute('initiated_at');
@@ -75,6 +76,18 @@ class DispatchedIngredientsRelationManager extends RelationManager
 
                         return filled($one);
                     }),
+            ])->bulkActions([
+                //                todo: when deleting we need to update the dispatched ingredients
+                //                BulkAction::make('delete')
+                //                    ->requiresConfirmation()
+                //                    ->icon('heroicon-o-trash')
+                //                    ->action(fn (Collection $records) => $records->each->delete())
+            ])
+            ->actions([
+                //                Tables\Actions\Action::make('delete')
+                //                    ->icon('heroicon-o-trash')
+                //                    ->action(fn($record) => $record->delete())
+                //                    ->requiresConfirmation()
             ]);
     }
 }

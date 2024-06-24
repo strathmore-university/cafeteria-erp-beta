@@ -18,7 +18,8 @@ if ( ! function_exists('flag_table_field')) {
 }
 
 if ( ! function_exists('numeric_alt_column')) {
-    function numeric_alt_column(bool $condition,) {
+    function numeric_alt_column(bool $condition, Model $model)
+    {
         if ($condition) {
             return TextColumn::make('initial_units')->numeric()
                 ->searchable()->sortable();
@@ -26,12 +27,12 @@ if ( ! function_exists('numeric_alt_column')) {
 
         return TextInputColumn::make('initial_units')
             ->rules(['numeric', 'required'])
-            ->disabled(function () {
+            ->disabled(function () use ($model) {
                 $method = 'canExecuteDispatch';
 
-                return !$this->ownerRecord->$method();
+                return ! $model->$method();
             })
-            ->afterStateUpdated(function (DispatchedIngredient $record, $state) {
+            ->afterStateUpdated(function (DispatchedIngredient $record, $state): void {
                 $record->update(['current_units' => $state]);
             });
     }

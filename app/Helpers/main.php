@@ -144,16 +144,16 @@ if ( ! function_exists('end_watch')) {
         $queries = DB::getQueryLog();
         $totalTime = microtime(true) - $start;
 
-        collect($queries)->each(function ($query) {
+        collect($queries)->each(function ($query): void {
             Log::info('********************');
-            Log::info('Query: '.$query['query']);
-            Log::info('Bindings: '.implode(', ', $query['bindings']));
-            Log::info('Time: '.$query['time'].'ms');
+            Log::info('Query: ' . $query['query']);
+            Log::info('Bindings: ' . implode(', ', $query['bindings']));
+            Log::info('Time: ' . $query['time'] . 'ms');
             Log::info('********************');
         });
 
         Log::info('--------------');
-        Log::info('Total queries: '.count($queries));
-        Log::info('Total execution time: '.$totalTime.'s');
+        Log::info('Total queries: ' . count($queries));
+        Log::info('Total execution time: ' . $totalTime . 's');
     }
 }

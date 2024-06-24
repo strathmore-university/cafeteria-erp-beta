@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Throwable;
 
 class FoodOrder extends Model
 {
@@ -83,21 +82,44 @@ class FoodOrder extends Model
         $two = blank($this->ingredients_dispatched_at);
         $check = and_check($one, $two);
 
-        return and_check($check, !$this->canRequestIngredients());
+        return and_check($check, ! $this->canRequestIngredients());
+    }
+
+    public function canDispatch(): bool
+    {
+        $two = blank($this->ingredients_dispatched_at);
+        $one = ! $this->canRequestIngredients();
+
+        return and_check($one, $two);
     }
 
     public function canExecuteDispatch(): bool
     {
         $three = $this->dispatchedIngredients()->exists();
         $two = blank($this->ingredients_dispatched_at);
-        $one = !$this->canRequestIngredients();
+        $one = ! $this->canRequestIngredients();
 
         return and_check(and_check($one, $two), $three);
     }
 
+    public function recipeUrl(): string
+    {
+        $recipe = Recipe::select('id')->find($this->recipe_id);
+
+        return get_record_url($recipe);
+    }
+
+    public function shiftUrl(): string
+    {
+        $id = $this->cooking_shift_id;
+        $recipe = CookingShift::select('id')->find($id);
+
+        return get_record_url($recipe);
+    }
+
     public function populateDispatch(): void
     {
-        (new PopulateDispatch)->execute($this);
+        (new PopulateDispatch())->execute($this);
     }
 
     public function executeIngredientDispatch(): void
@@ -128,7 +150,7 @@ class FoodOrder extends Model
         $status = $this->getAttribute('status');
         $one = blank($this->prepared_at);
         $two = $status === 'started';
-        $three = !$this->has_recorded_remaining_stock;
+        $three = ! $this->has_recorded_remaining_stock;
         $check = and_check($two, $one);
 
         return and_check($check, $three);
@@ -137,7 +159,7 @@ class FoodOrder extends Model
     public function canRecordByProductsStock(): bool
     {
         $one = $this->has_recorded_remaining_stock;
-        $two = !$this->has_recorded_by_products;
+        $two = ! $this->has_recorded_by_products;
 
         return and_check($one, $two);
     }
@@ -160,8 +182,10 @@ class FoodOrder extends Model
     {
         $one = $this->has_recorded_remaining_stock;
         $two = $this->has_recorded_by_products;
+        $three = blank($this->prepared_at);
+        $check = and_check($two, $one);
 
-        return and_check($two, $one);
+        return and_check($check, $three);
     }
 
     public function populateByProducts(): string
@@ -175,9 +199,9 @@ class FoodOrder extends Model
         }
 
         $items = collect();
-        $products->each(function (RecipeByProduct $product) use ($items) {
+        $products->each(function (RecipeByProduct $product) use ($items): void {
             $data = $product->only([
-                'article_id', 'unit_id', 'quantity'
+                'article_id', 'unit_id', 'quantity',
             ]);
 
             $more = [
@@ -192,7 +216,7 @@ class FoodOrder extends Model
         FoodOrderByProducts::insert($items->toArray());
 
         return FoodOrderResource::getUrl('record-by-products', [
-            'record' => $this
+            'record' => $this,
         ]);
     }
 
@@ -202,89 +226,6 @@ class FoodOrder extends Model
     }
 
     // todo: lorem ipsum
-
-    //    public function hasAdequateIngredients(): bool
-    //    {
-    //        $key = 'food_order_recipe_id';
-    //
-    //        $requested = RequestedIngredient::where($key, $this->id)
-    //            ->select(['id', 'remaining_quantity'])
-    //            ->get();
-    //
-    //        if ($requested->isEmpty()) {
-    //            return false;
-    //        }
-    //
-    //        $requested = $requested->where('remaining_quantity', '>', 0);
-    //
-    //        return $requested->isEmpty();
-    //    }
-
-    //    public function dispatchItem(): HasOne
-    //    {
-    //        return $this->hasOne(ProductDispatchItem::class);
-    //    }
-
-    //    /**
-    //     * @throws RandomException
-    //     * @throws Throwable
-    //     */
-    //    public function prepare(): void
-    //    {
-    //        $ingredients = $this->requestedIngredients;
-    //        //        dump($ingredients->count());
-    //
-    //        $ingredients->each(function (RequestedIngredient $ingredient): void {
-    //            $ingredient->utilize($this);
-    //        });
-    //
-    //        //        todo: add production cost to the prep to batch ?
-    //        $expected = $this->expected_portions;
-    //        $this->produced_portions = random_int($expected / 2, $expected);
-    //        $this->update();
-    //
-    //        $store = $this->foodPreparation->station->stores->first();
-    //
-    //        $article = $this->recipe->product;
-    //
-    //        $batch = Batch::create([
-    //            'owner_id' => $this->id,
-    //            'owner_type' => $this->getMorphClass(),
-    //            'store_id' => $store->id,
-    //            'article_id' => $article->id,
-    //            'remaining_units' => $this->produced_portions,
-    //            'initial_units' => $this->produced_portions,
-    //            'narration' => 'Produced '.$this->produced_portions.' portions of '.$article->name.'.',
-    //        ]);
-    //
-    //        inventory()
-    //            ->stockLevel()
-    //            ->update($store->team, $store, $article, $this->produced_portions);
-    //
-    //        dump('total stock for '.$article->name.$article->totalStock());
-    //        // update the produced quantity / portions
-    //        // create batch for product
-    //    }
-
-
-    //    public function complete(): void
-    //    {
-    //        $this->items->each(
-    //            /**
-    //             * @throws Throwable
-    //             * @throws RandomException
-    //             */
-    //            fn (FoodOrder $item) => $item->prepare()
-    //        );
-    //
-    //        $this->status = 'pending dispatch';
-    //        $this->update();
-    //    }
-
-    /**
-     * @throws Throwable
-     */
-
 
     //    public function receive(): void
     //    {

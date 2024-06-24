@@ -6,6 +6,7 @@ use App\Concerns\HasBackRoute;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource;
 use App\Models\Production\FoodOrder;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -40,7 +41,7 @@ class ViewFoodOrder extends ViewRecord
             Action::make('initiate-preparation')->button()
                 ->visible(fn(FoodOrder $record) => $record->canBeInitiated())
                 ->icon('heroicon-o-sparkles')->requiresConfirmation()
-                ->action(function (FoodOrder $record) {
+                ->action(function (FoodOrder $record): void {
                     $record->initiate();
                     $this->back($record);
                 }),
@@ -54,13 +55,22 @@ class ViewFoodOrder extends ViewRecord
                 ->icon('heroicon-o-pencil-square')->button(),
             Action::make('complete')->color('success')
                 ->visible(fn(FoodOrder $record) => $record->canBeCompleted())
-                ->action(fn(FoodOrder $record, array $data) => $record->complete($data))
+                ->action(function (FoodOrder $record, array $data) {
+                    $record->complete($data);
+                    $this->back($record);
+                })
                 ->icon('heroicon-o-check')->button()->form([
                     TextInput::make('produced_portions')
-                        ->required()->numeric()
+                        ->required()->numeric(),
                 ]),
-
-
+            ActionGroup::make([
+                Action::make('view-shift')
+                    ->url(fn(FoodOrder $record) => $record->shiftUrl())
+                    ->icon('heroicon-o-clock')->color('gray'),
+                Action::make('view-recipe')
+                    ->url(fn(FoodOrder $record) => $record->recipeUrl())
+                    ->icon('heroicon-o-puzzle-piece')->color('gray'),
+            ]),
             //            Action::make('dispatch-products')
             //                ->requiresConfirmation()
             //                ->button(),

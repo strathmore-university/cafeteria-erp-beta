@@ -21,8 +21,10 @@ class PopulateDispatch
         $this->foodOrder = $foodOrder;
         $this->items = collect();
 
+        // todo: check store first
+
         try {
-            DB::transaction(function () {
+            DB::transaction(function (): void {
                 $ingredients = RequestedIngredient::with(['article.descendants'])
                     ->whereFoodOrderId($this->foodOrder->id)
                     ->get();
@@ -68,10 +70,10 @@ class PopulateDispatch
         RequestedIngredient $item
     ): void {
         $group->each(
-        /**
-         * @throws Throwable
-         */
-            fn(Article $article) => $this->attemptDispatch($article, $item)
+            /**
+             * @throws Throwable
+             */
+            fn (Article $article) => $this->attemptDispatch($article, $item)
         );
     }
 
@@ -83,7 +85,7 @@ class PopulateDispatch
         RequestedIngredient $item
     ): void {
         $remaining = $item->getAttribute('remaining_quantity');
-        if ($remaining == 0) {
+        if ($remaining === 0) {
             return;
         }
 

@@ -14,12 +14,6 @@ class Batch extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'expires_at' => 'datetime'
-        ];
-    }
     public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
@@ -28,6 +22,13 @@ class Batch extends Model
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'expires_at' => 'datetime',
+        ];
     }
 
     protected static function booted(): void

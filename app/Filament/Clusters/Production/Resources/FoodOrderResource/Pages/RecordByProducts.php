@@ -6,6 +6,7 @@ use App\Concerns\HasBackRoute;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource;
 use App\Models\Inventory\Article;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -36,26 +37,7 @@ class RecordByProducts extends ManageRelatedRecords
         $record = $this->getOwnerRecord();
         $code = $record->getAttribute('code');
 
-        return 'For Food Order: '.$code;
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('Complete')->color('success')
-                ->icon('heroicon-o-check')
-                ->requiresConfirmation()
-                ->action(function () {
-                    $record = $this->getOwnerRecord();
-                    $record->setAttribute('has_recorded_by_products', true);
-                    $record->update();
-
-                    $this->back($record);
-                }),
-            Action::make('view-food-order')
-                ->url(get_record_url($this->getOwnerRecord()))
-                ->icon('heroicon-o-eye')
-        ];
+        return 'For Food Order: ' . $code;
     }
 
     public function form(Form $form): Form
@@ -64,12 +46,12 @@ class RecordByProducts extends ManageRelatedRecords
             Select::make('article_id')->label('By Product')
                 ->options(Article::whereIsProduct(true)->isDescendant()->pluck('name', 'id')->toArray())
                 ->searchable()->preload()->required()->reactive()
-                ->afterStateUpdated(function (Set $set, $state) {
+                ->afterStateUpdated(function (Set $set, $state): void {
                     $article = Article::select(['id', 'unit_id'])->find($state);
                     $set('unit_id', $article->getAttribute('unit_id'));
                 }),
             TextInput::make('quantity'),
-            Hidden::make('unit_id')
+            Hidden::make('unit_id'),
         ]);
     }
 
@@ -83,9 +65,31 @@ class RecordByProducts extends ManageRelatedRecords
                     ->rules(['numeric', 'required']),
                 Tables\Columns\TextColumn::make('unit.name'),
             ])->headerActions([
-                Tables\Actions\CreateAction::make()->label('Add by product')
+                Tables\Actions\CreateAction::make()->label('Add by product')->link(),
             ])->actions([
-                Tables\Actions\DeleteAction::make()
+                Tables\Actions\DeleteAction::make(),
             ]);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('Complete')->color('success')
+                ->icon('heroicon-o-check')
+                ->requiresConfirmation()
+                ->action(function (): void {
+                    $record = $this->getOwnerRecord();
+                    $record->setAttribute('has_recorded_by_products', true);
+                    $record->update();
+
+                    $this->back($record);
+                }),
+            ActionGroup::make([
+                Action::make('view-food-order')
+                    ->url(get_record_url($this->getOwnerRecord()))
+                    ->color('gray')
+                    ->icon('heroicon-o-ticket'),
+            ])
+        ];
     }
 }

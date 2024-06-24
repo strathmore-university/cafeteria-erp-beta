@@ -38,10 +38,10 @@ class RequestedIngredientsRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('dispatch_article')
-                        ->hidden(fn() => !$this->ownerRecord->canExecuteDispatch())
+                        ->visible(fn () => $this->ownerRecord->canDispatch())
                         ->icon('heroicon-o-truck')->slideOver()->form([
                             Forms\Components\Select::make('article_id')->label('Article')->required()
-                                ->options(fn(RequestedIngredient $record) => $record->viableArticles())
+                                ->options(fn (RequestedIngredient $record) => $record->viableArticles())
                                 ->searchable()->preload()->reactive()
                                 ->afterStateUpdated(function (Set $set, ?string $state, $record): void {
                                     $this->fillFields($set, $state, $record);

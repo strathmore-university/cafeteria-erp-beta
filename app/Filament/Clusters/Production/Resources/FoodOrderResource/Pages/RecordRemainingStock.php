@@ -6,6 +6,7 @@ use App\Concerns\HasBackRoute;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource;
 use App\Models\Production\DispatchedIngredient;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -34,27 +35,6 @@ class RecordRemainingStock extends ManageRelatedRecords
         return 'For Food Order: '.$code;
     }
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('Complete')->color('success')
-                ->icon('heroicon-o-check')
-                ->requiresConfirmation()
-                ->hidden($this->getOwnerRecord()->getAttribute('has_recorded_remaining_stock'))
-                ->action(function () {
-                    $record = $this->getOwnerRecord();
-                    $record->setAttribute('has_recorded_remaining_stock', true);
-                    $record->update();
-
-                    $method = 'populateByProducts';
-                    $this->redirect($record->$method(), true);
-                }),
-            Action::make('view-food-order')
-                ->url(get_record_url($this->getOwnerRecord()))
-                ->icon('heroicon-o-eye')
-        ];
-    }
-
     public function table(Table $table): Table
     {
         return $table->recordTitleAttribute('article.name')
@@ -63,10 +43,10 @@ class RecordRemainingStock extends ManageRelatedRecords
                     ->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('initial_units')->numeric(),
                 Tables\Columns\TextInputColumn::make('current_units')
-                    ->rules(function (DispatchedIngredient $record) {
-                        return ['required', 'numeric', 'min:0', 'max:'.$record->initial_units];
-                    })
-                    ->afterStateUpdated(function (DispatchedIngredient $record) {
+                    ->rules(fn(DispatchedIngredient $record) => [
+                        'required', 'numeric', 'min:0', 'max:'.$record->initial_units
+                    ])
+                    ->afterStateUpdated(function (DispatchedIngredient $record): void {
                         $diff = $record->initial_units - $record->current_units;
                         $record->used_units = $diff;
                         $record->update();
@@ -75,5 +55,30 @@ class RecordRemainingStock extends ManageRelatedRecords
                     ->label('Unit Capacity'),
                 Tables\Columns\TextColumn::make('unit.name'),
             ]);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+
+            Action::make('Complete')->color('success')
+                ->icon('heroicon-o-check')
+                ->requiresConfirmation()
+                ->hidden($this->getOwnerRecord()->getAttribute('has_recorded_remaining_stock'))
+                ->action(function (): void {
+                    $record = $this->getOwnerRecord();
+                    $record->setAttribute('has_recorded_remaining_stock', true);
+                    $record->update();
+
+                    $method = 'populateByProducts';
+                    $this->redirect($record->$method(), true);
+                }),
+            ActionGroup::make([
+                Action::make('view-food-order')
+                    ->url(get_record_url($this->getOwnerRecord()))
+                    ->color('gray')
+                    ->icon('heroicon-o-ticket'),
+            ])
+        ];
     }
 }

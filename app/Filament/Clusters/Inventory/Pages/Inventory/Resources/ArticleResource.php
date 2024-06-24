@@ -29,9 +29,13 @@ use Illuminate\Database\Eloquent\Builder;
 class ArticleResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
     protected static ?string $cluster = Inventory::class;
+
     protected static ?string $model = Article::class;
+
     protected static ?string $slug = 'articles';
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

@@ -18,6 +18,7 @@ class RequestFoodOrderIngredients
     private FoodOrder $foodOrder;
 
     private Store $store;
+
     private Collection $items;
 
     private function setUp(FoodOrder $foodOrder): void
@@ -42,7 +43,7 @@ class RequestFoodOrderIngredients
 
         try {
             DB::transaction(function (): void {
-                $this->ingredients->each(fn($item) => $this->request($item));
+                $this->ingredients->each(fn ($item) => $this->request($item));
 
                 RequestedIngredient::insert($this->items->toArray());
 

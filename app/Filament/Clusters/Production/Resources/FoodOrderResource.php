@@ -9,6 +9,7 @@ use App\Filament\Clusters\Production\Resources\FoodOrderResource\Pages\ListFoodO
 use App\Filament\Clusters\Production\Resources\FoodOrderResource\Pages\RecordByProducts;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource\Pages\RecordRemainingStock;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource\Pages\ViewFoodOrder;
+use App\Filament\Clusters\Production\Resources\FoodOrderResource\RelationManagers\ByProductsRelationManager;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource\RelationManagers\DispatchedIngredientsRelationManager;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource\RelationManagers\RequestedIngredientsRelationManager;
 use App\Models\Production\FoodOrder;
@@ -47,18 +48,30 @@ class FoodOrderResource extends Resource
             ->schema([
                 TextInput::make('code')->disabled(),
                 TextInput::make('owner_id')->label('Order For')
-                    ->formatStateUsing(fn ($record) => $record->ownerName()),
+                    ->formatStateUsing(fn($record) => $record->ownerName()),
+                TextInput::make('recipe.name')->label('Recipe')
+                    ->formatStateUsing(fn($record) => $record->recipe->name)
+                    ->disabled(),
+                TextInput::make('recipe.name')->label('Product')
+                    ->formatStateUsing(fn($record) => $record->recipe->product->name)
+                    ->disabled(),
                 Select::make('station_id')->label('Station')
                     ->searchable()->preload()
                     ->options(Station::get()->pluck('name', 'id')->toArray()),
                 Select::make('prepared_by')
                     ->searchable()->preload()
-                    ->visible(fn ($state) => filled($state))
+                    ->visible(fn($state) => filled($state))
                     ->options(User::pluck('name', 'id')->toArray()),
-                TextInput::make('expected_portions')->disabled(),
-                TextInput::make('produced_portions')->disabled(),
-                TextInput::make('performance_rating')->disabled(),
-                TextInput::make('status')->disabled(),
+                Section::make([
+                    TextInput::make('expected_portions')->disabled(),
+                    TextInput::make('produced_portions')->disabled(),
+                    TextInput::make('performance_rating')->disabled()->suffix('%'),
+                    TextInput::make('status')->disabled(),
+                ])->columns($cols),
+                Section::make([
+                    TextInput::make('production_cost')->disabled()->numeric()->prefix('Ksh. '),
+                    TextInput::make('unit_cost')->disabled()->numeric()->prefix('Ksh. '),
+                ])->columns($cols),
                 Section::make([
                     placeholder('created_at', 'Created at'),
                     placeholder('updated_at', 'Last updated at'),
@@ -74,7 +87,7 @@ class FoodOrderResource extends Resource
         return $table->columns([
             TextColumn::make('code')->searchable()->sortable(),
             TextColumn::make('owner_id')->label('Destination')
-                ->formatStateUsing(fn ($record) => $record->ownerName())
+                ->formatStateUsing(fn($record) => $record->ownerName())
                 ->searchable()->sortable(),
             TextColumn::make('station.name')->label('Prepared at')->searchable()->sortable(),
             TextColumn::make('expected_portions')->sortable(),
@@ -85,8 +98,8 @@ class FoodOrderResource extends Resource
             flag_table_field()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('status')->badge()
-                ->formatStateUsing(fn ($state) => Str::title($state))
-                ->color(fn (string $state): string => match ($state) {
+                ->formatStateUsing(fn($state) => Str::title($state))
+                ->color(fn(string $state): string => match ($state) {
                     'prepared' => 'success',
                     'flagged' => 'danger',
                     default => 'warning'
@@ -108,6 +121,7 @@ class FoodOrderResource extends Resource
         return [
             RequestedIngredientsRelationManager::class,
             DispatchedIngredientsRelationManager::class,
+            ByProductsRelationManager::class
         ];
     }
 

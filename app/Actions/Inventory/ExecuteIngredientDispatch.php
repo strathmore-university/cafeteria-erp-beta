@@ -18,25 +18,40 @@ use Throwable;
 class ExecuteIngredientDispatch
 {
     private DispatchedIngredient $item;
+
     private Collection $movements;
+
     private FoodOrder $foodOrder;
+
     private Station $station;
+
     private Article $article;
-    private int $batchCount;
+
+    //    private int $batchCount;
     private Store $store;
+
+    private function setUp(FoodOrder $foodOrder): void
+    {
+        $id = $foodOrder->station_id;
+        $this->station = Station::select(['id', 'name'])->find($id);
+        $this->store = $this->station->defaultStore();
+        //        $this->batchCount = get_next_id(new Batch()); // todo: doing this can cause exceptions if another process attempts tp create batches at the same time
+        $this->foodOrder = $foodOrder;
+        $this->movements = collect();
+    }
 
     public function execute(FoodOrder $foodOrder): void
     {
         try {
             $this->setUp($foodOrder);
-            
-            DB::transaction(function () {
+
+            DB::transaction(function (): void {
                 $this
                     ->fetchItems()
-                    ->each(fn($item) => $this->dispatch($item));
-                
+                    ->each(fn ($item) => $this->dispatch($item));
+
                 StockMovement::insert($this->movements->toArray());
-                
+
                 $this->updateRecords();
             });
 
@@ -46,20 +61,10 @@ class ExecuteIngredientDispatch
         }
     }
 
-    private function setUp(FoodOrder $foodOrder): void
-    {
-        $id = $foodOrder->station_id;
-        $this->station = Station::select(['id', 'name'])->find($id);
-        $this->store = $this->station->defaultStore();
-        $this->batchCount = get_next_id(new Batch());
-        $this->foodOrder = $foodOrder;
-        $this->movements = collect();
-    }
-
     private function fetchItems(): Collection
     {
         $id = $this->foodOrder->id;
-        
+
         return DispatchedIngredient::with('article.batches')
             ->whereFoodOrderId($id)
             ->get();
@@ -76,8 +81,8 @@ class ExecuteIngredientDispatch
         // todo: create another relation for article batches
         $this->item = $item;
         $this->article = $item->article;
-        $this->article->batches->each(function (Batch $batch) use (&$remaining) {
-            if ($remaining == 0) {
+        $this->article->batches->each(function (Batch $batch) use (&$remaining): void {
+            if ($remaining === 0) {
                 return;
             }
 
@@ -90,7 +95,11 @@ class ExecuteIngredientDispatch
             $this->createMovement($newBatch, $units);
             $this->createMovement($batch, -$units);
 
-            $this->batchCount++;
+            $batch->previous_units = $batch->current_units;
+            $batch->current_units -= $units;
+            $batch->update();
+
+            //            $this->batchCount++;
             $remaining -= $units;
         });
 
@@ -108,20 +117,20 @@ class ExecuteIngredientDispatch
             ->reduce()
             ->index();
 
-//        $item->current_units = $item->initial_units;
-//        $item->setAttribute('status', 'dispatched');
-//        $item->update();
+        //        $item->current_units = $item->initial_units;
+        //        $item->setAttribute('status', 'dispatched');
+        //        $item->update();
     }
 
-//    private function fetchBatches($item): Collection
-//    {
-//        $id = $item->article_id;
-//
-//        return Batch::where('article_id', '=', $id)->oldest()
-////            ->whereDate('expires_at', '>', now())
-////            ->whereNull('owner_id') // todo: add
-//            ->get();
-//    }
+    //    private function fetchBatches($item): Collection
+    //    {
+    //        $id = $item->article_id;
+    //
+    //        return Batch::where('article_id', '=', $id)->oldest()
+    ////            ->whereDate('expires_at', '>', now())
+    ////            ->whereNull('owner_id') // todo: add
+    //            ->get();
+    //    }
 
     private function createBatch(Batch $batch, int $units): Batch
     {
@@ -130,14 +139,14 @@ class ExecuteIngredientDispatch
         $teamId = $batch->getAttribute('team_id');
 
         $narration = build_string([
-            'Received'.' '.abs($units).' units of '.$name.
-            ' for food order code:'.$code.' at station '.
-            $this->station->getAttribute('name')
+            'Received' . ' ' . abs($units) . ' units of ' . $name .
+            ' for food order code:' . $code . ' at station ' .
+            $this->station->getAttribute('name'),
         ]);
 
         $newBatch = Batch::create([
             'weighted_cost' => $this->article->valuation_rate,
-            'batch_number' => 'BATCH-'.$this->batchCount,
+            //            'batch_number' => 'BATCH-'.$this->batchCount,
             'owner_type' => $this->item->getMorphClass(),
             'expires_at' => $batch->expires_at,
             'article_id' => $this->article->id,
@@ -161,9 +170,9 @@ class ExecuteIngredientDispatch
         $action = $units > 0 ? 'Moving' : 'Dispatching';
 
         return build_string([
-            $action.' '.abs($units).' units of '.$name.
-            ' for food order code:'.$code.' to station '.
-            $this->station->getAttribute('name')
+            $action . ' ' . abs($units) . ' units of ' . $name .
+            ' for food order code:' . $code . ' to station ' .
+            $this->station->getAttribute('name'),
         ]);
     }
 
@@ -187,11 +196,11 @@ class ExecuteIngredientDispatch
     {
         $id = $this->foodOrder->id;
         RequestedIngredient::whereFoodOrderId($id)->update([
-            'dispatched_at' => now()
+            'dispatched_at' => now(),
         ]);
 
         DispatchedIngredient::whereFoodOrderId($id)->update([
-            'status' => 'dispatched'
+            'status' => 'dispatched',
         ]);
 
         $this->foodOrder->ingredients_dispatched_by = auth_id();

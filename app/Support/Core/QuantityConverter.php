@@ -32,7 +32,7 @@ class QuantityConverter
 
     private function fetchUnit(Unit|int $value)
     {
-        $id = match($value instanceof Unit) {
+        $id = match ($value instanceof Unit) {
             true => $value->id,
             false => $value,
         };

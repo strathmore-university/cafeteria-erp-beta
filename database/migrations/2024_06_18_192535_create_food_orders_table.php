@@ -22,6 +22,8 @@ return new class() extends Migration
             $table->foreignIdFor(Station::class)->index()->constrained();
             $table->morphs('owner');
             $table->integer('expected_portions');
+            $table->integer('expected_portions_upper_limit')->default(0);
+            $table->integer('expected_portions_lower_limit')->default(0);
             $table->integer('produced_portions')->default(0);
             $table->integer('performance_rating')->default(0);
             $table->decimal('production_cost')->default(0);
@@ -40,7 +42,6 @@ return new class() extends Migration
             $table->boolean('has_recorded_remaining_stock')->default(false);
             $table->boolean('has_recorded_by_products')->default(false);
             $table->timestamp('initiated_at')->nullable();
-            $table->timestamp('completed_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

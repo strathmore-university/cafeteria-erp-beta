@@ -114,12 +114,12 @@ class ProductionSeeder extends Seeder
 
         $foodOrder = FoodOrder::whereHas('recipe.byProducts')->first();
 
-//        $foodOrder = $foodOrders->first();
-//        $foodOrders->each(function (FoodOrder $foodOrder) {
-            $foodOrder->requestIngredients();
-            $foodOrder->populateDispatch();
-            $foodOrder->executeIngredientDispatch();
-            $foodOrder->initiate();
-//        });
+        //        $foodOrder = $foodOrders->first();
+        //        $foodOrders->each(function (FoodOrder $foodOrder) {
+        $foodOrder->requestIngredients();
+        $foodOrder->populateDispatch();
+        $foodOrder->executeIngredientDispatch();
+        $foodOrder->initiate();
+        //        });
     }
 }

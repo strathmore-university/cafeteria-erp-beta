@@ -37,7 +37,7 @@ class CreateDispatchIngredient
                 $this->createDispatch();
                 $this->updateRemainingQuantity();
 
-                if (!$quiet){
+                if ( ! $quiet) {
                     success();
                 }
             });
@@ -93,7 +93,7 @@ class CreateDispatchIngredient
         $to = $this->ingredient->unit_id;
 
         $capacity = quantity_converter($from, $to, $capacity);
-        $this->articleCapacity =   $capacity;
+        $this->articleCapacity = $capacity;
     }
 
     /**

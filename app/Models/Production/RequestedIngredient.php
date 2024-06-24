@@ -129,6 +129,6 @@ class RequestedIngredient extends Model
         $name = $unit->getAttribute('name');
         $unitName = Str::plural($name, $capacity);
 
-        return number_format($capacity) . ' ' .$unitName;
+        return number_format($capacity) . ' ' . $unitName;
     }
 }
