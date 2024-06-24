@@ -21,7 +21,7 @@ use Illuminate\Support\Str;
 
 class GoodsReceivedNoteResource extends Resource
 {
-    protected static ?string $slug = 'procurement/goods-received-notes';
+    protected static ?string $slug = 'goods-received-notes';
 
     protected static ?string $navigationIcon = 'heroicon-o-truck';
 

@@ -31,9 +31,20 @@ trait HasReviews
             ->first();
     }
 
-    abstract public function canBeSubmittedForReview(): bool;
+    public function requestReview(): void
+    {
+        try {
+            $this->createReview();
+            $this->updateStatus();
+            $this->update();
 
-    abstract public function requestReview(): void;
+            success('Submitted successfully');
+        } catch (Throwable $exception) {
+            error_notification($exception);
+        }
+    }
+
+    abstract public function canBeSubmittedForReview(): bool;
 
     abstract public function approvalAction(): void;
 
@@ -43,9 +54,7 @@ trait HasReviews
 
     public function createReview(): void
     {
-        $this->review()->create([
-            'team_id' => auth()->user()->team_id ?? system_team()->id, // todo: make this a helper function
-        ]);
+        $this->review()->create(['team_id' => team_id()]);
     }
 
     /**

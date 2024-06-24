@@ -10,16 +10,13 @@ use App\Concerns\HasReviews;
 use App\Concerns\HasStatusTransitions;
 use App\Models\Inventory\Store;
 use App\Models\User;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Spatie\LaravelPdf\PdfBuilder;
-use function Spatie\LaravelPdf\Support\pdf;
 use Throwable;
-
-//use PDF;
+use function Spatie\LaravelPdf\Support\pdf;
 
 class PurchaseOrder extends Model
 {
@@ -74,24 +71,6 @@ class PurchaseOrder extends Model
         ]);
     }
 
-    public function requestReview(): void
-    {
-        try {
-            $this->createReview();
-            $this->updateStatus();
-            $this->update();
-
-            Notification::make()->title('Submitted successfully')
-                ->success()
-                ->send();
-        } catch (Throwable $exception) {
-            Notification::make()->title($exception->getMessage())
-                ->persistent()
-                ->danger()
-                ->send();
-        }
-    }
-
     /**
      * @throws Throwable
      */
@@ -142,20 +121,6 @@ class PurchaseOrder extends Model
         ]);
     }
 
-    public function fetchItems(): Collection
-    {
-        $select = [
-            'id', 'article_id', 'ordered_units',
-            'price', 'remaining_units',
-        ];
-        $id = $this->getKey();
-
-        return PurchaseOrderItem::where('purchase_order_id', $id)
-            ->with('article')
-            ->select($select)
-            ->get();
-    }
-
     public function isFulfilled(): bool
     {
         $id = $this->getKey();
@@ -168,7 +133,7 @@ class PurchaseOrder extends Model
 
     public function pendingFulfillment(): bool
     {
-        return ! $this->isFulfilled();
+        return !$this->isFulfilled();
     }
 
     public function remainingItems(): Collection
@@ -202,7 +167,7 @@ class PurchaseOrder extends Model
 
     public function isValidLPO(): bool
     {
-        $notExpired = ! $this->isExpired();
+        $notExpired = !$this->isExpired();
 
         return and_check($this->hasBeenApproved(), $notExpired);
     }

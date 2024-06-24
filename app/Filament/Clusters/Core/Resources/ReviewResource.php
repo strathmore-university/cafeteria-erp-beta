@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -41,13 +42,13 @@ class ReviewResource extends Resource
                 Placeholder::make('reviewer.name')
                     ->label("Reviewer's name")
                     ->content(
-                        fn ($record): string => Str::title($record->reviewer->name)
+                        fn($record): string => Str::title($record->reviewer?->name)
                     ),
                 TextInput::make('reviewable_type'),
                 TextInput::make('comment'),
                 TextInput::make('status')
                     ->formatStateUsing(
-                        fn (string $state): string => class_basename($state)
+                        fn(string $state): string => class_basename($state)
                     ),
                 Section::make([
                     placeholder('created_at', 'Created Date'),
@@ -61,44 +62,38 @@ class ReviewResource extends Resource
      */
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('reviewable_type')
-                    ->formatStateUsing(
-                        fn (string $state): string => class_basename($state)
-                    )
-                    ->sortable()
-                    ->sortable(),
-                TextColumn::make('reviewer.name')->searchable()->sortable()
-                    ->formatStateUsing(fn (string $state): string => Str::title($state)),
-                TextColumn::make('comment')
-                    ->formatStateUsing(fn (string $state): string => Str::title($state)),
-                TextColumn::make('reviewed_at')->dateTime(),
-                TextColumn::make('status')->badge()
-                    ->formatStateUsing(fn (string $state): string => Str::title($state))
-                    ->color(fn (string $state): string => match ($state) {
-                        'pending' => 'warning',
-                        'approved' => 'success',
-                        default => 'danger',
-                    }),
-            ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'approved' => 'Approved',
-                        'rejected' => 'Rejected',
-                    ]),
-                SelectFilter::make('reviewable_type')
-                    ->options(reviewable_types())
-                    ->searchable(),
-            ])
-            ->actions([
+        return $table->columns([
+            TextColumn::make('reviewable_type')
+                ->formatStateUsing(fn($state) => class_basename($state))
+                ->sortable()->sortable(),
+            TextColumn::make('reviewer.name')->searchable()->sortable()
+                ->formatStateUsing(fn($state) => Str::title($state)),
+            TextColumn::make('comment')
+                ->formatStateUsing(fn($state) => Str::title($state)),
+            TextColumn::make('reviewed_at')->dateTime(),
+            TextColumn::make('status')->badge()
+                ->formatStateUsing(fn($state) => Str::title($state))
+                ->color(fn($state) => match ($state) {
+                    'pending' => 'warning',
+                    'approved' => 'success',
+                    default => 'danger',
+                }),
+        ])->filters([
+            SelectFilter::make('status')->options([
+                'pending' => 'Pending',
+                'approved' => 'Approved',
+                'rejected' => 'Rejected',
+            ]),
+            SelectFilter::make('reviewable_type')
+                ->options(reviewable_types())->searchable(),
+        ])->actions([
+            ActionGroup::make([
                 ViewAction::make(),
-                Action::make('reviewed-record')
-                    ->url(fn ($record) => get_record_url($record)),
+                Action::make('record')
+                    ->url(fn($record) => get_record_url($record))
+                    ->icon('heroicon-o-arrow-long-right')
             ])
-            ->bulkActions([]);
+        ]);
     }
 
     public static function getPages(): array
@@ -111,6 +106,6 @@ class ReviewResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Review::with('reviewer:id,name');
+        return Review::with('reviewer:id,name')->latest();
     }
 }

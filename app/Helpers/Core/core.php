@@ -1,8 +1,9 @@
 <?php
 
-use App\Filament\Clusters\Inventory\Pages\Inventory\Resources\ArticleResource;
-use App\Filament\Clusters\Inventory\Pages\Inventory\Resources\StockTakeResource;
-use App\Filament\Clusters\Inventory\Pages\Inventory\Resources\StoreResource;
+use App\Filament\Clusters\Inventory\Resources\ArticleResource;
+use App\Filament\Clusters\Inventory\Resources\StockTakeResource;
+use App\Filament\Clusters\Inventory\Resources\StockTransferResource;
+use App\Filament\Clusters\Inventory\Resources\StoreResource;
 use App\Filament\Clusters\Procurement\Resources\CreditNoteResource;
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource;
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource;
@@ -112,6 +113,7 @@ if (! function_exists('get_record_url')) {
         $resource = match (class_basename($class)) {
             'GoodsReceivedNote' => GoodsReceivedNoteResource::class,
             'PurchaseOrder' => PurchaseOrderResource::class,
+            'StockTransfer' => StockTransferResource::class,
             'CookingShift' => CookingShiftResource::class,
             'CreditNote' => CreditNoteResource::class,
             'Restaurant' => RestaurantResource::class,

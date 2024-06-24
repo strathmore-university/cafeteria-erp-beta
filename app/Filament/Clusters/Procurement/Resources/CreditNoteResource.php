@@ -23,7 +23,7 @@ class CreditNoteResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
 
-    protected static ?string $slug = 'procurement/credit-notes';
+    protected static ?string $slug = 'credit-notes';
 
     protected static ?string $cluster = Procurement::class;
 
