@@ -10,7 +10,8 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Batch extends Model
 {
-    use BelongsToTeam, HasOwner, NodeTrait;
+    use BelongsToTeam, HasOwner;
+    use NodeTrait;
 
     protected $guarded = [];
 

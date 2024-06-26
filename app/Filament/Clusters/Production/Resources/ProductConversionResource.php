@@ -19,9 +19,13 @@ use Filament\Tables\Table;
 class ProductConversionResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
+
     protected static ?string $slug = 'product-conversions';
+
     protected static ?string $model = ProductConversion::class;
+
     protected static ?string $cluster = Production::class;
+
     protected static ?int $navigationSort = 8;
 
     public static function form(Form $form): Form
@@ -30,18 +34,18 @@ class ProductConversionResource extends Resource
 
         return $form->schema([
             TextInput::make('station_id')->label('Station')
-                ->formatStateUsing(fn($record) => $record->station->name),
+                ->formatStateUsing(fn ($record) => $record->station->name),
             TextInput::make('created_by')->label('Station')
-                ->formatStateUsing(fn($record) => $record->creator->name),
+                ->formatStateUsing(fn ($record) => $record->creator->name),
             TextInput::make('from_id')->label('Product to convert')
-                ->formatStateUsing(fn($record) => $record->from->name),
+                ->formatStateUsing(fn ($record) => $record->from->name),
             TextInput::make('to_id')->label('Target Product')
-                ->formatStateUsing(fn($record) => $record->to->name),
+                ->formatStateUsing(fn ($record) => $record->to->name),
             TextInput::make('quantity')->label('Quantity'),
             Section::make([
                 placeholder('created_at', 'Created at'),
-                placeholder('updated_at', 'Last updated at')
-            ])->columns($cols)
+                placeholder('updated_at', 'Last updated at'),
+            ])->columns($cols),
         ]);
     }
 

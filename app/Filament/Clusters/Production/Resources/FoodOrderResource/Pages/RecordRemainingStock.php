@@ -32,7 +32,7 @@ class RecordRemainingStock extends ManageRelatedRecords
         $record = $this->getOwnerRecord();
         $code = $record->getAttribute('code');
 
-        return 'For Food Order: '.$code;
+        return 'For Food Order: ' . $code;
     }
 
     public function table(Table $table): Table
@@ -44,7 +44,7 @@ class RecordRemainingStock extends ManageRelatedRecords
                 Tables\Columns\TextColumn::make('initial_units')->numeric(),
                 Tables\Columns\TextInputColumn::make('current_units')
                     ->rules(fn (DispatchedIngredient $record) => [
-                        'required', 'numeric', 'min:0', 'max:'.$record->initial_units,
+                        'required', 'numeric', 'min:0', 'max:' . $record->initial_units,
                     ])
                     ->afterStateUpdated(function (DispatchedIngredient $record): void {
                         $diff = $record->initial_units - $record->current_units;

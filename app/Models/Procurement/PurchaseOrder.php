@@ -2,8 +2,8 @@
 
 namespace App\Models\Procurement;
 
-use App\Actions\Procurement\FetchOrCreateGrn;
-use App\Actions\Procurement\GenerateCrn;
+use App\Actions\Procurement\Crn\GenerateCrn;
+use App\Actions\Procurement\Grn\FetchOrCreateGrn;
 use App\Concerns\BelongsToCreator;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasReviews;
@@ -86,22 +86,6 @@ class PurchaseOrder extends Model
         // todo: send LPO to supplier via email
     }
 
-    public function returnAction(): void
-    {
-        $this->revertStatus();
-        $this->update();
-
-        // TODO: send notifications
-    }
-
-    public function rejectedAction(): void
-    {
-        $this->setAttribute('status', 'rejected');
-        $this->update();
-
-        // TODO: send notifications
-    }
-
     public function canBeSubmittedForReview(): bool
     {
         $items = $this->items->count();
@@ -138,16 +122,13 @@ class PurchaseOrder extends Model
 
     public function remainingItems(): Collection
     {
-        $id = $this->getKey();
-
         $select = [
             'id', 'article_id', 'ordered_units', 'price',
             'remaining_units', 'purchase_order_id',
         ];
 
-        return PurchaseOrderItem::where('purchase_order_id', $id)
+        return PurchaseOrderItem::wherePurchaseOrderId($this->getKey())
             ->where('remaining_units', '>', 0)
-            ->with('article')
             ->select($select)
             ->get();
     }

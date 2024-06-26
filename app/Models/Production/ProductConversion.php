@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductConversion extends Model
 {
-    use BelongsToTeam, BelongsToCreator;
+    use BelongsToCreator, BelongsToTeam;
 
     public function station(): BelongsTo
     {

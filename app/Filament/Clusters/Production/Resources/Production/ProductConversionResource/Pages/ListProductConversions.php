@@ -29,7 +29,7 @@ class ListProductConversions extends ListRecords
                     Select::make('station_id')->label('Station')
                         ->relationship('station', 'name')
                         ->searchable()->preload()->reactive()->required()
-                        ->afterStateUpdated(function ($state, Set $set) {
+                        ->afterStateUpdated(function ($state, Set $set): void {
                             if (filled($state)) {
                                 return;
                             }
@@ -39,9 +39,9 @@ class ListProductConversions extends ListRecords
                             $set('to_id', null);
                         }),
                     Select::make('from_id')->label('Product to convert')
-                        ->options(fn(Get $get) => $this->fromArticles($get))
+                        ->options(fn (Get $get) => $this->fromArticles($get))
                         ->searchable()->preload()->reactive()->required()
-                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                        ->afterStateUpdated(function ($state, Set $set, Get $get): void {
                             if (filled($state)) {
                                 $max = $this->maxQuantity($get);
                                 $set('quantity', $max);
@@ -53,14 +53,14 @@ class ListProductConversions extends ListRecords
                             $set('to_id', null);
                         }),
                     Select::make('to_id')->label('Target Product')
-                        ->options(fn(Get $get) => $this->toArticles($get))
+                        ->options(fn (Get $get) => $this->toArticles($get))
                         ->required()->searchable()->preload()->reactive(),
                     TextInput::make('quantity')->label('Quantity')
-                        ->maxValue(fn(Get $get) => $this->maxQuantity($get))
+                        ->maxValue(fn (Get $get) => $this->maxQuantity($get))
                         ->required()->numeric()->minValue(1),
-                ])->action(function ($data) {
+                ])->action(function ($data): void {
                     (new ConvertProduct())->execute($data);
-                })
+                }),
         ];
     }
 

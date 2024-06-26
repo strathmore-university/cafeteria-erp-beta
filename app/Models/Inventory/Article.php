@@ -7,11 +7,13 @@ use App\Concerns\HasCategory;
 use App\Concerns\HasStock;
 use App\Concerns\UsesNestedSets;
 use App\Models\Core\Unit;
+use App\Models\Procurement\PriceQuote;
 use App\Models\Production\Recipe;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
@@ -31,6 +33,11 @@ class Article extends Model
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function quotes(): HasMany
+    {
+        return $this->hasMany(PriceQuote::class);
     }
 
     public function store(): BelongsTo
@@ -59,7 +66,7 @@ class Article extends Model
             });
 
             $message = 'No articles with adequate stock to dispatch found!';
-            throw_if(! count($articles), new Exception($message));
+            throw_if( ! count($articles), new Exception($message));
 
             return $articles;
         } catch (Throwable $exception) {

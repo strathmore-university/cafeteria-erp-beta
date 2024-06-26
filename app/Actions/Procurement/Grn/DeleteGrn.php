@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Procurement;
+namespace App\Actions\Procurement\Grn;
 
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource;
 use App\Models\Procurement\GoodsReceivedNote;
@@ -19,7 +19,8 @@ class DeleteGrn
                 $check = $grn->getAttribute('status') !== 'draft';
                 throw_if($check, new Exception($message));
 
-                GoodsReceivedNoteItem::whereGoodsReceivedNoteId($grn->id)->delete();
+                $id = $grn->id;
+                GoodsReceivedNoteItem::whereGoodsReceivedNoteId($id)->delete();
                 $grn->delete();
 
                 success();

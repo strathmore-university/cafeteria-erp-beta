@@ -15,7 +15,7 @@ class ViewReview extends ViewRecord
     {
         return [
             Action::make('record')->color('gray')
-                ->url(fn($record) => get_record_url($record))
+                ->url(fn ($record) => get_record_url($record))
                 ->iconPosition(IconPosition::After)
                 ->icon('heroicon-o-arrow-long-right'),
         ];

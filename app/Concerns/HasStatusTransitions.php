@@ -37,7 +37,7 @@ trait HasStatusTransitions
 
     public function status(): string
     {
-        return $this->status();
+        return $this->getAttribute('status');
     }
 
     public function preventEdit(): bool

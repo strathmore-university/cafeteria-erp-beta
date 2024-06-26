@@ -57,13 +57,12 @@ class ProcurementDatabaseSeeder extends Seeder
         });
 
         $purchaseOrders = PurchaseOrder::get();
-        $purchaseOrders->each(function (PurchaseOrder $purchaseOrder): void {
-            $purchaseOrder->requestReview();
-            $purchaseOrder->submitReview([
-                'comment' => 'good', 'status' => 'approved',
-            ]);
+        $purchaseOrders->take(1)->each(function (PurchaseOrder $order): void {
+            $order->requestReview();
+            $order->submitReview(['comment' => 'good', 'status' => 'approved',]);
 
-            $purchaseOrder->fetchGrn()->receive();
+            $grn = $order->fetchGrn();
+            $grn->receive();
         });
     }
 }

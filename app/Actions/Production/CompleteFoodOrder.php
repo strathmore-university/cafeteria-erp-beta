@@ -10,7 +10,7 @@ use App\Models\Production\FoodOrder;
 use App\Models\Production\FoodOrderByProducts;
 use App\Models\Production\Recipe;
 use App\Models\Production\Station;
-use App\Support\Inventory\UpdateStockLevel;
+use App\Services\Inventory\UpdateStockLevel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;

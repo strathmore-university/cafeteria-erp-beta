@@ -55,7 +55,7 @@ class ViewFoodOrder extends ViewRecord
                 ->icon('heroicon-o-pencil-square')->button(),
             Action::make('complete')->color('success')
                 ->visible(fn (FoodOrder $record) => $record->canBeCompleted())
-                ->action(function (FoodOrder $record, array $data) {
+                ->action(function (FoodOrder $record, array $data): void {
                     $record->complete($data);
                     $this->back($record);
                 })

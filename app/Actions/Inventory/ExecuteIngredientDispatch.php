@@ -10,7 +10,7 @@ use App\Models\Production\DispatchedIngredient;
 use App\Models\Production\FoodOrder;
 use App\Models\Production\RequestedIngredient;
 use App\Models\Production\Station;
-use App\Support\Inventory\UpdateStockLevel;
+use App\Services\Inventory\UpdateStockLevel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -99,7 +99,6 @@ class ExecuteIngredientDispatch
             $batch->current_units -= $units;
             $batch->update();
 
-            //            $this->batchCount++;
             $remaining -= $units;
         });
 

@@ -2,8 +2,8 @@
 
 namespace App\Models\Procurement;
 
-use App\Actions\Procurement\DeleteCrn;
-use App\Actions\Procurement\IssueCrn;
+use App\Actions\Procurement\Crn\DeleteCrn;
+use App\Actions\Procurement\Crn\IssueCrn;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasStatusTransitions;
 use App\Models\User;
@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\LaravelPdf\PdfBuilder;
-use function Spatie\LaravelPdf\Support\pdf;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use function Spatie\LaravelPdf\Support\pdf;
 
 class CreditNote extends Model implements HasMedia
 {

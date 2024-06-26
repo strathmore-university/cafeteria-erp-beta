@@ -57,7 +57,7 @@
             "Tests\\": "tests/"
         },
         "files": [
-            "app/Helpers/load-helpers.php"
+          "app/Helpers/loader.php"
         ]
     },
     "scripts": {

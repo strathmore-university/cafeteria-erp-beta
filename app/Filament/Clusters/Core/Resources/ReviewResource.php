@@ -42,13 +42,13 @@ class ReviewResource extends Resource
                 Placeholder::make('reviewer.name')
                     ->label("Reviewer's name")
                     ->content(
-                        fn($record): string => Str::title($record->reviewer?->name)
+                        fn ($record): string => Str::title($record->reviewer?->name)
                     ),
                 TextInput::make('reviewable_type'),
                 TextInput::make('comment'),
                 TextInput::make('status')
                     ->formatStateUsing(
-                        fn(string $state): string => class_basename($state)
+                        fn (string $state): string => class_basename($state)
                     ),
                 Section::make([
                     placeholder('created_at', 'Created Date'),
@@ -64,16 +64,16 @@ class ReviewResource extends Resource
     {
         return $table->columns([
             TextColumn::make('reviewable_type')
-                ->formatStateUsing(fn($state) => class_basename($state))
+                ->formatStateUsing(fn ($state) => class_basename($state))
                 ->sortable()->sortable(),
             TextColumn::make('reviewer.name')->searchable()->sortable()
-                ->formatStateUsing(fn($state) => Str::title($state)),
+                ->formatStateUsing(fn ($state) => Str::title($state)),
             TextColumn::make('comment')
-                ->formatStateUsing(fn($state) => Str::title($state)),
+                ->formatStateUsing(fn ($state) => Str::title($state)),
             TextColumn::make('reviewed_at')->dateTime(),
             TextColumn::make('status')->badge()
-                ->formatStateUsing(fn($state) => Str::title($state))
-                ->color(fn($state) => match ($state) {
+                ->formatStateUsing(fn ($state) => Str::title($state))
+                ->color(fn ($state) => match ($state) {
                     'pending' => 'warning',
                     'approved' => 'success',
                     default => 'danger',
@@ -90,9 +90,9 @@ class ReviewResource extends Resource
             ActionGroup::make([
                 ViewAction::make(),
                 Action::make('record')
-                    ->url(fn($record) => get_record_url($record))
-                    ->icon('heroicon-o-arrow-long-right')
-            ])
+                    ->url(fn ($record) => get_record_url($record))
+                    ->icon('heroicon-o-arrow-long-right'),
+            ]),
         ]);
     }
 

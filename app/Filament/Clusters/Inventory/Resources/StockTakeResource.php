@@ -21,9 +21,13 @@ use Illuminate\Support\Str;
 class StockTakeResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+
     protected static ?string $cluster = Inventory::class;
+
     protected static ?string $model = StockTake::class;
+
     protected static ?string $slug = 'stock-takes';
+
     protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form

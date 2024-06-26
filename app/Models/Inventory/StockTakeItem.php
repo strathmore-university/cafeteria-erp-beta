@@ -3,7 +3,7 @@
 namespace App\Models\Inventory;
 
 use App\Models\Procurement\PriceQuote;
-use App\Support\Inventory\UpdateStockLevel;
+use App\Services\Inventory\UpdateStockLevel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;

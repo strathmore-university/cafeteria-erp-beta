@@ -20,13 +20,18 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class StockTransferResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-truck';
+
     protected static ?string $model = StockTransfer::class;
+
     protected static ?string $cluster = Inventory::class;
+
     protected static ?string $slug = 'stock-transfers';
+
     protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
@@ -35,24 +40,23 @@ class StockTransferResource extends Resource
 
         return $form->schema([
             Section::make([
-
-            Select::make('from_store_id')->required()
-                ->label('From Station:')->searchable()->preload()
-                ->relationship('from', 'name')
-                ->reactive()->afterStateUpdated(function ($state, Set $set) {
-                    if (blank($state)) {
-                        $set('to_store_id', null);
-                    }
-                }),
-            Select::make('to_store_id')->required()->preload()
-                ->label('To Station:')->searchable()->reactive()
-                ->options(fn(Get $get) => self::toStores($get)),
+                Select::make('from_store_id')->required()->preload()
+                    ->label('From Station:')->searchable()->reactive()
+                    ->relationship('from', 'name')
+                    ->afterStateUpdated(function ($state, Set $set): void {
+                        if (blank($state)) {
+                            $set('to_store_id', null);
+                        }
+                    }),
+                Select::make('to_store_id')->required()->preload()
+                    ->label('To Station:')->searchable()->reactive()
+                    ->options(fn (Get $get) => self::toStores($get)),
             ])->columns($cols),
             TextInput::make('narration')->required()
                 ->string()->maxLength(255),
-            TextInput::make('status')
-                ->visible(fn($record) => $record?->exists)
-                ->required()->string()->maxLength(255),
+            TextInput::make('status')->required()->maxLength(255)
+                ->string()->visible(fn ($record) => $record?->exists)
+                ->formatStateUsing(fn ($state) => Str::title($state)),
         ])->columns(1);
     }
 
@@ -69,7 +73,7 @@ class StockTransferResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ItemsRelationManager::class
+            ItemsRelationManager::class,
         ];
     }
 
@@ -86,6 +90,7 @@ class StockTransferResource extends Resource
     private static function toStores(Get $get): array
     {
         return Store::whereNotIn('id', [$get('from_store_id')])
+            ->whereCanShipStock(true)
             ->pluck('name', 'id')
             ->toArray();
     }

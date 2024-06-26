@@ -43,7 +43,7 @@ class ViewOrders extends ManageRelatedRecords
                     TextColumn::make('recipe.name')->searchable(),
                     TextColumn::make('owner.name')->searchable()
                         ->formatStateUsing(fn (FoodOrder $record) => 'For: ' . $record->ownerName()),
-//                    Tables\Columns\Layout\Split::make([
+                    //                    Tables\Columns\Layout\Split::make([
                     Tables\Columns\Layout\Split::make([
                         TextColumn::make('expected_portions')
                             ->formatStateUsing(fn ($state) => $state . ' portions required')
@@ -66,7 +66,7 @@ class ViewOrders extends ManageRelatedRecords
                                 default => 'warning'
                             }),
                     ]),
-//                    ]),
+                    //                    ]),
                 ])->space(2),
             ])->actions([
                 Tables\Actions\Action::make('view')

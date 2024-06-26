@@ -17,24 +17,10 @@ use App\Models\Core\Review;
 use App\Models\Core\Team;
 use App\Models\Core\Unit;
 use App\Models\User;
-use App\Support\Core\QuantityConverter;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-if (! function_exists('quantity_converter')) {
-    /**
-     * @throws Throwable
-     */
-    function quantity_converter(
-        Unit|int $from,
-        Unit|int $to,
-        float $value
-    ): float {
-        return (new QuantityConverter())->index($from, $to, $value);
-    }
-}
-
-if (! function_exists('auth_team')) {
+if (!function_exists('auth_team')) {
     function auth_team(): Team
     {
         return match (auth()->check()) {
@@ -44,29 +30,42 @@ if (! function_exists('auth_team')) {
     }
 }
 
-if (! function_exists('system_team')) {
+if (!function_exists('system_team')) {
     function system_team(): Team
     {
-        return Team::where('is_default', '=', true)->first();
+        return Cache::rememberForever('system_team', function () {
+            return Team::where('is_default', '=', true)
+                ->first();
+        });
     }
 }
 
-if (! function_exists('system_user')) {
+if (!function_exists('team_id')) {
+    function team_id(): int
+    {
+        return auth()->user()->team_id ?? system_team()->id;
+    }
+}
+
+if (!function_exists('system_user')) {
     function system_user(): User
     {
+        return Cache::rememberForever('system_user', function () {
+            return User::whereEmail('tony@gmail.com')->first();
+        });
+
         // todo: update system user
-        return User::where('email', '=', 'tony@gmail.com')->first();
     }
 }
 
-if (! function_exists('primary_units')) {
+if (!function_exists('primary_units')) {
     function primary_units(): Collection
     {
         return Unit::isReference()->select(['id', 'name'])->get();
     }
 }
 
-if (! function_exists('unit_descendants')) {
+if (!function_exists('unit_descendants')) {
     function unit_descendants(string $name): Collection
     {
         return Unit::with('descendants')
@@ -78,7 +77,7 @@ if (! function_exists('unit_descendants')) {
     }
 }
 
-if (! function_exists('get_unit_by_name')) {
+if (!function_exists('get_unit_by_name')) {
     function get_unit_by_name(string $name): Unit
     {
         return Unit::where('is_reference', '=', false)
@@ -87,7 +86,7 @@ if (! function_exists('get_unit_by_name')) {
     }
 }
 
-if (! function_exists('reviewable_types')) {
+if (!function_exists('reviewable_types')) {
     function reviewable_types(): array
     {
         return [
@@ -96,7 +95,7 @@ if (! function_exists('reviewable_types')) {
     }
 }
 
-if (! function_exists('get_record_url')) {
+if (!function_exists('get_record_url')) {
     function get_record_url(Model $model, array $attributes = []): string
     {
         $check = $model instanceof Review;

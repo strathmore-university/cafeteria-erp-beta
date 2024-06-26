@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Procurement;
+namespace App\Actions\Procurement\Crn;
 
 use App\Filament\Clusters\Procurement\Resources\CreditNoteResource;
 use App\Models\Procurement\CreditNote;

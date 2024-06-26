@@ -3,7 +3,7 @@
 use App\Models\Inventory\Store;
 use App\Models\Procurement\Supplier;
 
-if (! function_exists('active_suppliers')) {
+if ( ! function_exists('active_suppliers')) {
     function active_suppliers(): array
     {
         return Supplier::isActive()->select(['id', 'name'])->get()
@@ -12,7 +12,7 @@ if (! function_exists('active_suppliers')) {
     }
 }
 
-if (! function_exists('procurement_stores')) {
+if ( ! function_exists('procurement_stores')) {
     /**
      * @throws Throwable
      */

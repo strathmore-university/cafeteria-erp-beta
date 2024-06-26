@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Support\Inventory;
+namespace App\Services\Inventory;
 
 use App\Models\Inventory\StockLevel;
+use App\Models\Inventory\Store;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -16,6 +17,8 @@ class UpdateStockLevel
     private int $articleId;
 
     private int $storeId;
+
+    private ?store $store = null;
 
     private int $teamId;
 
@@ -31,6 +34,13 @@ class UpdateStockLevel
     public function store(int $storeId): self
     {
         $this->storeId = $storeId;
+
+        return $this;
+    }
+
+    public function useStore(Store $store): self
+    {
+        $this->store = $store;
 
         return $this;
     }
@@ -86,9 +96,15 @@ class UpdateStockLevel
         });
     }
 
-    private function fetchStockLevel(): ?StockLevel
+    private function fetchStockLevel()
     {
         $id = $this->articleId;
+
+        if (filled($this->store)) {
+            return $this->store->stockLevels
+                ->where('team_id', '=', $this->teamId)
+                ->where('article_id', '=', $id);
+        }
 
         return StockLevel::where('article_id', '=', $id)
             ->where('store_id', '=', $this->storeId)
@@ -103,7 +119,7 @@ class UpdateStockLevel
     private function update(StockLevel $stockLevel): void
     {
         $condition = $this->units > $stockLevel->current_units;
-        $condition = and_check(! $this->add, $condition);
+        $condition = and_check( ! $this->add, $condition);
         $message = 'Insufficient stock';
         throw_if($condition, new Exception($message));
 
@@ -115,10 +131,10 @@ class UpdateStockLevel
     private function create(): void
     {
         StockLevel::create([
+            'store_id' => $this->store?->id ?? $this->storeId,
             'article_id' => $this->articleId,
             'current_units' => $this->units,
             'is_sold_stock' => $this->sale,
-            'store_id' => $this->storeId,
             'team_id' => $this->teamId,
             'previous_units' => 0,
         ]);

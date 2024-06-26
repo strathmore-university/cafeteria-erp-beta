@@ -44,13 +44,25 @@ trait HasReviews
         }
     }
 
+    public function returnAction(): void
+    {
+        $this->revertStatus();
+        $this->update();
+
+        // TODO: send notifications
+    }
+
+    public function rejectedAction(): void
+    {
+        $this->setAttribute('status', 'rejected');
+        $this->update();
+
+        // TODO: send notifications
+    }
+
     abstract public function canBeSubmittedForReview(): bool;
 
     abstract public function approvalAction(): void;
-
-    abstract public function returnAction(): void;
-
-    abstract public function rejectedAction(): void;
 
     public function createReview(): void
     {

@@ -8,7 +8,7 @@ use App\Models\Inventory\StockMovement;
 use App\Models\Inventory\Store;
 use App\Models\Production\ProductConversion;
 use App\Models\Production\Station;
-use App\Support\Inventory\UpdateStockLevel;
+use App\Services\Inventory\UpdateStockLevel;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -43,9 +43,8 @@ class ConvertProduct
                     $store,
                     $teamId,
                     $movements,
-                    &
-                    $remaining
-                ) {
+                    &$remaining
+                ): void {
                     if ($remaining === 0) {
                         return;
                     }
@@ -58,7 +57,7 @@ class ConvertProduct
                     $name = $from->getAttribute('name');
 
                     $narration = build_string([
-                        'Converted'.abs($units).' portions of', $name,
+                        'Converted' . abs($units) . ' portions of', $name,
                         'to', $to->getAttribute('name'), 'at',
                         $station->getAttribute('name'),
                     ]);
@@ -100,7 +99,7 @@ class ConvertProduct
                     $to->getAttribute('name'), 'from',
                     $from->getAttribute('name'), 'at',
                     $station->getAttribute('name'),
-                    'from conversion id:', $conversion->id
+                    'from conversion id:', $conversion->id,
                 ]);
 
                 $batch = Batch::create([

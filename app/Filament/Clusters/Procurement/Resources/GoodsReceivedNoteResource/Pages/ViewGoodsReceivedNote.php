@@ -2,6 +2,7 @@
 
 namespace App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource\Pages;
 
+use App\Concerns\HasBackRoute;
 use App\Filament\Clusters\Procurement\Resources\GoodsReceivedNoteResource;
 use App\Filament\Clusters\Procurement\Resources\PurchaseOrderResource;
 use App\Models\Procurement\GoodsReceivedNote;
@@ -14,6 +15,8 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ViewGoodsReceivedNote extends ViewRecord
 {
+    use HasBackRoute;
+
     protected static string $resource = GoodsReceivedNoteResource::class;
 
     protected function getHeaderActions(): array
@@ -22,7 +25,10 @@ class ViewGoodsReceivedNote extends ViewRecord
             ActionGroup::make([
                 ActionGroup::make([
                     Action::make('execute-receipt')->color('success')
-                        ->action(fn (GoodsReceivedNote $record, array $data) => $record->receive($data))
+                        ->action(function (GoodsReceivedNote $record, array $data) {
+                            $record->receive($data);
+                            $this->back($record);
+                        })
                         ->visible(fn (GoodsReceivedNote $record) => $record->canBeReceived())
                         ->requiresConfirmation()->icon('heroicon-o-check')->form([
                             TextInput::make('delivery_note_number')

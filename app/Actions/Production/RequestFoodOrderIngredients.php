@@ -14,12 +14,9 @@ use Throwable;
 class RequestFoodOrderIngredients
 {
     private Collection $ingredients;
-
     private FoodOrder $foodOrder;
-
-    private Store $store;
-
     private Collection $items;
+    private Store $store;
 
     private function setUp(FoodOrder $foodOrder): void
     {
