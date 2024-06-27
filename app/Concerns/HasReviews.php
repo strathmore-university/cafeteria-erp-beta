@@ -31,6 +31,13 @@ trait HasReviews
             ->first();
     }
 
+    public function hasBeenApproved(): bool
+    {
+        $invalidStatus = ['draft', 'pending review', 'rejected'];
+
+        return ! in_array($this->status(), $invalidStatus);
+    }
+
     public function requestReview(): void
     {
         try {

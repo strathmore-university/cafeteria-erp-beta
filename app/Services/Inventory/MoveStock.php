@@ -94,10 +94,11 @@ class MoveStock
     {
         $this->validate();
 
-        $this->batches->each(fn($batch) => $this->attempt($batch));
+        $this->batches->each(fn ($batch) => $this->attempt($batch));
 
-        $update = update_stock_level()->units($this->originalUnits)
+        $update = update_stock_level()
             ->team($this->article->getAttribute('team_id'))
+            ->units($this->originalUnits)
             ->article($this->article->id);
 
         $update->store($this->to->id)->index();
@@ -205,11 +206,11 @@ class MoveStock
         $toName = $this->to->getAttribute('name');
 
         $action = tannery($units > 0, 'Received', 'Moved');
-        $base = $action.' '.abs($units).' units of '.$name;
+        $base = $action . ' ' . abs($units) . ' units of ' . $name;
 
         return match ($units > 0) {
-            false => $base.' from '.$fromName.' to '.$toName,
-            true => $base.' at '.$toName.' from '.$fromName,
+            false => $base . ' from ' . $fromName . ' to ' . $toName,
+            true => $base . ' at ' . $toName . ' from ' . $fromName,
         };
     }
 
@@ -235,7 +236,7 @@ class MoveStock
         fire(blank($this->to), 'To store not found');
 
         $message = 'From store cannot ship stock';
-        fire(!$this->from->can_ship_stock, $message);
+        fire( ! $this->from->can_ship_stock, $message);
 
         $check = $this->from->id === $this->to->id;
         fire($check, 'Stores are the same');

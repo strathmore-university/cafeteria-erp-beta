@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             IngredientArticlesSeeder::class,
             ProcurementDatabaseSeeder::class,
             //            StockTakeSeeder::class,
-//            ProductionSeeder::class,
+            ProductionSeeder::class,
         ]);
     }
 }

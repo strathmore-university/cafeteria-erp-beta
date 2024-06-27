@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('fire')) {
+if ( ! function_exists('fire')) {
     /**
      * @throws Throwable
      */

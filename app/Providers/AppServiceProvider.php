@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::shouldBeStrict();
+        //        Model::shouldBeStrict();
         Model::unguard();
 
         Blueprint::macro('team', function (): void {

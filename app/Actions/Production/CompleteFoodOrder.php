@@ -240,6 +240,7 @@ class CompleteFoodOrder
 
         $this->foodOrder->expected_portions_upper_limit = $allowedSurplus;
         $this->foodOrder->expected_portions_lower_limit = $allowedWastage;
+        $this->foodOrder->available_portions = $produced;
         $this->foodOrder->unit_cost = $cost / $produced;
         $this->foodOrder->performance_rating = $rating;
         $this->foodOrder->production_cost = $cost;

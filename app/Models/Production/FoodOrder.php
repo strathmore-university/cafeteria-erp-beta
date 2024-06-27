@@ -5,6 +5,7 @@ namespace App\Models\Production;
 use App\Actions\Inventory\ExecuteIngredientDispatch;
 use App\Actions\Inventory\PopulateDispatch;
 use App\Actions\Production\CompleteFoodOrder;
+use App\Actions\Production\DispatchProduct;
 use App\Actions\Production\RequestFoodOrderIngredients;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasOwner;
@@ -225,6 +226,11 @@ class FoodOrder extends Model
     public function complete(array $data): void
     {
         (new CompleteFoodOrder())->execute($this, $data);
+    }
+
+    public function dispatch(array $data): void
+    {
+        (new DispatchProduct())->execute($this, $data);
     }
 
     // todo: lorem ipsum

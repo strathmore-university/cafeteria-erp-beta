@@ -19,8 +19,8 @@ class KfsVendorSeeder extends Seeder
             true => ['--limit' => 1, '--size' => 10]
         };
 
-//        $params = array_merge($params, ['-q' => true]);
-//        Artisan::call('fetch:kfs-vendors', $params);
+        //        $params = array_merge($params, ['-q' => true]);
+        //        Artisan::call('fetch:kfs-vendors', $params);
 
         foreach (range(1, 10) as $item) {
             KfsVendor::create([

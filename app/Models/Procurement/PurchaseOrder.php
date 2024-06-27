@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Spatie\LaravelPdf\PdfBuilder;
 use Throwable;
+
 use function Spatie\LaravelPdf\Support\pdf;
 
 class PurchaseOrder extends Model
@@ -117,7 +118,7 @@ class PurchaseOrder extends Model
 
     public function pendingFulfillment(): bool
     {
-        return !$this->isFulfilled();
+        return ! $this->isFulfilled();
     }
 
     public function remainingItems(): Collection
@@ -148,7 +149,7 @@ class PurchaseOrder extends Model
 
     public function isValidLPO(): bool
     {
-        $notExpired = !$this->isExpired();
+        $notExpired = ! $this->isExpired();
 
         return and_check($this->hasBeenApproved(), $notExpired);
     }

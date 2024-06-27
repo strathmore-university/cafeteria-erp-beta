@@ -15,13 +15,19 @@ class AddStock
     private bool $shouldClear = false;
 
     private ?Article $article = null;
+
     private ?Model $owner = null;
 
     private ?int $units = null;
+
     private ?Store $at = null;
+
     private ?string $event = null;
+
     private ?float $valuationRate = null;
+
     private ?string $code = null;
+
     private ?string $expiry = null;
 
     public function units(int $units): self
@@ -37,7 +43,7 @@ class AddStock
 
         return $this;
     }
-    
+
     public function valuationRate(float $valuationRate): self
     {
         $this->valuationRate = $valuationRate;
@@ -52,7 +58,7 @@ class AddStock
         return $this;
     }
 
-    public function expiry(?string $expiry= null): self
+    public function expiry(?string $expiry = null): self
     {
         $this->expiry = $expiry;
 
@@ -137,7 +143,7 @@ class AddStock
     private function createBatch(): Batch
     {
         $rate = $this->article->valuation_rate ?? $this->valuationRate;
-        
+
         $batch = Batch::create([
             'team_id' => $this->article->getAttribute('team_id'),
             'article_id' => $this->article->id,
@@ -179,7 +185,7 @@ class AddStock
 
         return build_string([
             'Increased stock for article:', $name, 'by ', $this->units,
-            'units at ',$at, '. Event', $this->event
+            'units at ', $at, '. Event', $this->event,
         ]);
     }
 

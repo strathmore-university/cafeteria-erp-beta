@@ -59,7 +59,7 @@ class ProcurementDatabaseSeeder extends Seeder
         $purchaseOrders = PurchaseOrder::get();
         $purchaseOrders->take(1)->each(function (PurchaseOrder $order): void {
             $order->requestReview();
-            $order->submitReview(['comment' => 'good', 'status' => 'approved',]);
+            $order->submitReview(['comment' => 'good', 'status' => 'approved']);
 
             $grn = $order->fetchGrn();
             $grn->receive();

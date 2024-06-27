@@ -31,6 +31,7 @@ class FetchOrCreateGrn
             });
         } catch (Throwable $exception) {
             error_notification($exception);
+
             return null;
         }
     }
@@ -44,7 +45,7 @@ class FetchOrCreateGrn
         fire($order->isFulfilled(), $message);
 
         $message = 'Purchase order is no-longer valid!';
-        fire(! $order->isValidLPO(), $message);
+        fire( ! $order->isValidLPO(), $message);
     }
 
     /**

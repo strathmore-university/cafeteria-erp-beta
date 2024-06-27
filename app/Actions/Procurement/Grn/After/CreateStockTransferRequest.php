@@ -12,6 +12,7 @@ class CreateStockTransferRequest
     private Collection $items;
 
     private string $base;
+
     private GoodsReceivedNote $grn;
 
     public function execute(
@@ -19,8 +20,8 @@ class CreateStockTransferRequest
         Collection $items
     ): void {
         $code = $grn->getAttribute('code');
-        $this->base = 'Auto generated stock transfer against:'.$code.
-            ' from: '.$grn->store->getAttribute('name').' to:';
+        $this->base = 'Auto generated stock transfer against:' . $code .
+            ' from: ' . $grn->store->getAttribute('name') . ' to:';
         $this->items = $items;
         $this->grn = $grn;
 
@@ -29,7 +30,7 @@ class CreateStockTransferRequest
         $transfers = StockTransfer::where(
             'narration',
             'like',
-            '%'.$code.'%'
+            '%' . $code . '%'
         )->get();
 
         $this->populateItems($transfers);
@@ -38,9 +39,9 @@ class CreateStockTransferRequest
     private function createTransfers(): void
     {
         $items = collect();
-        $this->items->each(function ($item) use ($items) {
+        $this->items->each(function ($item) use ($items): void {
             $items->push([
-                'narration' => $this->base.$item->article->store->name,
+                'narration' => $this->base . $item->article->store->name,
                 'team_id' => $this->grn->getAttribute('team_id'),
                 'to_store_id' => $item->article->store_id,
                 'from_store_id' => $this->grn->store_id,
@@ -55,9 +56,9 @@ class CreateStockTransferRequest
     private function populateItems(Collection $transfers): void
     {
         $items = collect();
-        $this->items->each(function ($item) use ($transfers, $items) {
+        $this->items->each(function ($item) use ($transfers, $items): void {
             $name = $item->article->store->getAttribute('name');
-            $narration = $this->base.$name;
+            $narration = $this->base . $name;
             $transfer = $transfers->firstWhere('narration', '=', $narration);
 
             $items->push([

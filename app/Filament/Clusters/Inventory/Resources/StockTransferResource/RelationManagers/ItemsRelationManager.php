@@ -60,10 +60,10 @@ class ItemsRelationManager extends RelationManager
                     ->label('Unit Capacity')->sortable()->numeric(),
                 Tables\Columns\TextColumn::make('units')
                     ->sortable()->numeric(),
-                numeric_stock_transfer_input_column(
+                numeric_input_column(
                     'dispatched_units', $canDispatch
                 )->visible($approved),
-                numeric_stock_transfer_input_column(
+                numeric_input_column(
                     'received_units', $canReceive
                 )->visible($actioned),
                 Tables\Columns\TextColumn::make('article.unit.name')

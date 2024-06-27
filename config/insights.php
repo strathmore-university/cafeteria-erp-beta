@@ -65,6 +65,7 @@ return [
     */
 
     'exclude' => [
+        'database/seeders',
         //  'path/to/directory-or-file'
     ],
 

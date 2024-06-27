@@ -6,6 +6,7 @@ use App\Models\Core\Unit;
 use App\Models\Inventory\Article;
 use App\Models\Production\FoodOrder;
 use App\Models\Production\Menu;
+use App\Models\Production\ProductDispatch;
 use App\Models\Production\Recipe;
 use App\Models\Production\Restaurant;
 use App\Models\Production\Station;
@@ -116,10 +117,48 @@ class ProductionSeeder extends Seeder
 
         //        $foodOrder = $foodOrders->first();
         //        $foodOrders->each(function (FoodOrder $foodOrder) {
+
         $foodOrder->requestIngredients();
         $foodOrder->populateDispatch();
         $foodOrder->executeIngredientDispatch();
         $foodOrder->initiate();
-        //        });
+
+        $foodOrder->has_recorded_remaining_stock = true;
+        $foodOrder->populateByProducts();
+        $foodOrder->has_recorded_by_products = true;
+        $foodOrder->update();
+        $foodOrder->complete(['produced_portions' => random_int(50, 200)]);
+
+        $store = $foodOrder->station->defaultStore();
+        $to = $restaurant->defaultStore();
+
+        $dispatch = ProductDispatch::create([
+            'from_store_id' => $store->id,
+            'destination_type' => Restaurant::class,
+            'destination_id' => $restaurant->id,
+            'dispatched_by' => auth_id(),
+            'to_store_id' => $to->id,
+            'status' => 'draft',
+        ]);
+
+        $dispatch->requestReview();
+        $dispatch->submitReview(['comment' => 'good', 'status' => 'approved']);
+        $dispatch->dispatch();
+
+        $dispatch->items()->create([
+            'article_id' => $foodOrder->recipe->product->id,
+            'dispatched_quantity' => $foodOrder->produced_portions,
+            'received_quantity' => $foodOrder->produced_portions,
+        ]);
+
+        $dispatch->receive();
+
+        //        $data = [
+        //            'dispatched_quantity' => random_int(10, $foodOrder->produced_portions),
+        //            'article_id' => $foodOrder->recipe->getAttribute('article_id'),
+        //            'restaurant_id' => $foodOrder->owner_id,
+        //        ];
+
+        //        $foodOrder->dispatch($data);
     }
 }

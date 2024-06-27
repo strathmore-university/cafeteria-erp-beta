@@ -12,10 +12,19 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                primary: 'Jost',
+                secondary: 'Jost',
+                inter: 'Inter',
+            },
+
+            colors: {
+                primary: '#00A8A8',
+                secondary: '#F06543',
+            },
+
+            borderWidth: {
+                1.5: '1.5px',
             },
         },
     },
-
-    plugins: [forms],
 };

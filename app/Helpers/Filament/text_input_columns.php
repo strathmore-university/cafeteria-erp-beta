@@ -3,8 +3,8 @@
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 
-if ( ! function_exists('numeric_stock_transfer_input_column')) {
-    function numeric_stock_transfer_input_column(
+if ( ! function_exists('numeric_input_column')) {
+    function numeric_input_column(
         string $column,
         bool $showInput
     ) {

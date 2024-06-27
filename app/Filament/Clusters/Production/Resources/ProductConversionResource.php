@@ -3,8 +3,8 @@
 namespace App\Filament\Clusters\Production\Resources;
 
 use App\Filament\Clusters\Production;
-use App\Filament\Clusters\Production\Resources\Production\ProductConversionResource\Pages\ListProductConversions;
-use App\Filament\Clusters\Production\Resources\Production\ProductConversionResource\Pages\ViewProductConversion;
+use App\Filament\Clusters\Production\Resources\ProductConversionResource\Pages\ListProductConversions;
+use App\Filament\Clusters\Production\Resources\ProductConversionResource\Pages\ViewProductConversion;
 use App\Models\Production\ProductConversion;
 use Exception;
 use Filament\Forms\Components\Section;

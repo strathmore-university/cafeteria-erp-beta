@@ -18,7 +18,7 @@ class UpdateStockLevel
 
     private int $storeId;
 
-    private ?store $store = null;
+    private ?Store $store = null;
 
     private int $teamId;
 

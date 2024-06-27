@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Clusters\Production\Resources\Production\ProductConversionResource\Pages;
+namespace App\Filament\Clusters\Production\Resources\ProductConversionResource\Pages;
 
 use App\Actions\Production\ConvertProduct;
 use App\Filament\Clusters\Production\Resources\ProductConversionResource;

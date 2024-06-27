@@ -4,6 +4,7 @@ require __DIR__ . '/app/app.php';
 require __DIR__ . '/main.php';
 
 require __DIR__ . '/Filament/filament.php';
+require __DIR__ . '/Filament/reviews.php';
 require __DIR__ . '/Filament/text_input_columns.php';
 
 require __DIR__ . '/select_options.php';

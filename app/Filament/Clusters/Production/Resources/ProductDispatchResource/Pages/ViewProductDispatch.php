@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Filament\Clusters\Inventory\Resources\StockTransferResource\Pages;
+namespace App\Filament\Clusters\Production\Resources\ProductDispatchResource\Pages;
 
 use App\Concerns\HasBackRoute;
-use App\Filament\Clusters\Inventory\Resources\StockTransferResource;
-use App\Models\Inventory\StockTransfer;
+use App\Filament\Clusters\Production\Resources\ProductDispatchResource;
+use App\Models\Production\ProductDispatch;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewStockTransfer extends ViewRecord
+class ViewProductDispatch extends ViewRecord
 {
     use HasBackRoute;
 
-    protected static string $resource = StockTransferResource::class;
+    protected static string $resource = ProductDispatchResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -23,8 +23,8 @@ class ViewStockTransfer extends ViewRecord
             request_review(),
             review_form(),
             Action::make('dispatch')->requiresConfirmation()
-                ->visible(fn (StockTransfer $record) => $record->canDispatch())
-                ->action(function (StockTransfer $record): void {
+                ->visible(fn (ProductDispatch $record) => $record->canDispatch())
+                ->action(function (ProductDispatch $record): void {
                     $record->dispatch();
                     $this->back($record);
                 })
@@ -32,8 +32,8 @@ class ViewStockTransfer extends ViewRecord
                 ->label('Execute Dispatch')
                 ->color('success'),
             Action::make('receive')->requiresConfirmation()
-                ->visible(fn (StockTransfer $record) => $record->canReceive())
-                ->action(function (StockTransfer $record): void {
+                ->visible(fn (ProductDispatch $record) => $record->canReceive())
+                ->action(function (ProductDispatch $record): void {
                     $record->receive();
                     $this->back($record);
                 })
@@ -41,8 +41,8 @@ class ViewStockTransfer extends ViewRecord
                 ->label('Receive')
                 ->color('success'),
             ActionGroup::make([
-                EditAction::make()->visible(fn (StockTransfer $record) => $record->allowEdits()),
-                DeleteAction::make()->visible(fn (StockTransfer $record) => $record->allowEdits()),
+                EditAction::make()->visible(fn (ProductDispatch $dispatch) => $dispatch->allowEdits()),
+                DeleteAction::make()->visible(fn (ProductDispatch $dispatch) => $dispatch->allowEdits()),
             ]),
         ];
     }

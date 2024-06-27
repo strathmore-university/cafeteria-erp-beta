@@ -29,6 +29,9 @@ return new class() extends Migration
             $table->decimal('production_cost')->default(0);
             $table->decimal('unit_cost')->default(0);
 
+            $table->integer('dispatched_portions')->default(0);
+            $table->integer('available_portions')->default(0);
+
             $table->timestamp('ingredients_dispatched_at')->nullable();
             $table->foreignIdFor(User::class, 'ingredients_dispatched_by')
                 ->nullable()->index()->constrained('users');

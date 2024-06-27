@@ -32,11 +32,11 @@ class FoodOrderResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
-    protected static ?string $slug = 'food-orders';
-
     protected static ?string $cluster = Production::class;
 
     protected static ?string $model = FoodOrder::class;
+
+    protected static ?string $slug = 'food-orders';
 
     protected static ?int $navigationSort = 7;
 
@@ -44,39 +44,37 @@ class FoodOrderResource extends Resource
     {
         $cols = 2;
 
-        return $form
-            ->schema([
-                TextInput::make('code')->disabled(),
-                TextInput::make('owner_id')->label('Order For')
-                    ->formatStateUsing(fn ($record) => $record->ownerName()),
-                TextInput::make('recipe.name')->label('Recipe')
-                    ->formatStateUsing(fn ($record) => $record->recipe->name)
-                    ->disabled(),
-                TextInput::make('recipe.name')->label('Product')
-                    ->formatStateUsing(fn ($record) => $record->recipe->product->name)
-                    ->disabled(),
-                Select::make('station_id')->label('Station')
-                    ->searchable()->preload()
-                    ->options(Station::get()->pluck('name', 'id')->toArray()),
-                Select::make('prepared_by')
-                    ->searchable()->preload()
-                    ->visible(fn ($state) => filled($state))
-                    ->options(User::pluck('name', 'id')->toArray()),
-                Section::make([
-                    TextInput::make('expected_portions')->disabled(),
-                    TextInput::make('produced_portions')->disabled(),
-                    TextInput::make('performance_rating')->disabled()->suffix('%'),
-                    TextInput::make('status')->disabled(),
-                ])->columns($cols),
-                Section::make([
-                    TextInput::make('production_cost')->disabled()->numeric()->prefix('Ksh. '),
-                    TextInput::make('unit_cost')->disabled()->numeric()->prefix('Ksh. '),
-                ])->columns($cols),
-                Section::make([
-                    placeholder('created_at', 'Created at'),
-                    placeholder('updated_at', 'Last updated at'),
-                ])->columns($cols),
-            ]);
+        return $form->schema([
+            TextInput::make('code')->disabled(),
+            TextInput::make('owner_id')->label('Order For')
+                ->formatStateUsing(fn ($record) => $record->ownerName()),
+            TextInput::make('recipe.name')->label('Recipe')
+                ->formatStateUsing(fn ($record) => $record->recipe->name)
+                ->disabled(),
+            TextInput::make('recipe.name')->label('Product')
+                ->formatStateUsing(fn ($record) => $record->recipe->product->name)
+                ->disabled(),
+            Select::make('station_id')->label('Station')
+                ->searchable()->preload()
+                ->options(Station::get()->pluck('name', 'id')->toArray()),
+            Select::make('prepared_by')->searchable()->preload()
+                ->options(User::pluck('name', 'id')->toArray())
+                ->visible(fn ($state) => filled($state)),
+            Section::make([
+                TextInput::make('expected_portions')->disabled(),
+                TextInput::make('produced_portions')->disabled(),
+                TextInput::make('performance_rating')->disabled()->suffix('%'),
+                TextInput::make('status')->disabled(),
+            ])->columns($cols),
+            Section::make([
+                TextInput::make('production_cost')->disabled()->numeric()->prefix('Ksh. '),
+                TextInput::make('unit_cost')->disabled()->numeric()->prefix('Ksh. '),
+            ])->columns($cols),
+            Section::make([
+                placeholder('created_at', 'Created at'),
+                placeholder('updated_at', 'Last updated at'),
+            ])->columns($cols),
+        ]);
     }
 
     /**

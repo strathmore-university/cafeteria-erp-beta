@@ -25,7 +25,7 @@ class ViewGoodsReceivedNote extends ViewRecord
             ActionGroup::make([
                 ActionGroup::make([
                     Action::make('execute-receipt')->color('success')
-                        ->action(function (GoodsReceivedNote $record, array $data) {
+                        ->action(function (GoodsReceivedNote $record, array $data): void {
                             $record->receive($data);
                             $this->back($record);
                         })

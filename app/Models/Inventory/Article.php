@@ -152,7 +152,6 @@ class Article extends Model
 
             if ($article->getAttribute('is_reference')) {
                 $article->unit_capacity = null;
-                $article->valuation_rate = null;
             }
 
             //            $check = $article->getAttribute('is_reference') ?? false;

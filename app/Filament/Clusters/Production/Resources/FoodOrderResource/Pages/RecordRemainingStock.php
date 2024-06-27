@@ -59,25 +59,22 @@ class RecordRemainingStock extends ManageRelatedRecords
 
     protected function getHeaderActions(): array
     {
-        return [
+        $owner = $this->getOwnerRecord();
 
+        return [
             Action::make('Complete')->color('success')
-                ->icon('heroicon-o-check')
-                ->requiresConfirmation()
-                ->hidden($this->getOwnerRecord()->getAttribute('has_recorded_remaining_stock'))
-                ->action(function (): void {
-                    $record = $this->getOwnerRecord();
-                    $record->setAttribute('has_recorded_remaining_stock', true);
-                    $record->update();
+                ->hidden($owner->getAttribute('has_recorded_remaining_stock'))
+                ->icon('heroicon-o-check')->requiresConfirmation()
+                ->action(function () use ($owner): void {
+                    $owner->setAttribute('has_recorded_remaining_stock', true);
+                    $owner->update();
 
                     $method = 'populateByProducts';
-                    $this->redirect($record->$method(), true);
+                    $this->redirect($owner->$method(), true);
                 }),
             ActionGroup::make([
-                Action::make('view-food-order')
-                    ->url(get_record_url($this->getOwnerRecord()))
-                    ->color('gray')
-                    ->icon('heroicon-o-ticket'),
+                Action::make('view-food-order')->url(get_record_url($owner))
+                    ->icon('heroicon-o-ticket')->color('gray'),
             ]),
         ];
     }

@@ -16,7 +16,9 @@ use Throwable;
 class ExecuteGrnReceipt
 {
     private CreateMovements $movements;
+
     private GoodsReceivedNote $grn;
+
     private AddStock $addStock;
 
     private function setup(GoodsReceivedNote $grn): void
@@ -26,7 +28,7 @@ class ExecuteGrnReceipt
         $this->grn = $grn;
 
         $code = $this->grn->getAttribute('code');
-        $addStock = add_stock()->event('(Receiving '.$code.')');
+        $addStock = add_stock()->event('(Receiving ' . $code . ')');
         $this->addStock = $addStock->movement($this->movements)->at($store);
     }
 

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\LaravelPdf\PdfBuilder;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+
 use function Spatie\LaravelPdf\Support\pdf;
 
 class CreditNote extends Model implements HasMedia

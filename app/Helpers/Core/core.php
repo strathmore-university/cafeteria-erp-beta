@@ -11,6 +11,7 @@ use App\Filament\Clusters\Production\Resources\CookingShiftResource;
 use App\Filament\Clusters\Production\Resources\FoodOrderResource;
 use App\Filament\Clusters\Production\Resources\MenuItemResource;
 use App\Filament\Clusters\Production\Resources\MenuResource;
+use App\Filament\Clusters\Production\Resources\ProductDispatchResource;
 use App\Filament\Clusters\Production\Resources\RecipeResource;
 use App\Filament\Clusters\Production\Resources\RestaurantResource;
 use App\Models\Core\Review;
@@ -20,7 +21,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-if (!function_exists('auth_team')) {
+if ( ! function_exists('auth_team')) {
     function auth_team(): Team
     {
         return match (auth()->check()) {
@@ -30,7 +31,7 @@ if (!function_exists('auth_team')) {
     }
 }
 
-if (!function_exists('system_team')) {
+if ( ! function_exists('system_team')) {
     function system_team(): Team
     {
         return Cache::rememberForever('system_team', function () {
@@ -40,32 +41,30 @@ if (!function_exists('system_team')) {
     }
 }
 
-if (!function_exists('team_id')) {
+if ( ! function_exists('team_id')) {
     function team_id(): int
     {
         return auth()->user()->team_id ?? system_team()->id;
     }
 }
 
-if (!function_exists('system_user')) {
+if ( ! function_exists('system_user')) {
     function system_user(): User
     {
-        return Cache::rememberForever('system_user', function () {
-            return User::whereEmail('tony@gmail.com')->first();
-        });
+        return Cache::rememberForever('system_user', fn () => User::whereEmail('tony@gmail.com')->first());
 
         // todo: update system user
     }
 }
 
-if (!function_exists('primary_units')) {
+if ( ! function_exists('primary_units')) {
     function primary_units(): Collection
     {
         return Unit::isReference()->select(['id', 'name'])->get();
     }
 }
 
-if (!function_exists('unit_descendants')) {
+if ( ! function_exists('unit_descendants')) {
     function unit_descendants(string $name): Collection
     {
         return Unit::with('descendants')
@@ -77,7 +76,7 @@ if (!function_exists('unit_descendants')) {
     }
 }
 
-if (!function_exists('get_unit_by_name')) {
+if ( ! function_exists('get_unit_by_name')) {
     function get_unit_by_name(string $name): Unit
     {
         return Unit::where('is_reference', '=', false)
@@ -86,7 +85,7 @@ if (!function_exists('get_unit_by_name')) {
     }
 }
 
-if (!function_exists('reviewable_types')) {
+if ( ! function_exists('reviewable_types')) {
     function reviewable_types(): array
     {
         return [
@@ -95,7 +94,7 @@ if (!function_exists('reviewable_types')) {
     }
 }
 
-if (!function_exists('get_record_url')) {
+if ( ! function_exists('get_record_url')) {
     function get_record_url(Model $model, array $attributes = []): string
     {
         $check = $model instanceof Review;
@@ -111,6 +110,7 @@ if (!function_exists('get_record_url')) {
 
         $resource = match (class_basename($class)) {
             'GoodsReceivedNote' => GoodsReceivedNoteResource::class,
+            'ProductDispatch' => ProductDispatchResource::class,
             'PurchaseOrder' => PurchaseOrderResource::class,
             'StockTransfer' => StockTransferResource::class,
             'CookingShift' => CookingShiftResource::class,

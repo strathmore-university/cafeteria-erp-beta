@@ -50,12 +50,5 @@ trait HasStatusTransitions
         return $this->status() === 'pending review';
     }
 
-    public function hasBeenApproved(): bool
-    {
-        $invalidStatus = ['draft', 'pending review', 'rejected'];
-
-        return ! in_array($this->status(), $invalidStatus);
-    }
-
     abstract protected function statusTransitions(): array;
 }

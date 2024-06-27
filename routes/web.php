@@ -3,6 +3,7 @@
 use App\Http\Controllers\Downloads\DownloadCrn;
 use App\Http\Controllers\Downloads\DownloadGRN;
 use App\Http\Controllers\Downloads\DownloadPurchaseOrder;
+use App\Livewire\PosInterface;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'));
@@ -24,6 +25,10 @@ Route::middleware('auth')->group(function (): void {
         '/download/{crn}/crn',
         DownloadCrn::class
     )->name('download.crn');
+});
+
+Route::middleware('auth')->group(function (): void {
+    Route::get('/pos', PosInterface::class)->name('pos');
 });
 
 require __DIR__ . '/auth.php';

@@ -93,7 +93,7 @@ class Restaurant extends Model
         bool $value,
         ?array $select = null
     ): Store {
-        $select = $select ?? ['id', 'team_id', 'is_hidden', 'can_ship_stock'];
+        $select = $select ?? ['id', 'team_id', 'can_ship_stock'];
 
         return Store::whereOwnerType($this->getMorphClass())
             ->where($key, '=', $value)

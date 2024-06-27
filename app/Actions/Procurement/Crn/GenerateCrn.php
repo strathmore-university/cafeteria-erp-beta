@@ -33,6 +33,7 @@ class GenerateCrn
             });
         } catch (Throwable $exception) {
             error_notification($exception);
+
             return null;
         }
     }

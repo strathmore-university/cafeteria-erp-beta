@@ -18,7 +18,7 @@ return new class() extends Migration
             $table->description();
 
             $table->integer('unit_capacity')->nullable();
-            $table->decimal('valuation_rate')->nullable();
+            $table->decimal('valuation_rate')->default(0);
             $table->integer('lifespan_days')->nullable();
             $table->integer('reorder_level')->nullable();
 
