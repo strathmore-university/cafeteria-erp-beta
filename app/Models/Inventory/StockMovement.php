@@ -2,20 +2,16 @@
 
 namespace App\Models\Inventory;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockMovement extends Model
 {
-    use BelongsToTeam;
+    use BelongsToArticle, BelongsToTeam;
 
     protected $guarded = [];
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
 
     public function store(): BelongsTo
     {
@@ -33,12 +29,5 @@ class StockMovement extends Model
             $value = abs($movement->units) * $movement->weighted_cost;
             $movement->stock_value = $value;
         });
-        // todo: review
-        //        $message = 'StockMovement is immutable';
-        //        static::updating(fn () => throw_if(true, $message));
-        //
-        //        static::saving(
-        //            fn (Model $model) => throw_if($model->exists, $message)
-        //        );
     }
 }

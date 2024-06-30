@@ -1,5 +1,6 @@
 <?php
 
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 
@@ -13,5 +14,13 @@ if ( ! function_exists('numeric_input_column')) {
         }
 
         return TextColumn::make($column)->numeric()->searchable()->sortable();
+    }
+}
+
+if ( ! function_exists('text_input')) {
+    function text_input(string $column)
+    {
+        return TextInput::make($column)->required()
+            ->string()->maxLength(255);
     }
 }

@@ -175,6 +175,8 @@ class AddStock
             'weighted_cost' => $rate,
             'batch_id' => $batch->id,
             'units' => $this->units,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 

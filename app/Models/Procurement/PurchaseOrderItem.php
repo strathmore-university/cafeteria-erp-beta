@@ -2,22 +2,19 @@
 
 namespace App\Models\Procurement;
 
-use App\Models\Inventory\Article;
+use App\Concerns\BelongsToArticle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PurchaseOrderItem extends Model
 {
+    use BelongsToArticle;
+
     protected $guarded = [];
 
     public function purchaseOrder(): BelongsTo
     {
         return $this->belongsTo(PurchaseOrder::class);
-    }
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
     }
 
     protected static function booted(): void

@@ -2,15 +2,15 @@
 
 namespace App\Models\Production;
 
+use App\Concerns\BelongsToArticle;
 use App\Models\Core\Unit;
-use App\Models\Inventory\Article;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ingredient extends Model
 {
-    use SoftDeletes;
+    use BelongsToArticle, SoftDeletes;
 
     protected $guarded = [];
 
@@ -22,11 +22,6 @@ class Ingredient extends Model
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
-    }
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
     }
 
     public function requiredQuantity(int $portions): int

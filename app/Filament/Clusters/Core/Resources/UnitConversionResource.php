@@ -35,51 +35,47 @@ class UnitConversionResource extends Resource
     {
         $cols = 2;
 
-        return $form
-            ->schema([
-                Section::make([
-                    Select::make('from_unit_id')->label('From Unit')
-                        ->reactive()
-                        ->options(
-                            fn () => Unit::isDescendant()->select(['id', 'name'])
-                                ->pluck('name', 'id')
-                        )
-                        ->afterStateUpdated(fn (Set $set) => $set('to_unit_id', null))
-                        ->required(),
-                    Select::make('to_unit_id')->label('To Unit')->reactive()
-                        ->options(function (Get $get) {
-                            $fromUnitId = $get('from_unit_id');
-                            $check = filled($fromUnitId);
+        return $form->schema([
+            Section::make([
+                Select::make('from_unit_id')->label('From Unit')
+                    ->reactive()
+                    ->options(
+                        fn () => Unit::isDescendant()->select(['id', 'name']) // todo: refactor
+                            ->pluck('name', 'id')
+                    )
+                    ->afterStateUpdated(fn (Set $set) => $set('to_unit_id', null))
+                    ->required(),
+                Select::make('to_unit_id')->label('To Unit')->reactive()
+                    ->options(function (Get $get) {
+                        $fromUnitId = $get('from_unit_id');
+                        $check = filled($fromUnitId);
 
-                            return Unit::isDescendant()->select(['id', 'name'])
-                                ->when($check, function (Builder $query) use ($fromUnitId): void {
-                                    $unit = Unit::select(['id', 'parent_id'])->find($fromUnitId);
-                                    $id = $unit->getAttribute('parent_id');
+                        return Unit::isDescendant()->select(['id', 'name'])// todo: refactor
+                            ->when($check, function (Builder $query) use ($fromUnitId): void {
+                                $unit = Unit::select(['id', 'parent_id'])->find($fromUnitId);
+                                $id = $unit->getAttribute('parent_id');
 
-                                    $query->where('id', '!=', $fromUnitId)
-                                        ->where('parent_id', '=', $id);
-                                })->pluck('name', 'id');
-                        })
-                        ->required(),
-                    TextInput::make('factor')->numeric()->required(),
-                ])->columns(3),
-                Section::make([
-                    placeholder('created_at', 'Created Date'),
-                    placeholder('updated_at', 'Last Modified Date'),
-                ])->columns($cols),
-            ]);
+                                $query->where('id', '!=', $fromUnitId)
+                                    ->where('parent_id', '=', $id);
+                            })->pluck('name', 'id');
+                    })
+                    ->required(),
+                TextInput::make('factor')->numeric()->required(),
+            ])->columns(3),
+            Section::make([
+                placeholder('created_at', 'Created Date'),
+                placeholder('updated_at', 'Last Modified Date'),
+            ])->columns($cols),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('from.name'),
-                TextColumn::make('to.name'),
-                TextColumn::make('factor'),
-            ])
-            ->actions([])
-            ->bulkActions([]);
+        return $table->columns([
+            TextColumn::make('from.name'),
+            TextColumn::make('to.name'),
+            TextColumn::make('factor'),
+        ]);
     }
 
     public static function getPages(): array
@@ -89,10 +85,5 @@ class UnitConversionResource extends Resource
             'create' => CreateUnitConversion::route('/create'),
             'edit' => EditUnitConversion::route('/{record}/edit'),
         ];
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [];
     }
 }

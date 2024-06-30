@@ -2,8 +2,8 @@
 
 namespace App\Models\Production;
 
+use App\Concerns\BelongsToArticle;
 use App\Models\Core\Unit;
-use App\Models\Inventory\Article;
 use App\Models\Inventory\Batch;
 use App\Models\Inventory\Store;
 use App\Models\User;
@@ -13,12 +13,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class DispatchedIngredient extends Model
 {
-    protected $guarded = [];
+    use BelongsToArticle;
 
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    protected $guarded = [];
 
     public function store(): BelongsTo
     {
@@ -38,11 +35,6 @@ class DispatchedIngredient extends Model
     public function dispatcher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'dispatched_by');
-    }
-
-    public function foodOrderRecipe(): BelongsTo
-    {
-        return $this->belongsTo(FoodOrder::class);
     }
 
     public function foodOrder(): BelongsTo

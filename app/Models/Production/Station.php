@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Station extends Model
 {
-    use BelongsToTeam, HasCategory, HasStores;
-    use HasOwner;
+    use BelongsToTeam, HasCategory, HasOwner, HasStores;
 
     protected $guarded = [];
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasStatusTransitions;
 use Illuminate\Database\Eloquent\Model;
@@ -9,12 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockTransferItem extends Model
 {
-    use BelongsToTeam, HasStatusTransitions;
+    use BelongsToArticle, BelongsToTeam, HasStatusTransitions;
 
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    protected $guarded = [];
 
     public function transfer(): BelongsTo
     {

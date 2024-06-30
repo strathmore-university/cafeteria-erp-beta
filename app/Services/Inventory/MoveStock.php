@@ -196,6 +196,8 @@ class MoveStock
             'batch_id' => $batch->id,
             'store_id' => $storeId,
             'units' => $units,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 

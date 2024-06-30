@@ -13,6 +13,8 @@ class Restaurant extends Model
 {
     use BelongsToTeam, HasStores;
 
+    // todo: refactor
+
     protected $guarded = [];
 
     public function salesStore(?array $select = null): Store
@@ -72,7 +74,7 @@ class Restaurant extends Model
 
             $item->push([
                 'category_id' => store_types('Sales Point')->id,
-                'name' => $name . 'sales store',
+                'name' => $name . ' sales store',
                 'can_ship_stock' => false,
             ]);
 

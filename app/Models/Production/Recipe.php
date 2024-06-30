@@ -13,8 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Recipe extends Model
 {
-    use BelongsToTeam;
-    use HasCategory, HasFactory, SoftDeletes;
+    use BelongsToTeam,HasCategory, HasFactory, SoftDeletes;
 
     protected $guarded = [];
 

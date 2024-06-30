@@ -2,19 +2,16 @@
 
 namespace App\Models\Procurement;
 
-use App\Models\Inventory\Article;
+use App\Concerns\BelongsToArticle;
 use App\Models\Inventory\Batch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GoodsReceivedNoteItem extends Model
 {
-    protected $guarded = [];
+    use BelongsToArticle;
 
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    protected $guarded = [];
 
     public function goodsReceivedNote(): BelongsTo
     {

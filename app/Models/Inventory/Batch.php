@@ -2,6 +2,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasOwner;
 use Illuminate\Database\Eloquent\Model;
@@ -10,15 +11,10 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Batch extends Model
 {
+    use BelongsToArticle, NodeTrait;
     use BelongsToTeam, HasOwner;
-    use NodeTrait;
 
     protected $guarded = [];
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
 
     public function store(): BelongsTo
     {

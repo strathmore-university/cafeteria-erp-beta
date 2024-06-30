@@ -28,6 +28,8 @@ class Article extends Model
     use BelongsToTeam, NodeTrait, UsesNestedSets;
     use HasCategory, HasStock, SoftDeletes;
 
+    // todo: refactor
+
     protected $guarded = [];
 
     public function unit(): BelongsTo
@@ -57,7 +59,8 @@ class Article extends Model
         ?Store $store = null
     ): Collection {
         try {
-            $articles = $this->descendants->filter(function ($article) use ($store) {
+            $children = $this->descendants;
+            $articles = $children->filter(function ($article) use ($store) {
                 $available = article_capacity($article, $store);
                 $id = $this->getAttribute('unit_id');
                 $from = $article->unit_id;
@@ -153,13 +156,6 @@ class Article extends Model
             if ($article->getAttribute('is_reference')) {
                 $article->unit_capacity = null;
             }
-
-            //            $check = $article->getAttribute('is_reference') ?? false;
-            //            $value = $article->unit_capacity;
-            //            $article->unit_capacity = tannery($check, $value, null);
-            //
-            //            $value = $article->weighted_cost;
-            //            $article->weighted_cost = tannery($check, $value, null);
         });
     }
 

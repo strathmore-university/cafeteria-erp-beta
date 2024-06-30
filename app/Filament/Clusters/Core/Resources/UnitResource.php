@@ -31,21 +31,18 @@ class UnitResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('name')->required(),
-                Hidden::make('is_reference')->default(true),
-                placeholder('created_at', 'Created Date'),
-                placeholder('updated_at', 'Last Modified Date'),
-            ]);
+        return $form->schema([
+            TextInput::make('name')->required(),
+            Hidden::make('is_reference')->default(true),
+            placeholder('created_at', 'Created Date'),
+            placeholder('updated_at', 'Last Modified Date'),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([TextColumn::make('name')])
-            ->actions([EditAction::make()])
-            ->bulkActions([]);
+        return $table->columns([TextColumn::make('name')])
+            ->actions([EditAction::make()]);
     }
 
     public static function getPages(): array

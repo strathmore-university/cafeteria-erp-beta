@@ -2,20 +2,17 @@
 
 namespace App\Models\Production;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasStatusTransitions;
-use App\Models\Inventory\Article;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductDispatchItem extends Model
 {
-    use BelongsToTeam, HasStatusTransitions;
+    use BelongsToArticle, BelongsToTeam, HasStatusTransitions;
 
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    protected $guarded = [];
 
     public function dispatch(): BelongsTo
     {

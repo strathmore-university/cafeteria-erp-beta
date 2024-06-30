@@ -2,9 +2,9 @@
 
 namespace App\Models\Production;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use App\Models\Core\Unit;
-use App\Models\Inventory\Article;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +13,9 @@ use Throwable;
 
 class MenuItem extends Model
 {
-    use BelongsToTeam, SoftDeletes;
+    use BelongsToArticle, BelongsToTeam, SoftDeletes;
+
+    protected $guarded = [];
 
     public function portions(): HasMany
     {
@@ -23,11 +25,6 @@ class MenuItem extends Model
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);
-    }
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
     }
 
     public function unit(): BelongsTo

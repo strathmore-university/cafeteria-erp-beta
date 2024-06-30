@@ -16,6 +16,8 @@ class KfsVendor extends Model
 {
     protected $guarded = [];
 
+    // todo: refactor
+
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);

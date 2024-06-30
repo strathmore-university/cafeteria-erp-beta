@@ -2,17 +2,16 @@
 
 namespace App\Models\Production;
 
+use App\Concerns\BelongsToArticle;
 use App\Models\Core\Unit;
-use App\Models\Inventory\Article;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RecipeByProduct extends Model
 {
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    use BelongsToArticle;
+
+    protected $guarded = [];
 
     public function recipe(): BelongsTo
     {

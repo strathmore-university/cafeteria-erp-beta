@@ -2,18 +2,15 @@
 
 namespace App\Models\Procurement;
 
-use App\Models\Inventory\Article;
+use App\Concerns\BelongsToArticle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CreditNoteItem extends Model
 {
-    protected $guarded = [];
+    use BelongsToArticle;
 
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    protected $guarded = [];
 
     public function creditNote(): BelongsTo
     {

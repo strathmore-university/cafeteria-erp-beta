@@ -12,6 +12,8 @@ class ProductConversion extends Model
 {
     use BelongsToCreator, BelongsToTeam;
 
+    protected $guarded = [];
+
     public function station(): BelongsTo
     {
         return $this->belongsTo(Station::class);

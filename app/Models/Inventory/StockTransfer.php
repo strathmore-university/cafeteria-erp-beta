@@ -18,6 +18,8 @@ class StockTransfer extends Model
     use BelongsToCreator, BelongsToTeam;
     use HasReviews, HasStatusTransitions;
 
+    // todo: refactor
+
     protected $guarded = [];
 
     public function items(): HasMany

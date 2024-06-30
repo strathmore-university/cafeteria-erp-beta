@@ -2,6 +2,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Concerns\BelongsToArticle;
 use App\Models\Procurement\PriceQuote;
 use App\Services\Inventory\UpdateStockLevel;
 use Illuminate\Database\Eloquent\Model;
@@ -11,16 +12,15 @@ use Throwable;
 
 class StockTakeItem extends Model
 {
+    use BelongsToArticle;
+
+    // todo: refactor
+
     protected $guarded = [];
 
     private int $articleId;
 
     private int $storeId;
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
 
     public function store(): BelongsTo
     {

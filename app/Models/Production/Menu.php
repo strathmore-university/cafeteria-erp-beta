@@ -13,6 +13,8 @@ class Menu extends Model
 {
     use BelongsToTeam, HasOwner, SoftDeletes;
 
+    protected $guarded = [];
+
     public function items(): HasMany
     {
         return $this->hasMany(MenuItem::class);

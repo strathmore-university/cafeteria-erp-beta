@@ -3,6 +3,8 @@
 use Laravel\Pulse\Http\Middleware\Authorize;
 use Laravel\Pulse\Pulse;
 use Laravel\Pulse\Recorders;
+use Laravel\Reverb\Pulse\Recorders\ReverbConnections;
+use Laravel\Reverb\Pulse\Recorders\ReverbMessages;
 
 return [
 
@@ -243,6 +245,14 @@ return [
             'groups' => [
                 // '#^/products/.*$#' => '/products/{user}',
             ],
+        ],
+
+        ReverbConnections::class => [
+            'sample_rate' => 1,
+        ],
+
+        ReverbMessages::class => [
+            'sample_rate' => 1,
         ],
     ],
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Models\Production;
 
+use App\Concerns\BelongsToArticle;
 use App\Models\Core\Unit;
 use App\Models\Inventory\Article;
 use App\Models\Inventory\Batch;
@@ -14,12 +15,9 @@ use Throwable;
 
 class RequestedIngredient extends Model
 {
-    protected $guarded = [];
+    use BelongsToArticle;
 
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    protected $guarded = [];
 
     public function ingredient(): BelongsTo
     {
@@ -56,51 +54,6 @@ class RequestedIngredient extends Model
     public function isFulfilled(): bool
     {
         return $this->remaining_quantity < 1;
-    }
-
-    // todo: lorem
-    //
-
-    public function utilize(FoodOrder $foodOrderRecipe): void
-    {
-        $ingredient = $this->ingredient;
-        $portions = $foodOrderRecipe->expected_portions;
-        $quantityToConsume = $ingredient->requiredQuantity($portions);
-
-        $remaining = $quantityToConsume;
-
-        //        dump('Utilizing ' . $quantityToConsume . ' ' . $ingredient->unit->code . ' of ' . $ingredient->article->name . '.');
-        //        dump($remaining . ' remaining');
-
-        $this->batches->each(function (Batch $batch) use ($remaining): void {
-            if ($remaining <= 0) {
-                return;
-            }
-
-            $article = $batch->article;
-            $id = $article->unit_measurement_id;
-            $quantity = $this->unit->convert($id, $remaining);
-            dump('reducing ' . $quantity . ' ' . $article->unit->code . ' of ' . $article->name . '.');
-            //            $units = $quantity / $article->unit_quantity;
-
-            //            dump('reducing ' . $units . 'units');
-            $batch->remaining_units -= $quantity;
-            $batch->utilised_at = now();
-            $batch->update();
-
-            // todo: instead of reducing
-
-            $remaining -= $quantity;
-            //            $this->dispatchIngredient($batch->article, $quantity);
-        });
-
-        //        $article->
-        //        $this->dispatchIngredient($article, $quantity);
-        // recalculate the quantity of ingredients to use
-        //        $quantity =
-
-        // reduce the quantity of ingredients used
-        // update the status of the batch
     }
 
     /**

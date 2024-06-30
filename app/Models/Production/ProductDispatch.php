@@ -18,6 +18,10 @@ class ProductDispatch extends Model
 {
     use BelongsToTeam, HasReviews, HasStatusTransitions;
 
+    protected $guarded = [];
+
+    // todo: refactor
+
     public function destination(): MorphTo
     {
         return $this->morphTo('destination');

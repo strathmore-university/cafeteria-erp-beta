@@ -109,6 +109,7 @@ class UpdateStockLevel
         return StockLevel::where('article_id', '=', $id)
             ->where('store_id', '=', $this->storeId)
             ->where('team_id', '=', $this->teamId)
+            ->whereIsSoldStock(false)
             ->select(['id', 'current_units', 'previous_units'])
             ->first();
     }

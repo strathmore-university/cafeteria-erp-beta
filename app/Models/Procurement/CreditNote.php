@@ -4,9 +4,9 @@ namespace App\Models\Procurement;
 
 use App\Actions\Procurement\Crn\DeleteCrn;
 use App\Actions\Procurement\Crn\IssueCrn;
+use App\Concerns\BelongsToCreator;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasStatusTransitions;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,8 +18,8 @@ use function Spatie\LaravelPdf\Support\pdf;
 
 class CreditNote extends Model implements HasMedia
 {
+    use BelongsToCreator, InteractsWithMedia;
     use BelongsToTeam, HasStatusTransitions;
-    use InteractsWithMedia;
 
     protected $guarded = [];
 
@@ -38,11 +38,6 @@ class CreditNote extends Model implements HasMedia
     public function purchaseOrder(): BelongsTo
     {
         return $this->belongsTo(PurchaseOrder::class);
-    }
-
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function items(): HasMany

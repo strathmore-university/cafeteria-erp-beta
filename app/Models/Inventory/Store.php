@@ -2,6 +2,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasCategory;
 use App\Concerns\HasIsActiveColumn;
@@ -13,8 +14,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Store extends Model
 {
+    use BelongsToArticle;
     use BelongsToTeam, HasCategory, SoftDeletes;
     use HasIsActiveColumn, HasOwner, HasStock;
+
+    // todo: refactor
 
     protected $guarded = [];
 
@@ -32,11 +36,6 @@ class Store extends Model
             $store->owner_type = $team->getMorphClass();
             $store->owner_id = $team->id;
         });
-    }
-
-    public function articles(): HasMany
-    {
-        return $this->hasMany(Article::class);
     }
 
     public function stockTakes(): HasMany

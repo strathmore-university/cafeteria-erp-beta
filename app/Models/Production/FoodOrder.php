@@ -24,6 +24,8 @@ class FoodOrder extends Model
 
     protected $guarded = [];
 
+    // todo: refactor
+
     public function recipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class);
@@ -232,35 +234,6 @@ class FoodOrder extends Model
     {
         (new DispatchProduct())->execute($this, $data);
     }
-
-    // todo: lorem ipsum
-
-    //    public function receive(): void
-    //    {
-    //        $restaurant = $this->restaurant;
-    //        $to = $restaurant->defaultStore();
-    //        $from = $this->station->stores->first();
-    //
-    //        $dispatchedItems = $this->dispatchItems;
-    //
-    //        $dispatchedItems->each(
-    //            /**
-    //             * @throws Throwable
-    //             */
-    //            function (ProductDispatchItem $item) use ($from, $to): void {
-    //                $item->received_quantity = $item->dispatched_quantity;
-    //                $item->received_by = $this->prepared_by;
-    //                $item->received_at = now();
-    //                $item->update();
-    //
-    //                $article = $item->product;
-    //                inventory()->stock()->move($article, $from, $to, $item->received_quantity);
-    //            }
-    //        );
-    //
-    //        $this->status = 'Received';
-    //        $this->update();
-    //    }
 
     protected function casts(): array
     {

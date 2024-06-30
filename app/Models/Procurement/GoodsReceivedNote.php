@@ -4,6 +4,7 @@ namespace App\Models\Procurement;
 
 use App\Actions\Procurement\Grn\DeleteGrn;
 use App\Actions\Procurement\Grn\ExecuteGrnReceipt;
+use App\Concerns\BelongsToCreator;
 use App\Concerns\BelongsToTeam;
 use App\Concerns\HasStatusTransitions;
 use App\Models\Inventory\Store;
@@ -19,8 +20,10 @@ use function Spatie\LaravelPdf\Support\pdf;
 
 class GoodsReceivedNote extends Model implements HasMedia
 {
+    use BelongsToCreator, InteractsWithMedia;
     use BelongsToTeam, HasStatusTransitions;
-    use InteractsWithMedia;
+
+    // todo: refactor
 
     protected $guarded = [];
 
@@ -40,11 +43,6 @@ class GoodsReceivedNote extends Model implements HasMedia
     public function purchaseOrder(): BelongsTo
     {
         return $this->belongsTo(PurchaseOrder::class);
-    }
-
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function receiver(): BelongsTo

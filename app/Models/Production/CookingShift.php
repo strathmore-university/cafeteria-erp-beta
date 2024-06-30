@@ -11,6 +11,8 @@ class CookingShift extends Model
 {
     use BelongsToTeam;
 
+    protected $guarded = [];
+
     public function station(): BelongsTo
     {
         return $this->belongsTo(Station::class);

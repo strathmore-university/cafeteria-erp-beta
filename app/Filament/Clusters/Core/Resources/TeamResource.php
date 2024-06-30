@@ -39,11 +39,11 @@ class TeamResource extends Resource
         return $form->schema([
             TextInput::make('name')->required(),
             TextInput::make('description')->nullable(),
-            Select::make('head_user_id')->label('Team lead')->options(
-                User::
-//                    where('type', '=', 'staff') // todo:
-                all()
-                    ->pluck('name', 'id')
+            Select::make('head_user_id')->label('Team lead')->options([]
+                //                User::
+                //                    where('type', '=', 'staff') // todo:
+                //                all()
+                //                    ->pluck('name', 'id')
             )->preload()->searchable(),
             Section::make([
                 placeholder('created_at', 'Created Date'),
@@ -66,7 +66,6 @@ class TeamResource extends Resource
                     ->searchable()->sortable(),
                 TextColumn::make('description'),
             ])
-            ->filters([])
             ->actions([EditAction::make()])
             ->bulkActions([]);
     }

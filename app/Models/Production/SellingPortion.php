@@ -2,23 +2,18 @@
 
 namespace App\Models\Production;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use App\Models\Core\Unit;
-use App\Models\Inventory\Article;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Throwable;
 
 class SellingPortion extends Model
 {
-    use BelongsToTeam;
+    use BelongsToArticle, BelongsToTeam;
 
     protected $guarded = [];
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
 
     public function menuItem(): BelongsTo
     {

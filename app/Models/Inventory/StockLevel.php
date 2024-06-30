@@ -2,6 +2,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Concerns\BelongsToArticle;
 use App\Concerns\BelongsToTeam;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -9,14 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockLevel extends Model
 {
-    use BelongsToTeam;
+    use BelongsToArticle, BelongsToTeam;
 
     protected $guarded = [];
-
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
 
     public function store(): BelongsTo
     {

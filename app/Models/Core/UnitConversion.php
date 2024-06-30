@@ -9,6 +9,8 @@ class UnitConversion extends Model
 {
     protected $guarded = [];
 
+    protected $with = ['from', 'to'];
+
     public function from(): BelongsTo
     {
         return $this->belongsTo(Unit::class, 'from_unit_id');

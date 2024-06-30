@@ -61,10 +61,12 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('units')
                     ->sortable()->numeric(),
                 numeric_input_column(
-                    'dispatched_units', $canDispatch
+                    'dispatched_units',
+                    $canDispatch
                 )->visible($approved),
                 numeric_input_column(
-                    'received_units', $canReceive
+                    'received_units',
+                    $canReceive
                 )->visible($actioned),
                 Tables\Columns\TextColumn::make('article.unit.name')
                     ->searchable()->sortable(),

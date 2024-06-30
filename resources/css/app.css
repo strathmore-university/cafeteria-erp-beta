@@ -108,7 +108,7 @@
     }
 
     .rotate-full {
-        @apply group-hover:rotate-360 group-hover:text-blue-600 group-focus:rotate-360 group-focus:text-blue-600;
+        @apply group-hover:rotate-360 group-focus:rotate-360 group-hover:text-blue-600 group-focus:text-blue-600;
     }
 
     .waves {
@@ -119,9 +119,9 @@
     .outlined-text {
         color: #eff6ff;
         text-shadow:
-                -1px -1px 0 #3b82f6,
-                1px -1px 0 #3b82f6,
-                -1px 1px 0 #3b82f6,
-                1px 1px 0 #3b82f6;
+            -1px -1px 0 #3b82f6,
+            1px -1px 0 #3b82f6,
+            -1px 1px 0 #3b82f6,
+            1px 1px 0 #3b82f6;
     }
 }

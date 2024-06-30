@@ -24,6 +24,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Str;
 use Throwable;
 
@@ -129,6 +130,11 @@ class PurchaseOrderResource extends Resource
             'edit' => EditPurchaseOrder::route('/{record}/edit'),
             'view' => ViewPurchaseOrder::route('/{record}/view'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return PurchaseOrder::with(['supplier', 'creator']);
     }
 
     public static function getRelations(): array

@@ -6,52 +6,53 @@
  * Time: 09:50
  */
 ?>
-@extends("layouts.pdf")
-@section("title", "Goods Received Note (GRN)")
-@section("description", "Goods Received Note")
-@push("css")
+
+@extends('layouts.pdf')
+@section('title', 'Goods Received Note (GRN)')
+@section('description', 'Goods Received Note')
+@push('css')
     <style>
         #table-wrapper {
             overflow: visible !important;
         }
     </style>
 @endpush
-{{--@section("addressee", "Emirand Enterprises Ltd.")--}}
-@section('report-details')
-    <div class="row border border-bottom">
-            <div class="header-4 col-6">Umeme Enterprises Ltd.</div>
-            <div class="col-6" id="table-wrapper">
-                <table class="table table-condensed">
-                    <tbody class="">
-                    <tr class="border">
-                        <th class="border">GRN No.</th>
-                        <td class="border text-right">90425</td>
-                    </tr>
-                    <tr class="border">
-                        <th class="border">Delivery Note No.</th>
-                        <td class="border text-right">90425</td>
-                    </tr>
-                    <tr class="border">
-                        <th class="border">Delivery Date.</th>
-                        <td class="border text-right">90425</td>
-                    </tr>
-                    <tr>
-                        <th class="border">Purchase Order No.</th>
-                        <td class=" border text-right">90425</td>
-                    </tr>
-                    <tr>
-                        <th class="border">Invoice No.</th>
-                        <td class=" border text-right">90425</td>
-                    </tr>
 
-                    </tbody>
-                </table>
-            </div>
+{{-- @section("addressee", "Emirand Enterprises Ltd.") --}}
+@section('report-details')
+<div class="row border-bottom border">
+    <div class="header-4 col-6">Umeme Enterprises Ltd.</div>
+    <div class="col-6" id="table-wrapper">
+        <table class="table-condensed table">
+            <tbody class="">
+                <tr class="border">
+                    <th class="border">GRN No.</th>
+                    <td class="border text-right">90425</td>
+                </tr>
+                <tr class="border">
+                    <th class="border">Delivery Note No.</th>
+                    <td class="border text-right">90425</td>
+                </tr>
+                <tr class="border">
+                    <th class="border">Delivery Date.</th>
+                    <td class="border text-right">90425</td>
+                </tr>
+                <tr>
+                    <th class="border">Purchase Order No.</th>
+                    <td class="border text-right">90425</td>
+                </tr>
+                <tr>
+                    <th class="border">Invoice No.</th>
+                    <td class="border text-right">90425</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+</div>
 @stop
 @section('report-body')
-    <table class="table table-bordered table-striped table-condensed">
-        <tbody>
+<table class="table-bordered table-striped table-condensed table">
+    <tbody>
         <tr>
             <th>Article</th>
             <th>Ordered</th>
@@ -437,27 +438,27 @@
             <th>23</th>
             <th>Amount</th>
         </tr>
-        </tbody>
-    </table>
+    </tbody>
+</table>
 @stop
 @section('report-footer')
-    <div class="row">
-        <div class="col-8"></div>
-        <div class="col-4">
-            <table class="table table-borderless" style="border-top: double !important;">
-                <tr class="mb-0 p-0">
-                    <th>Net Total:</th>
-                    <th class="text-right bold">3,200.00</th>
-                </tr>
-                <tr class="mb-0 p-0">
-                    <th>VAT Total:</th>
-                    <th class="text-right bold">120.00</th>
-                </tr>
-                <tr class="border-top" style="border-bottom: 1px solid black;">
-                    <th>Total Amount:</th>
-                    <th class="text-right bold">3,420.00</th>
-                </tr>
-            </table>
-        </div>
+<div class="row">
+    <div class="col-8"></div>
+    <div class="col-4">
+        <table class="table-borderless table" style="border-top: double !important">
+            <tr class="mb-0 p-0">
+                <th>Net Total:</th>
+                <th class="bold text-right">3,200.00</th>
+            </tr>
+            <tr class="mb-0 p-0">
+                <th>VAT Total:</th>
+                <th class="bold text-right">120.00</th>
+            </tr>
+            <tr class="border-top" style="border-bottom: 1px solid black">
+                <th>Total Amount:</th>
+                <th class="bold text-right">3,420.00</th>
+            </tr>
+        </table>
     </div>
+</div>
 @stop

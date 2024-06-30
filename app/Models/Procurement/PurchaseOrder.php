@@ -9,7 +9,6 @@ use App\Concerns\BelongsToTeam;
 use App\Concerns\HasReviews;
 use App\Concerns\HasStatusTransitions;
 use App\Models\Inventory\Store;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +22,8 @@ class PurchaseOrder extends Model
 {
     use BelongsToCreator, HasStatusTransitions;
     use BelongsToTeam, HasReviews;
+
+    // todo: refactor
 
     protected $guarded = [];
 
@@ -44,11 +45,6 @@ class PurchaseOrder extends Model
     public function creditNotes(): HasMany
     {
         return $this->hasMany(CreditNote::class);
-    }
-
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function items(): HasMany
@@ -77,7 +73,8 @@ class PurchaseOrder extends Model
      */
     public function approvalAction(): void
     {
-        $this->expires_at = now()->addDays(14); // todo: add to procurement settings
+        // todo: add to procurement settings
+        $this->expires_at = now()->addDays(14);
         $this->lpo_generated_at = now();
         $this->updateStatus();
         $this->is_lpo = true;
@@ -108,12 +105,7 @@ class PurchaseOrder extends Model
 
     public function isFulfilled(): bool
     {
-        $id = $this->getKey();
-
-        return PurchaseOrderItem::wherePurchaseOrderId($id)
-            ->where('remaining_units', '>', 0)
-            ->select('remaining_units')
-            ->doesntExist();
+        return $this->status() === 'fulfilled';
     }
 
     public function pendingFulfillment(): bool

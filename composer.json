@@ -10,6 +10,8 @@
         "barryvdh/laravel-snappy": "^1.0",
         "bezhansalleh/filament-shield": "^3.2",
         "coolsam/modules": "^4.0",
+        "directorytree/ldaprecord": "^3.6",
+        "directorytree/ldaprecord-laravel": "^3.3",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "kalnoy/nestedset": "^6.0",
