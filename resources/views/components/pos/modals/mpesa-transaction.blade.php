@@ -1,7 +1,7 @@
 @props([])
 
 <section
-    class="fixed left-0 top-0 z-[99] flex h-screen w-screen items-center justify-center"
+    class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center"
     @keydown.window.escape="modalOpen=false"
     x-trap="modalOpen"
     x-show="modalOpen"

@@ -51,20 +51,27 @@ class PosInterface extends Component
     #[Layout('components.pos.Layout.pos')]
     public function render(): View
     {
-        //        $this->itemCode = '963';
-        //        $this->addItemByCode();
-
-        //        $this->selectedMode = 'Cash';
-        //        $this->tenderedAmount = 100;
-        //        $this->recordPayment();
-
-        //        $this->selectedMode = 'Wallet';
-        //        $this->tenderedAmount = 100;
-        //        $this->recordPayment();
-        //
-        //        $this->selectedMode = 'Allowance';
-        //        $this->tenderedAmount = 100;
-        //        $this->recordPayment();
+//        $this->addFromSelect($this->allSellingPortions->first());
+//        $this->addFromSelect($this->allSellingPortions->first());
+//        $this->addFromSelect($this->allSellingPortions->last());
+//        $this->itemCode = '963';
+//        $this->addItemByCode();
+//
+//        $this->itemCode = '963';
+//        $this->addItemByCode();
+//
+//        $this->user = User::first();
+//                $this->selectedMode = 'Cash';
+//                $this->tenderedAmount = 100;
+//                $this->recordPayment();
+//
+//                $this->selectedMode = 'Wallet';
+//                $this->tenderedAmount = 1300;
+//                $this->recordPayment();
+//        //
+//                $this->selectedMode = 'Allowance';
+//                $this->tenderedAmount = 100;
+//                $this->recordPayment();
 
         //        $this->selectedMode = 'Mpesa-Offline';
         //        $this->tenderedAmount = 100;

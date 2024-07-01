@@ -5,7 +5,7 @@
 
 <section
     @keydown.window.escape="slideOverOpen=false"
-    class="relative z-[99]"
+    class="relative z-50"
     x-trap="slideOverOpen"
     x-show="slideOverOpen"
     x-cloak

@@ -1,7 +1,7 @@
 @props([
     'model',
     'label',
-    'type'=>"text"
+    'type' => 'text',
 ])
 
 <label class="">

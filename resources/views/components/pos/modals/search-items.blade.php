@@ -3,8 +3,9 @@
 ])
 
 <section
-    class="fixed left-0 top-0 z-[99] flex h-screen w-screen items-center justify-center"
+    class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center"
     @keydown.window.escape="showItems=false"
+    {{-- @keydown.comma.prevent="slideOverOpen = false" --}}
     x-trap="showItems"
     x-show="showItems"
     x-cloak

@@ -9,9 +9,9 @@ trait SubmitSale
 {
     public function canSubmit(): bool
     {
-        $one = filled($this->recordedPayments);
-        $two = filled($this->saleItems);
-        $three = $this->balance === 0;
+        $one = $this->totalPaid >= $this->saleTotal;
+        $two = filled($this->recordedPayments);
+        $three = filled($this->saleItems);
 
         return and_check(and_check($one, $two), $three);
     }

@@ -37,9 +37,8 @@ trait SaleItems
 
     public function addItemByCode(): void
     {
-        $items = $this->allSellingPortions;
-        $search = $this->itemCode;
-        $portion = $items->firstWhere('code', '=', $search);
+        $portion = $this->allSellingPortions
+            ->firstWhere('code', '=', $this->itemCode);
 
         match (blank($portion)) {
             false => $this->addSaleItem($portion),
@@ -65,8 +64,8 @@ trait SaleItems
 
     private function addSaleItem(SellingPortion $portion): void
     {
-        $code = $portion->code;
-        $existingItem = $this->saleItems->firstWhere('code', $code);
+        $existingItem = $this->saleItems
+            ->firstWhere('code', $portion->code);
 
         match (filled($existingItem)) {
             true => $this->increase($portion->code),
