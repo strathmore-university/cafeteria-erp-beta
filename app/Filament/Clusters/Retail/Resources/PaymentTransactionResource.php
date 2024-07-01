@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Clusters\Retail\Resources;
 
 use App\Filament\Clusters\Retail;
 use App\Filament\Resources\PaymentTransactionResource\Pages;
@@ -73,9 +73,9 @@ class PaymentTransactionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPaymentTransactions::route('/'),
-            'create' => Pages\CreatePaymentTransaction::route('/create'),
-            'edit' => Pages\EditPaymentTransaction::route('/{record}/edit'),
+            'index' => Retail\Resources\PaymentTransactionResource\Pages\ListPaymentTransactions::route('/'),
+            'create' => Retail\Resources\PaymentTransactionResource\Pages\CreatePaymentTransaction::route('/create'),
+            'edit' => Retail\Resources\PaymentTransactionResource\Pages\EditPaymentTransaction::route('/{record}/edit'),
         ];
     }
 

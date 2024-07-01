@@ -1,7 +1,7 @@
 <x-pos.Layout.pos>
     <main class="flex h-lvh flex-col items-center justify-center bg-blue-50">
         <section class="">
-            <h1 class="text-3xl font-bold">{{ config('app.name') }}</h1>
+            <h1 class="text-3xl font-bold">{{ config('App.name') }}</h1>
         </section>
 
         <form

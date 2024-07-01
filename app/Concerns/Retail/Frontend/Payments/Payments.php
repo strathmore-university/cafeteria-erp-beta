@@ -62,7 +62,7 @@ trait Payments
     {
         $modes = payment_modes()->pluck('name', 'id')->toArray();
 
-        $this->paymentModes = match (filled($this->user)) {
+        $this->paymentModes = match (filled($this->wallet)) {
             false => array_diff($modes, ['Wallet', 'Allowance']),
             true => $modes,
         };

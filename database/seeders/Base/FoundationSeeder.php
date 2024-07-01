@@ -14,6 +14,7 @@ class FoundationSeeder extends Seeder
             CategorySeeder::class,
             UnitSeeder::class,
             CoreDatabaseSeeder::class,
+            SettingsSeeder::class
         ]);
     }
 }

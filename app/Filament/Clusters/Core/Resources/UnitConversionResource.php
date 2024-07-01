@@ -29,7 +29,7 @@ class UnitConversionResource extends Resource
 
     protected static ?string $cluster = Core::class;
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
     {

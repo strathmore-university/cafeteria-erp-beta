@@ -18,3 +18,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+/database/seeders/Base/SettingsSeeder.php

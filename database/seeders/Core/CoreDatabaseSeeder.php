@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Core;
 
+use App\Models\Core\Department;
 use App\Models\Core\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -9,14 +10,18 @@ use Illuminate\Support\Facades\Artisan;
 
 class CoreDatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Artisan::call('make:filament-user', ['--name' => 'tony', '--email' => 'tony@gmail.com', '--password' => '12345678']);
-
-        $head = User::first();
+        $head = User::create([
+            'email' => 'system@strathmore.edu',
+            'user_number' => 'system_user',
+            'username' => 'system_user',
+            'first_name' => 'System',
+            'password' => '12345678',
+            'is_system_user' => true,
+            'last_name' => 'User',
+            'is_staff' => false,
+        ]);
 
         $team = Team::create([
             'description' => 'SU Cafeteria Team',
@@ -27,11 +32,26 @@ class CoreDatabaseSeeder extends Seeder
         ]);
 
         $head->update(['team_id' => $team->id]);
-        $data = User::factory(9)->make(['team_id' => $team->id])->toArray();
-        $team->members()->createMany($data);
 
-        User::all()->each(function ($user) use ($team): void {
-            $user->teams()->attach($team->id);
+        Artisan::call('seed:departments');
+
+        $codes = collect([
+            ['code' => 'iLab', 'sync' => '49'],
+            ['code' => 'SBS', 'sync' => '24'],
+            ['code' => 'DOS', 'sync' => '32'],
+            ['code' => 'DVC - R&I', 'sync' => '12'],
+            ['code' => 'SIMS', 'sync' => '45'],
+            ['code' => 'SLS', 'sync' => '52'],
+            ['code' => 'SIPPG', 'sync' => '122'],
+            ['code' => 'ADMISSIONS', 'sync' => '48'],
+        ]);
+
+        $departments = Department::whereIn('code', $codes->pluck('code')->toArray())->get();
+
+        $departments->each(function ($department) use ($codes) {
+            $value = $department->getAttribute('code');
+            $code = $codes->firstWhere('code', $value);
+            $department->update(['sync_id' => $code['sync']]);
         });
     }
 }

@@ -51,9 +51,10 @@ if ( ! function_exists('team_id')) {
 if ( ! function_exists('system_user')) {
     function system_user(): User
     {
-        return Cache::rememberForever('system_user', fn () => User::whereEmail('tony@gmail.com')->first());
-
-        // todo: update system user
+        return Cache::rememberForever(
+            'system_user',
+            fn () => User::whereUsername('system_user')->first()
+        );
     }
 }
 

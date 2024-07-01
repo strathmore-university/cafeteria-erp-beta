@@ -56,9 +56,9 @@
                     </td>
                     <td class="text-right">
                         <div>
-                            <h3 class="font-weight-bolder">{{ config('app.strathmore.address.line1') }}</h3>
-                            <div class="font-weight-bold">{{ config('app.strathmore.address.line2') }}</div>
-                            <div class="font-weight-bold">{{ config('app.strathmore.address.line3') }}</div>
+                            <h3 class="font-weight-bolder">{{ config('App.strathmore.address.line1') }}</h3>
+                            <div class="font-weight-bold">{{ config('App.strathmore.address.line2') }}</div>
+                            <div class="font-weight-bold">{{ config('App.strathmore.address.line3') }}</div>
                         </div>
                     </td>
                 </tr>

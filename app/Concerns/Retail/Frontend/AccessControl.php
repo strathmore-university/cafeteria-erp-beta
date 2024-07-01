@@ -2,29 +2,30 @@
 
 namespace App\Concerns\Retail\Frontend;
 
-use App\Models\User;
+use App\Models\Core\Wallet;
 
 trait AccessControl
 {
-    public string $user_number = '';
+    public string $walletCode = '';
 
-    public ?User $user = null;
+    public ?Wallet $wallet = null;
 
-    public function updatedUserNumber(): void
+    public function updatedWalletCode(): void
     {
-        match (filled($this->user_number)) {
+        match (filled($this->walletCode)) {
             false => $this->resetCustomer(),
-            true => $this->searchUser(),
+            true => $this->searchWallet(),
         };
     }
 
-    public function searchUser(): void
+    public function searchWallet(): void
     {
-        $user = User::where('name', $this->user_number)->first();
+        $wallet = Wallet::where('code', $this->walletCode)->first();
 
-        match (blank($user)) {
+//        dd($wallet);
+        match (blank($wallet)) {
+            false => $this->wallet = $wallet,
             true => $this->resetCustomer(),
-            false => $this->user = $user,
         };
 
         $this->loadPaymentModes();
@@ -32,8 +33,8 @@ trait AccessControl
 
     public function resetCustomer(): void
     {
-        $this->user_number = '';
-        $this->user = null;
+        $this->walletCode = '';
+        $this->wallet = null;
     }
 
     public function cancel(): void
@@ -44,11 +45,11 @@ trait AccessControl
         $this->searchPortions = '';
         $this->mpesaReceipt = null;
         $this->tenderedAmount = 0;
-        $this->user_number = '';
+        $this->walletCode = '';
         $this->itemCode = '';
         $this->totalPaid = 0;
         $this->saleTotal = 0;
-        $this->user = null;
+        $this->wallet = null;
         $this->balance = 0;
         $this->change = 0;
     }

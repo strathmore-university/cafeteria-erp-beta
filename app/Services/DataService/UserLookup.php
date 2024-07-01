@@ -96,15 +96,15 @@ class UserLookup
     {
         $this->user = get_user_by_username($this->username);
 
-        $code = tannery($this->user, 1, null);
+        $code = tannery(filled($this->user), 1, null);
 
-        $canSearch = both($this->search, filled($this->username));
+        $canSearch = and_check($this->search, filled($this->username));
 
-        $canSearch = both($canSearch, ! $this->user);
+        $canSearch = and_check($canSearch, ! $this->user);
 
         $code = tannery($canSearch, 2, $code);
 
-        $dontSearch = both( ! $this->search, ! $this->user);
+        $dontSearch = and_check( ! $this->search, ! $this->user);
 
         $code = tannery($dontSearch, 3, $code);
 

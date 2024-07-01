@@ -2,10 +2,10 @@
 
 namespace App\Actions\Retail;
 
+use App\Models\Core\Wallet;
 use App\Models\Retail\PaymentAllocation;
 use App\Models\Retail\PaymentTransaction;
 use App\Models\Retail\Sale;
-use App\Models\User;
 use Illuminate\Support\Collection;
 use Throwable;
 
@@ -14,15 +14,15 @@ class CreatePaymentTransaction
     public function execute(
         Sale $sale,
         Collection $payments,
-        ?User $user = null
+        ?Wallet $wallet = null,
     ): void {
         $items = collect();
 
         $payments->each(
-            /**
-             * @throws Throwable
-             */
-            fn ($item) => $this->process($item, $sale, $user)
+        /**
+         * @throws Throwable
+         */
+            fn($item) => $this->process($item, $sale, $wallet)
         );
 
         PaymentTransaction::insert($items->toArray());
@@ -31,7 +31,7 @@ class CreatePaymentTransaction
     /**
      * @throws Throwable
      */
-    private function process(array $item, Sale $sale, ?User $user = null): void
+    private function process(array $item, Sale $sale, ?Wallet $wallet = null): void
     {
         $mode = payment_mode($item['mode']);
 
@@ -47,9 +47,9 @@ class CreatePaymentTransaction
             'narration' => $this->fetchNarration($item, $sale),
             'team_id' => $sale->getAttribute('team_id'),
             'tendered_amount' => $item['tendered_amount'],
-            'customer_type' => $user?->getMorphClass(),
+            'customer_type' => $wallet?->owner_type,
             'paid_amount' => $item['paid_amount'],
-            'customer_id' => $user?->getKey(),
+            'customer_id' => $wallet?->owner_id,
             'payment_mode_id' => $mode->id,
             'code' => $item['reference'],
             'sale_id' => $sale->id,
@@ -62,8 +62,8 @@ class CreatePaymentTransaction
     private function fetchNarration(array $item, Sale $sale): string
     {
         return build_string([
-            'Payment of Ksh.' . number_format($item['paid_amount']) .
-            ' against Sale ID:' . $sale->id,
+            'Payment of Ksh.'.number_format($item['paid_amount']).
+            ' against Sale ID:'.$sale->id,
         ]);
     }
 

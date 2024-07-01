@@ -6,11 +6,11 @@
             class="group flex w-full items-center gap-2 rounded-full border bg-slate-50 px-3 focus-within:border-blue-300 focus-within:bg-transparent"
         >
             <svg
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
                 class="size-5 text-slate-400 group-focus-within:text-blue-400 group-hover:text-blue-400"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
+                stroke-width="1.5"
+                fill="none"
             >
                 <path
                     d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"

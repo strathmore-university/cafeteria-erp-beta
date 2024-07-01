@@ -169,7 +169,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', config('app.env') === 'production'),
+    'secure' => env('SESSION_SECURE_COOKIE', config('App.env') === 'production'),
 
     /*
     |--------------------------------------------------------------------------

@@ -57,7 +57,7 @@ class GoodsReceivedNoteResource extends Resource
                 placeholder('invoiced_at', 'Invoiced at'),
             ])->columns($cols),
             //            FileUpload::make('attachments')->multiple()->nullable()->columnSpan(2)
-            //                ->directory('app/Attachments/Procurement')
+            //                ->directory('App/Attachments/Procurement')
             //                ->deletable(false)
             //                ->downloadable()
             //                ->visibility('private')

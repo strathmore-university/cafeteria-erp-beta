@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Cache::clear();
+
         $this->call([
             FoundationSeeder::class,
             ConsumableArticlesSeeder::class,

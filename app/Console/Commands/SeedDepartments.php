@@ -39,13 +39,13 @@ class SeedDepartments extends Command
 
         info(count($departments) . ' valid departments.');
 
-        $parentDepartments = $departments->filter(
-            fn ($department) => ! $department['subDepartment']
-        );
+//        $parentDepartments = $departments->filter(
+//            fn ($department) => ! $department['subDepartment']
+//        );
 
-        info(count($parentDepartments) . ' parent departments.');
+        info(count($departments) . ' parent departments.');
 
-        $this->processParentDepartments($parentDepartments);
+        $this->processParentDepartments($departments);
     }
 
     private function processParentDepartments(Collection $departments): void

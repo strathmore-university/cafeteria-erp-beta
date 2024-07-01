@@ -19,13 +19,13 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UnitResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-cog';
+    protected static ?string $navigationIcon = 'heroicon-o-scale';
 
     protected static ?string $cluster = Core::class;
 
     protected static ?string $model = Unit::class;
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $slug = 'units';
 

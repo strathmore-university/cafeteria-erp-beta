@@ -26,7 +26,7 @@ trait SubmitSale
         }
 
         $payments = $this->recordedPayments;
-        (new SubmitNewSale())->execute($this->saleItems, $payments, $this->user);
+        (new SubmitNewSale())->execute($this->saleItems, $payments, $this->wallet);
 
         //        todo: notification
 

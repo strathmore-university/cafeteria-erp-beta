@@ -6,8 +6,8 @@ use App\Actions\DataService\StoreDepartment;
 use App\Exceptions\DataService\DepartmentNotFound;
 use App\Exceptions\DataService\MissingDepartmentId;
 use App\Facades\ApiClient;
-use App\Models\Department;
-use App\Services\AttributeSanitizers\DepartmentSanitizer;
+use App\Models\Core\Department;
+//use App\Services\AttributeSanitizers\DepartmentSanitizer;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -47,7 +47,8 @@ class DepartmentLookup
 
     public function shortName(string $shortName): self
     {
-        $this->shortName = DepartmentSanitizer::shortName($shortName);
+        $this->shortName = $shortName;
+//        $this->shortName = DepartmentSanitizer::shortName($shortName);
 
         return $this;
     }
@@ -64,17 +65,17 @@ class DepartmentLookup
      */
     public function fetch(): ?Department
     {
-        $this->department = get_department_by_shortname($this->shortName);
+        $this->department = get_department_by_code($this->shortName);
 
-        $code = tannery($this->department, 1, null);
+        $code = tannery(filled($this->department), 1, null);
 
-        $canSearch = both($this->search, filled($this->id));
+        $canSearch = and_check($this->search, filled($this->id));
 
-        $canSearch = both($canSearch, ! $this->department);
+        $canSearch = and_check($canSearch, ! $this->department);
 
         $code = tannery($canSearch, 2, $code);
 
-        $dontSearch = both( ! $this->search, ! $this->department);
+        $dontSearch = and_check( ! $this->search, ! $this->department);
 
         $code = tannery($dontSearch, 3, $code);
 
@@ -153,7 +154,7 @@ class DepartmentLookup
     {
         $shortName = $this->payload['parentShortName'];
 
-        $parentId = get_department_by_shortname($shortName)?->id;
+        $parentId = get_department_by_code($shortName)?->id;
 
         return match ($parentId === null) {
             true => $this->attemptToPersistParent(),

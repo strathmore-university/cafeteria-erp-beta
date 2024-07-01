@@ -50,7 +50,7 @@ class ViewGoodsReceivedNote extends ViewRecord
                             //                                ->acceptedFileTypes(['application/pdf'])
                             //                                ->maxSize(10 * 2048)
                             //                                ->maxFiles(10)
-                            //                                ->directory('app/Attachments/Procurement')
+                            //                                ->directory('App/Attachments/Procurement')
                             //                                ->uploadingMessage('Uploading attachment...')
                             //                                ->moveFiles()
                             //                                ->visibility('private')

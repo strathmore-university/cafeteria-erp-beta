@@ -116,7 +116,7 @@ namespace Illuminate\Support\Facades {
                         return $instance->setBasePath($basePath);
         }
                     /**
-         * Get the path to the application "app" directory.
+         * Get the path to the application "App" directory.
          *
          * @param string $path
          * @return string 

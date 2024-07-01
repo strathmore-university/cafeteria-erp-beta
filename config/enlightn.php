@@ -42,7 +42,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The following array lists the directories that will be scanned for
-    | application specific code. By default, we are scanning your app
+    | application specific code. By default, we are scanning your App
     | folder, migrations folder and the seeders folder.
     |
     */
@@ -69,7 +69,7 @@ return [
     | Guest URL
     |--------------------------------------------------------------------------
     |
-    | Specify any guest url or path (preferably your app's login url) here. This
+    | Specify any guest url or path (preferably your App's login url) here. This
     | would be used by Enlightn to inspect your application HTTP headers.
     | Example: '/login'.
     |
@@ -159,7 +159,7 @@ return [
         base_path('routes') => '775',
         app()->bootstrapPath() => '775',
         app()->bootstrapPath('cache') => '775',
-        app()->bootstrapPath('app.php') => '664',
+        app()->bootstrapPath('App.php') => '664',
         base_path('artisan') => '775',
         public_path('index.php') => '664',
         public_path('server.php') => '664',
